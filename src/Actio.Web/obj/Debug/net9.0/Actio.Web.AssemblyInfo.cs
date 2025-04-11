@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Actio.Web")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+0d51e33c47563c67125f356158622bed1f52e1b3")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4a803488ac6240448604cdbb818b9e2fe3c11b43")]
 [assembly: System.Reflection.AssemblyProductAttribute("Actio.Web")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Actio.Web")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
