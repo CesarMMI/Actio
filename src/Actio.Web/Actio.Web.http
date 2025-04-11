@@ -1,0 +1,6 @@
+@Actio.Web_HostAddress = http://localhost:5143
+
+GET {{Actio.Web_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
