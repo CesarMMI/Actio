@@ -363,3 +363,5 @@ MigrationBackup/
 FodyWeavers.xsd
 */obj/
 */obj/*
+/src/Actio.Web/obj/Debug/net9.0/Actio.Web.AssemblyInfoInputs.cache
+/src/Actio.Web/obj/Debug/net9.0/Actio.Web.AssemblyInfo.cs
