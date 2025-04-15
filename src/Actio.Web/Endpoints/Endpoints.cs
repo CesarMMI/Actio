@@ -1,0 +1,14 @@
+﻿namespace Actio.Web.Endpoints;
+
+public static class Endpoints
+{
+    public static WebApplication MapEndpoints(this WebApplication app)
+    {
+        var group = app.MapGroup("api");
+
+        group.MapAuthEndpoints();
+        group.MapTasksEndpoints();
+
+        return app;
+    }
+}

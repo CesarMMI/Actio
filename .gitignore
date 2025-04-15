@@ -365,3 +365,6 @@ FodyWeavers.xsd
 */obj/*
 /src/Actio.Web/obj/Debug/net9.0/Actio.Web.AssemblyInfoInputs.cache
 /src/Actio.Web/obj/Debug/net9.0/Actio.Web.AssemblyInfo.cs
+.vscode/
+/src/Actio.Web/appsettings.json
+/src/Actio.Web/appsettings.Development.json
