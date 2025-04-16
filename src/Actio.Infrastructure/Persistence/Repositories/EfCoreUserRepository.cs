@@ -1,5 +1,6 @@
 ﻿using Actio.Domain.Models;
 using Actio.Domain.Repositories;
+using Actio.Infrastructure.Persistence.Context;
 using Microsoft.EntityFrameworkCore;
 
 namespace Actio.Infrastructure.Persistence.Repositories;

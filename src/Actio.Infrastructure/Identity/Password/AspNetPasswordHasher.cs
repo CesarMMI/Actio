@@ -1,6 +1,6 @@
 ﻿using Actio.Application.Interfaces;
 
-namespace Actio.Infrastructure.Identity;
+namespace Actio.Infrastructure.Identity.Password;
 
 internal class AspNetPasswordHasher : IPasswordHasher
 {

@@ -13,14 +13,14 @@ public static class AuthEndpoints
         var group = builder.MapGroup("auth");
 
         group
-            .MapPost("login", 
-            async (LoginRequest dto, ILoginHandler handler) => (await handler.Handle(dto))
-            .ToResult(200))
+            .MapPost("login",
+                async (LoginRequest request, ILoginHandler handler) => (await handler.Handle(request))
+                .ToResult(200))
             .Validate<LoginRequest>();
         group
-            .MapPost("register", 
-            async (RegisterRequest dto, IRegisterHandler handler) => (await handler.Handle(dto))
-            .ToResult(200))
+            .MapPost("register",
+                async (RegisterRequest request, IRegisterHandler handler) => (await handler.Handle(request))
+                .ToResult(200))
             .Validate<RegisterRequest>();
 
         return builder;

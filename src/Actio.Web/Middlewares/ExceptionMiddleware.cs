@@ -6,7 +6,7 @@ namespace Actio.Web.Middlewares;
 
 public static class ExceptionMiddleware
 {
-    public static WebApplication UseAppExceptionHandler(this WebApplication app)
+    public static IApplicationBuilder UseAppExceptionHandler(this IApplicationBuilder app)
     {
         app.UseExceptionHandler(errorApp =>
         {
