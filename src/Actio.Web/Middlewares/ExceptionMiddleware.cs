@@ -24,7 +24,7 @@ public static class ExceptionMiddleware
                         await context.WriteAsJsonAsync(ex.StatusCode, ex.Message);
                         break;
                     case Exception:
-                        await context.WriteAsJsonAsync(500, exception.Message);
+                        await context.WriteAsJsonAsync(500, "Internal server error");
                         break;
                 }
             });

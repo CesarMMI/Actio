@@ -1,6 +1,8 @@
-﻿using Actio.Infrastructure.Extensions;
+﻿using Actio.Application.Dtos;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Http;
 using Microsoft.IdentityModel.Tokens;
+using System.Text.Json;
 
 namespace Actio.Infrastructure.Identity.Jwt;
 
@@ -16,23 +18,33 @@ internal class JwtBearerEventsHandler : JwtBearerEvents
     {
         if (context.Exception is SecurityTokenExpiredException)
         {
-            return context.Response.WriteResponse("Token expired");
+            return WriteResponse(context.Response, "Token expired");
         }
 
         if (context.Exception is SecurityTokenInvalidSignatureException)
         {
-            return context.Response.WriteResponse("Invalid token");
+            return WriteResponse(context.Response, "Invalid token");
         }
 
-        return context.Response.WriteResponse("Token authentication failed");
+        return WriteResponse(context.Response, "Token authentication failed");
     }
 
-    public Task OnChallengeEvent(JwtBearerChallengeContext context)
+    private Task OnChallengeEvent(JwtBearerChallengeContext context)
     {
         if (!context.Response.HasStarted)
         {
-            return context.Response.WriteResponse("Invalid token");
+            return WriteResponse(context.Response, "Invalid token");
         }
         return Task.CompletedTask;
+    }
+
+    private Task WriteResponse(HttpResponse response, string message)
+    {
+        response.StatusCode = 401;
+        response.ContentType = "application/json";
+        return response.WriteAsync(JsonSerializer.Serialize(
+            new BaseResponse<dynamic> { Message = message },
+            new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }
+        ));
     }
 }

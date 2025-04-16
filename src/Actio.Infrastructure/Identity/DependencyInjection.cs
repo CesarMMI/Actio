@@ -1,10 +1,11 @@
 ﻿using Actio.Application.Interfaces;
-using Actio.Infrastructure.Extensions;
 using Actio.Infrastructure.Identity.Jwt;
 using Actio.Infrastructure.Identity.Password;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace Actio.Infrastructure.Identity;
 
@@ -14,11 +15,24 @@ public static class DependencyInjection
     {
         services.AddScoped<IPasswordHasher, AspNetPasswordHasher>();
 
+        services.AddScoped<IJwtService, JwtService>();
+
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
         {
-            options.TokenValidationParameters = JwtExtensions.GetTokenValidationParameters(configuration["JWT:Issuer"]!, configuration["JWT:AccessSecret"]!);
+            options.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateAudience = false,
+                ValidateLifetime = true,
+                ValidateIssuer = true,
+                ValidIssuer = configuration["JWT:Issuer"]!,
+                ValidateIssuerSigningKey = true,
+                ClockSkew = TimeSpan.Zero,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:AccessSecret"]!))
+            };
             options.Events = new JwtBearerEventsHandler();
         });
+
+        services.AddAuthorization();
 
         return services;
     }

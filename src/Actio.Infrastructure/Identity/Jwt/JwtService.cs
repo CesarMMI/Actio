@@ -1,11 +1,11 @@
 ﻿using Actio.Application.Exceptions;
 using Actio.Application.Interfaces;
 using Actio.Domain.Models;
-using Actio.Infrastructure.Extensions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Text;
 
 namespace Actio.Infrastructure.Identity.Jwt;
 
@@ -43,7 +43,16 @@ internal class JwtService : IJwtService
 
     public ClaimsPrincipal ValidateRefreshToken(string token)
     {
-        var validationParameters = JwtExtensions.GetTokenValidationParameters(issuer, refreshSecret!);
+        var validationParameters = new TokenValidationParameters
+        {
+            ValidateAudience = false,
+            ValidateLifetime = true,
+            ValidateIssuer = true,
+            ValidIssuer = issuer,
+            ValidateIssuerSigningKey = true,
+            ClockSkew = TimeSpan.Zero,
+            IssuerSigningKey = GetSymmetricSecurityKey(refreshSecret)
+        };
 
         try
         {
@@ -61,7 +70,7 @@ internal class JwtService : IJwtService
             new("name", user.Name),
             new("sub", user.Email)
         };
-        var key = JwtExtensions.GetSymmetricSecurityKey(secret);
+        var key = GetSymmetricSecurityKey(secret);
         var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
         var tokenDescriptor = new JwtSecurityToken(
@@ -72,5 +81,10 @@ internal class JwtService : IJwtService
         );
 
         return tokenHandler.WriteToken(tokenDescriptor);
+    }
+
+    private SymmetricSecurityKey GetSymmetricSecurityKey(string secret)
+    {
+        return new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret));
     }
 }

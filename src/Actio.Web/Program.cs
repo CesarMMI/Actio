@@ -20,6 +20,7 @@ if (app.Environment.IsDevelopment())
 app
     .UseHttpsRedirection()
     .UseAuthentication()
+    .UseAuthorization()
     .UseAppExceptionHandler();
 
 app.MapEndpoints();
