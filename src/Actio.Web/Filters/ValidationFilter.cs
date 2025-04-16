@@ -1,5 +1,4 @@
-﻿using Actio.Application.Dtos;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Actio.Web.Filters;
 
@@ -19,7 +18,7 @@ public static class ValidationFilter
             if (!response.IsValid)
             {
                 var errorMessage = response.Results.FirstOrDefault()?.ErrorMessage;
-                return Results.Json(new BaseResponse<dynamic> { Message = errorMessage }, statusCode: 400);
+                return Results.Content(errorMessage);
             }
 
             return await next(context);

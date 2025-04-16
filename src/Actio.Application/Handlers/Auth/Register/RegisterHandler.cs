@@ -1,5 +1,4 @@
-﻿using Actio.Application.Dtos;
-using Actio.Application.Dtos.Auth;
+﻿using Actio.Application.Dtos.Auth;
 using Actio.Application.Exceptions;
 using Actio.Application.Interfaces;
 using Actio.Domain.Models;
@@ -9,7 +8,7 @@ namespace Actio.Application.Handlers.Auth.Register;
 
 internal class RegisterHandler(IPasswordHasher passwordHasher, IJwtService jwtService, IUserRepository userRepository) : IRegisterHandler
 {
-    public async Task<BaseResponse<AuthResponse>> Handle(RegisterRequest request)
+    public async Task<AuthResponse> Handle(RegisterRequest request)
     {
         if ((await userRepository.FindByEmailAsync(request.Email)) is not null)
         {
@@ -25,13 +24,11 @@ internal class RegisterHandler(IPasswordHasher passwordHasher, IJwtService jwtSe
 
         user = await userRepository.CreateAsync(user);
 
-        var authResponse = new AuthResponse
+        return new AuthResponse
         {
             User = user.ToUserResponse(),
             AccessToken = jwtService.GenerateAccessToken(user),
             RefreshToken = jwtService.GenerateRefreshToken(user)
         };
-
-        return new BaseResponse<AuthResponse> { Data = authResponse, Message = "Registration successful" };
     }
 }

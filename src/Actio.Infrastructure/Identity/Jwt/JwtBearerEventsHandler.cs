@@ -1,8 +1,6 @@
-﻿using Actio.Application.Dtos;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.IdentityModel.Tokens;
-using System.Text.Json;
 
 namespace Actio.Infrastructure.Identity.Jwt;
 
@@ -41,10 +39,7 @@ internal class JwtBearerEventsHandler : JwtBearerEvents
     private Task WriteResponse(HttpResponse response, string message)
     {
         response.StatusCode = 401;
-        response.ContentType = "application/json";
-        return response.WriteAsync(JsonSerializer.Serialize(
-            new BaseResponse<dynamic> { Message = message },
-            new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }
-        ));
+        response.ContentType = "text/plain";
+        return response.WriteAsync(message);
     }
 }

@@ -1,6 +1,5 @@
 ﻿using Actio.Application.Dtos.Tasks;
 using Actio.Application.Handlers.Tasks;
-using Actio.Web.Extensions;
 using Actio.Web.Filters;
 using Microsoft.AspNetCore.Authorization;
 
@@ -13,9 +12,7 @@ public static class TasksEndpoints
         var group = builder.MapGroup("tasks");
 
         group
-            .MapGet("", [Authorize]
-            async (IGetAllTasksHandler handler) => (await handler.Handle(null))
-            .ToResult(200))
+            .MapGet("", [Authorize] async (IGetAllTasksHandler handler) => (await handler.Handle(null)))
             .Validate<GetAllTasksRequest>();
         
         return builder;
