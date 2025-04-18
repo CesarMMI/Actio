@@ -1,6 +1,7 @@
-﻿using Actio.Application.Auth.Handlers.Login;
+﻿using Actio.Application.Accounts.Handlers.GetAllAccounts;
+using Actio.Application.Auth.Handlers.Login;
+using Actio.Application.Auth.Handlers.Refresh;
 using Actio.Application.Auth.Handlers.Register;
-using Actio.Application.Handlers.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Actio.Application;
@@ -17,7 +18,8 @@ public static class DependencyInjection
     {
         services.AddScoped<ILoginHandler, LoginHandler>();
         services.AddScoped<IRegisterHandler, RegisterHandler>();
-        services.AddScoped<IGetAllTasksHandler, GetAllTasksHandler>();
+        services.AddScoped<IRefreshHandler, RefreshHandler>();
+        services.AddScoped<IGetAllAccountsHandler, GetAllAccountsHandler>();
         return services;
     }
 }

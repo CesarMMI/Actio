@@ -9,6 +9,8 @@ internal class LoginHandler(IPasswordHasher passwordHasher, IJwtService jwtServi
 {
     public async Task<AuthResponse> Handle(LoginRequest request)
     {
+        request.Validate();
+
         var user = await userRepository.FindByEmailAsync(request.Email);
 
         if (user is null || !passwordHasher.Verify(user.Password, request.Password))

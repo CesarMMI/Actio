@@ -10,6 +10,8 @@ internal class RegisterHandler(IPasswordHasher passwordHasher, IJwtService jwtSe
 {
     public async Task<AuthResponse> Handle(RegisterRequest request)
     {
+        request.Validate();
+
         if (await userRepository.FindByEmailAsync(request.Email) is not null)
         {
             throw new BadRequestException("Email already in use");

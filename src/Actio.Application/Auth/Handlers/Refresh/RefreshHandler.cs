@@ -9,6 +9,8 @@ internal class RefreshHandler(IJwtService jwtService, IUserRepository userReposi
 {
     public async Task<AuthResponse> Handle(RefreshRequest request)
     {
+        request.Validate();
+
         var claims = jwtService.ValidateRefreshToken(request.RefreshToken);
         var sub = claims.Claims.FirstOrDefault(c => c.Type == "sub");
 
