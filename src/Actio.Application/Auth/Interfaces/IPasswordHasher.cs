@@ -1,4 +1,4 @@
-﻿namespace Actio.Application.Interfaces;
+﻿namespace Actio.Application.Auth.Interfaces;
 
 public interface IPasswordHasher
 {

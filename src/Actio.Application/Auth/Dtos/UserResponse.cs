@@ -1,6 +1,6 @@
 ﻿using Actio.Domain.Models;
 
-namespace Actio.Application.Dtos.Auth;
+namespace Actio.Application.Auth.Dtos;
 
 public class UserResponse
 {

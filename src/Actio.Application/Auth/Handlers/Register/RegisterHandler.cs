@@ -1,16 +1,16 @@
-﻿using Actio.Application.Dtos.Auth;
-using Actio.Application.Exceptions;
-using Actio.Application.Interfaces;
+﻿using Actio.Application.Auth.Dtos;
+using Actio.Application.Auth.Interfaces;
+using Actio.Application.Shared.Exceptions;
 using Actio.Domain.Models;
 using Actio.Domain.Repositories;
 
-namespace Actio.Application.Handlers.Auth.Register;
+namespace Actio.Application.Auth.Handlers.Register;
 
 internal class RegisterHandler(IPasswordHasher passwordHasher, IJwtService jwtService, IUserRepository userRepository) : IRegisterHandler
 {
     public async Task<AuthResponse> Handle(RegisterRequest request)
     {
-        if ((await userRepository.FindByEmailAsync(request.Email)) is not null)
+        if (await userRepository.FindByEmailAsync(request.Email) is not null)
         {
             throw new BadRequestException("Email already in use");
         }

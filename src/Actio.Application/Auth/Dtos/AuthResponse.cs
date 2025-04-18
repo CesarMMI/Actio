@@ -1,4 +1,4 @@
-﻿namespace Actio.Application.Dtos.Auth;
+﻿namespace Actio.Application.Auth.Dtos;
 
 public class AuthResponse
 {

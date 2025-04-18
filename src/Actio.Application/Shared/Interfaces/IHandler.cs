@@ -1,4 +1,4 @@
-﻿namespace Actio.Application.Handlers;
+﻿namespace Actio.Application.Shared.Interfaces;
 
 public interface IHandler<TRequest, TResponse> 
 {

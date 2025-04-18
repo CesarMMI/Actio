@@ -1,4 +1,4 @@
-﻿using Actio.Application.Exceptions;
+﻿using Actio.Application.Shared.Exceptions;
 using Microsoft.AspNetCore.Diagnostics;
 
 namespace Actio.Web.Middlewares;

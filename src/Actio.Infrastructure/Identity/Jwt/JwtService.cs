@@ -1,5 +1,5 @@
-﻿using Actio.Application.Exceptions;
-using Actio.Application.Interfaces;
+﻿using Actio.Application.Auth.Interfaces;
+using Actio.Application.Exceptions;
 using Actio.Domain.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -83,7 +83,7 @@ internal class JwtService : IJwtService
         return tokenHandler.WriteToken(tokenDescriptor);
     }
 
-    private SymmetricSecurityKey GetSymmetricSecurityKey(string secret)
+    private static SymmetricSecurityKey GetSymmetricSecurityKey(string secret)
     {
         return new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret));
     }

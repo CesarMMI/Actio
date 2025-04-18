@@ -1,4 +1,4 @@
-﻿namespace Actio.Application.Exceptions;
+﻿namespace Actio.Application.Shared.Exceptions;
 
 public class UnauthorizedException(string message) : AppException(message)
 {

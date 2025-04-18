@@ -1,14 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Actio.Application.Dtos.Auth;
+namespace Actio.Application.Auth.Dtos;
 
-public class RegisterRequest
+public class LoginRequest
 {
-    [Required(ErrorMessage = "Name is required")]
-    [MinLength(5, ErrorMessage = "Name length can't be lower than 5")]
-    [MaxLength(100, ErrorMessage = "Name length can't be greater than 100")]
-    public string Name { get; set; } = string.Empty;
-
     [Required(ErrorMessage = "Email is required")]
     [EmailAddress(ErrorMessage = "Invalid email")]
     [MaxLength(100, ErrorMessage = "Email length can't be greater than 100")]

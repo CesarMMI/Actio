@@ -7,7 +7,6 @@ public static class Endpoints
         var group = app.MapGroup("api");
 
         group.MapAuthEndpoints();
-        group.MapTasksEndpoints();
 
         return app;
     }

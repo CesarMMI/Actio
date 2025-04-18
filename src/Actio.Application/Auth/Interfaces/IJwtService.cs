@@ -1,7 +1,7 @@
 ﻿using Actio.Domain.Models;
 using System.Security.Claims;
 
-namespace Actio.Application.Interfaces;
+namespace Actio.Application.Auth.Interfaces;
 
 public interface IJwtService
 {

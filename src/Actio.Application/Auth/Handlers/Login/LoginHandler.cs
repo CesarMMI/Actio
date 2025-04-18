@@ -1,9 +1,9 @@
-﻿using Actio.Application.Dtos.Auth;
-using Actio.Application.Exceptions;
-using Actio.Application.Interfaces;
+﻿using Actio.Application.Auth.Dtos;
+using Actio.Application.Auth.Interfaces;
+using Actio.Application.Shared.Exceptions;
 using Actio.Domain.Repositories;
 
-namespace Actio.Application.Handlers.Auth.Login;
+namespace Actio.Application.Auth.Handlers.Login;
 
 internal class LoginHandler(IPasswordHasher passwordHasher, IJwtService jwtService, IUserRepository userRepository) : ILoginHandler
 {

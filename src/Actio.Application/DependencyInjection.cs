@@ -1,5 +1,5 @@
-﻿using Actio.Application.Handlers.Auth.Login;
-using Actio.Application.Handlers.Auth.Register;
+﻿using Actio.Application.Auth.Handlers.Login;
+using Actio.Application.Auth.Handlers.Register;
 using Actio.Application.Handlers.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 

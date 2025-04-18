@@ -36,7 +36,7 @@ internal class JwtBearerEventsHandler : JwtBearerEvents
         return Task.CompletedTask;
     }
 
-    private Task WriteResponse(HttpResponse response, string message)
+    private static Task WriteResponse(HttpResponse response, string message)
     {
         response.StatusCode = 401;
         response.ContentType = "text/plain";

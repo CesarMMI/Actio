@@ -1,6 +1,7 @@
-﻿using Actio.Application.Dtos.Auth;
-using Actio.Application.Handlers.Auth.Login;
-using Actio.Application.Handlers.Auth.Register;
+﻿using Actio.Application.Auth.Dtos;
+using Actio.Application.Auth.Handlers.Login;
+using Actio.Application.Auth.Handlers.Register;
+using Actio.Web.Extensions;
 using Actio.Web.Filters;
 
 namespace Actio.Web.Endpoints;
@@ -12,10 +13,10 @@ public static class AuthEndpoints
         var group = builder.MapGroup("auth");
 
         group
-            .MapPost("login", async (LoginRequest request, ILoginHandler handler) => (await handler.Handle(request)))
+            .MapPost("login", HandlerExtensions.HandleNoAuth<ILoginHandler, LoginRequest, AuthResponse>())
             .Validate<LoginRequest>();
         group
-            .MapPost("register", async (RegisterRequest request, IRegisterHandler handler) => (await handler.Handle(request)))
+            .MapPost("register", HandlerExtensions.HandleNoAuth<IRegisterHandler, RegisterRequest, AuthResponse>())
             .Validate<RegisterRequest>();
 
         return builder;

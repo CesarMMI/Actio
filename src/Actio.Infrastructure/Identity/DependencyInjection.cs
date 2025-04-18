@@ -1,4 +1,4 @@
-﻿using Actio.Application.Interfaces;
+﻿using Actio.Application.Auth.Interfaces;
 using Actio.Infrastructure.Identity.Jwt;
 using Actio.Infrastructure.Identity.Password;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -9,7 +9,7 @@ using System.Text;
 
 namespace Actio.Infrastructure.Identity;
 
-public static class DependencyInjection
+internal static class DependencyInjection
 {
     public static IServiceCollection AddIdentity(this IServiceCollection services, IConfiguration configuration)
     {
