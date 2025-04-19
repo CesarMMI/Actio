@@ -1,6 +1,5 @@
 ﻿using Actio.Application.Auth.Interfaces;
-using Actio.Application.Exceptions;
-using Actio.Domain.Models;
+using Actio.Application.Shared.Exceptions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -31,14 +30,14 @@ internal class JwtService : IJwtService
         refreshExpiresMins = double.Parse(configuration["JWT:RefreshExpiresMins"]!);
     }
 
-    public string GenerateAccessToken(User user)
+    public string GenerateAccessToken(int userId)
     {
-        return GenerateToken(user, accessSecret, DateTime.UtcNow.AddMinutes(accessExpiresMins));
+        return GenerateToken(userId, accessSecret, DateTime.Now.AddMinutes(accessExpiresMins));
     }
 
-    public string GenerateRefreshToken(User user)
+    public string GenerateRefreshToken(int userId)
     {
-        return GenerateToken(user, refreshSecret, DateTime.UtcNow.AddMinutes(refreshExpiresMins));
+        return GenerateToken(userId, refreshSecret, DateTime.Now.AddMinutes(refreshExpiresMins));
     }
 
     public ClaimsPrincipal ValidateRefreshToken(string token)
@@ -50,7 +49,6 @@ internal class JwtService : IJwtService
             ValidateIssuer = true,
             ValidIssuer = issuer,
             ValidateIssuerSigningKey = true,
-            ClockSkew = TimeSpan.Zero,
             IssuerSigningKey = GetSymmetricSecurityKey(refreshSecret)
         };
 
@@ -64,11 +62,10 @@ internal class JwtService : IJwtService
         }
     }
 
-    private string GenerateToken(User user, string secret, DateTime expires)
+    private string GenerateToken(int userId, string secret, DateTime expires)
     {
         var claims = new List<Claim> {
-            new("name", user.Name),
-            new("sub", user.Email)
+            new(ClaimTypes.NameIdentifier, userId.ToString())
         };
         var key = GetSymmetricSecurityKey(secret);
         var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);

@@ -26,7 +26,6 @@ internal static class DependencyInjection
                 ValidateIssuer = true,
                 ValidIssuer = configuration["JWT:Issuer"]!,
                 ValidateIssuerSigningKey = true,
-                ClockSkew = TimeSpan.Zero,
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:AccessSecret"]!))
             };
             options.Events = new JwtBearerEventsHandler();

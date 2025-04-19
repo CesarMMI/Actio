@@ -6,9 +6,9 @@ namespace Actio.Application.Auth.Dtos;
 
 public class RegisterRequest : BaseRequest
 {
-    public string Name { get; set; } = string.Empty;
-    public string Email { get; set; } = string.Empty;
-    public string Password { get; set; } = string.Empty;
+    public required string Name { get; set; }
+    public required string Email { get; set; }
+    public required string Password { get; set; }
 
     public override void Validate()
     {

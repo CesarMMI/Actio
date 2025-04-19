@@ -21,8 +21,8 @@ internal class LoginHandler(IPasswordHasher passwordHasher, IJwtService jwtServi
         return new AuthResponse
         {
             User = user.ToUserResponse(),
-            AccessToken = jwtService.GenerateAccessToken(user),
-            RefreshToken = jwtService.GenerateRefreshToken(user),
+            AccessToken = jwtService.GenerateAccessToken(user.Id),
+            RefreshToken = jwtService.GenerateRefreshToken(user.Id),
         };
     }
 }

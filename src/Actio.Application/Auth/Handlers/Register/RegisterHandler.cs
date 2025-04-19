@@ -29,8 +29,8 @@ internal class RegisterHandler(IPasswordHasher passwordHasher, IJwtService jwtSe
         return new AuthResponse
         {
             User = user.ToUserResponse(),
-            AccessToken = jwtService.GenerateAccessToken(user),
-            RefreshToken = jwtService.GenerateRefreshToken(user)
+            AccessToken = jwtService.GenerateAccessToken(user.Id),
+            RefreshToken = jwtService.GenerateRefreshToken(user.Id)
         };
     }
 }

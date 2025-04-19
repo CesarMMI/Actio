@@ -6,12 +6,11 @@ namespace Actio.Application.Auth.Dtos;
 
 public class RefreshRequest : BaseRequest
 {
-    public string RefreshToken { get; set; } = string.Empty;
+    public required string RefreshToken { get; set; }
 
     public override void Validate()
     {
-        if (UserId < 1)
-            throw new BadRequestException("User id is required");
+        base.Validate();
 
         if (!RefreshToken.IsValidString())
             throw new BadRequestException("Refresh token is required");

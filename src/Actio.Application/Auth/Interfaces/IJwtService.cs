@@ -1,11 +1,10 @@
-﻿using Actio.Domain.Models;
-using System.Security.Claims;
+﻿using System.Security.Claims;
 
 namespace Actio.Application.Auth.Interfaces;
 
 public interface IJwtService
 {
-    public string GenerateAccessToken(User user);
-    public string GenerateRefreshToken(User user);
+    public string GenerateAccessToken(int userId);
+    public string GenerateRefreshToken(int userId);
     public ClaimsPrincipal ValidateRefreshToken(string token);
 }
