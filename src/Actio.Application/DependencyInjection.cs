@@ -1,11 +1,12 @@
-﻿using Actio.Application.Auth.Handlers.Login;
+﻿using Actio.Application.Actions.Handlers.CreateAction;
+using Actio.Application.Actions.Handlers.DeleteAction;
+using Actio.Application.Actions.Handlers.GetActionById;
+using Actio.Application.Actions.Handlers.GetActionTypes;
+using Actio.Application.Actions.Handlers.GetAllActions;
+using Actio.Application.Actions.Handlers.UpdateAction;
+using Actio.Application.Auth.Handlers.Login;
 using Actio.Application.Auth.Handlers.Refresh;
 using Actio.Application.Auth.Handlers.Register;
-using Actio.Application.InboxItems.Handlers.CreateInboxItem;
-using Actio.Application.InboxItems.Handlers.DeleteInboxItem;
-using Actio.Application.InboxItems.Handlers.GetAllInboxItems;
-using Actio.Application.InboxItems.Handlers.GetInboxItemById;
-using Actio.Application.InboxItems.Handlers.UpdateInboxItem;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Actio.Application;
@@ -24,11 +25,12 @@ public static class DependencyInjection
         services.AddScoped<IRegisterHandler, RegisterHandler>();
         services.AddScoped<IRefreshHandler, RefreshHandler>();
 
-        services.AddScoped<IGetAllInboxItemsHandler, GetAllInboxItemsHandler>();
-        services.AddScoped<IGetInboxItemByIdHandler, GetInboxItemByIdHandler>();
-        services.AddScoped<ICreateInboxItemHandler, CreateInboxItemHandler>();
-        services.AddScoped<IUpdateInboxItemHandler, UpdateInboxItemHandler>();
-        services.AddScoped<IDeleteInboxItemHandler, DeleteInboxItemHandler>();
+        services.AddScoped<IGetAllActionsHandler, GetAllActionsHandler>();
+        services.AddScoped<IGetActionByIdHandler, GetActionByIdHandler>();
+        services.AddScoped<ICreateActionHandler, CreateActionHandler>();
+        services.AddScoped<IUpdateActionHandler, UpdateActionHandler>();
+        services.AddScoped<IDeleteActionHandler, DeleteActionHandler>();
+        services.AddScoped<IGetActionTypesHandler, GetActionTypesHandler>();
 
         return services;
     }

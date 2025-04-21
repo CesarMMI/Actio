@@ -17,7 +17,7 @@ internal static class DependencyInjection
         });
 
         services.AddScoped<IUserRepository, EfCoreUserRepository>();
-        services.AddScoped<IInboxItemRepository, EfCoreInboxItemRepository>();
+        services.AddScoped<IActionRepository, EfCoreActionRepository>();
 
         return services;
     }

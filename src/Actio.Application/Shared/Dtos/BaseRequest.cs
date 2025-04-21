@@ -2,7 +2,7 @@
 
 namespace Actio.Application.Shared.Dtos;
 
-public abstract class BaseRequest
+public class BaseRequest
 {
     public int UserId { get; set; }
 

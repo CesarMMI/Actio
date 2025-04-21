@@ -22,7 +22,6 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\Actio.Application\Actio.Application.csproj" />
-		<ProjectReference Include="..\Actio.Domain\Actio.Domain.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

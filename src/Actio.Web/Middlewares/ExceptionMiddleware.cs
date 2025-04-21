@@ -15,11 +15,11 @@ public static class ExceptionMiddleware
 
                 switch (exception)
                 {
-                    case AppException:
-                        var ex = (AppException)exception;
-                        await context.WriteAsJsonAsync(ex.StatusCode, ex.Message);
+                    case AppException ex:
+                        var appEx = (AppException)exception;
+                        await context.WriteAsJsonAsync(appEx.StatusCode, appEx.Message);
                         break;
-                    case Exception:
+                    case Exception ex:
                         await context.WriteAsJsonAsync(500, "Internal server error");
                         break;
                 }

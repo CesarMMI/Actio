@@ -2,5 +2,8 @@
 
 public class BaseResponsePaginated<T> : BaseResponse
 {
-    public List<T> Data { get; set; } = [];
+    public int Page { get; set; }
+    public int PageCount { get; set; }
+    public int ItemCount { get; set; }
+    public IList<T> Data { get; set; } = [];
 }

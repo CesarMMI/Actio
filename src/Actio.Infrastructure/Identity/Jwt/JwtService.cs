@@ -32,12 +32,12 @@ internal class JwtService : IJwtService
 
     public string GenerateAccessToken(int userId)
     {
-        return GenerateToken(userId, accessSecret, DateTime.Now.AddMinutes(accessExpiresMins));
+        return GenerateToken(userId, accessSecret, DateTime.UtcNow.AddMinutes(accessExpiresMins));
     }
 
     public string GenerateRefreshToken(int userId)
     {
-        return GenerateToken(userId, refreshSecret, DateTime.Now.AddMinutes(refreshExpiresMins));
+        return GenerateToken(userId, refreshSecret, DateTime.UtcNow.AddMinutes(refreshExpiresMins));
     }
 
     public ClaimsPrincipal ValidateRefreshToken(string token)
