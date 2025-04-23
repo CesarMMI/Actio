@@ -9,6 +9,7 @@ internal static class UserExtensions
     {
         modelBuilder.Entity<User>()
             .HasKey(u => u.Id);
+
         modelBuilder.Entity<User>()
             .Property(u => u.Name)
             .IsRequired()
@@ -20,11 +21,13 @@ internal static class UserExtensions
             .Property(u => u.Password)
             .IsRequired();
         modelBuilder.Entity<User>()
+
             .Property(u => u.CreatedAt)
             .IsRequired();
         modelBuilder.Entity<User>()
             .Property(u => u.UpdatedAt)
             .IsRequired();
+
         return modelBuilder;
     }
 }

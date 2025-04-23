@@ -2,8 +2,8 @@
 
 public enum EActionType
 {
-    Next,
-    Waiting,
-    Scheduled,
-    Someday,
+    Next = 1,
+    Waiting = 2,
+    Scheduled = 3,
+    Someday = 4,
 }

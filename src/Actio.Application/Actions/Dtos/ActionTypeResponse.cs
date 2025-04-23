@@ -1,6 +1,4 @@
-﻿using Actio.Application.Shared.Dtos;
-
-namespace Actio.Application.Actions.Dtos;
+﻿namespace Actio.Application.Actions.Dtos;
 
 public class ActionTypeResponse
 {

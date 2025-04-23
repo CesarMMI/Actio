@@ -8,6 +8,7 @@ internal static class ActionExtensions
     {
         modelBuilder.Entity<Domain.Models.Action>()
             .HasKey(a => a.Id);
+
         modelBuilder.Entity<Domain.Models.Action>()
             .Property(a => a.Title)
             .IsRequired()
@@ -18,24 +19,35 @@ internal static class ActionExtensions
             .HasColumnType("nvarchar(max)");
         modelBuilder.Entity<Domain.Models.Action>()
             .Property(a => a.Type)
-            .IsRequired();
+            .IsRequired();        
         modelBuilder.Entity<Domain.Models.Action>()
             .Property(a => a.Done)
-            .IsRequired();
+            .IsRequired();        
         modelBuilder.Entity<Domain.Models.Action>()
             .Property(a => a.DoneAt)
             .IsRequired(false);
+        
+        modelBuilder.Entity<Domain.Models.Action>()
+            .Property(a => a.ProjectId)
+            .IsRequired(false);        
+        modelBuilder.Entity<Domain.Models.Action>()
+            .HasOne(a => a.Project)
+            .WithMany(u => u.Actions)
+            .HasForeignKey(a => a.ProjectId)
+            .OnDelete(DeleteBehavior.ClientSetNull);
+        
         modelBuilder.Entity<Domain.Models.Action>()
             .Property(a => a.UserId)
-            .IsRequired();
+            .IsRequired();        
         modelBuilder.Entity<Domain.Models.Action>()
             .HasOne(a => a.User)
             .WithMany(u => u.Actions)
             .HasForeignKey(a => a.UserId)
             .OnDelete(DeleteBehavior.Cascade);
+        
         modelBuilder.Entity<Domain.Models.Action>()
             .Property(a => a.CreatedAt)
-            .IsRequired();
+            .IsRequired();        
         modelBuilder.Entity<Domain.Models.Action>()
             .Property(a => a.UpdatedAt)
             .IsRequired();

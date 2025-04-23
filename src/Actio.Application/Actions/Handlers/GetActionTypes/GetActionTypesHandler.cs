@@ -6,7 +6,7 @@ namespace Actio.Application.Actions.Handlers.GetActionTypes;
 
 internal class GetActionTypesHandler : IGetActionTypesHandler
 {
-    public async Task<BaseResponsePaginated<ActionTypeResponse>> Handle(BaseRequest request)
+    public async Task<IList<ActionTypeResponse>> Handle(BaseRequest request)
     {
         var list = Enum.GetValues<EActionType>()
             .Select(e => new ActionTypeResponse
@@ -16,8 +16,6 @@ internal class GetActionTypesHandler : IGetActionTypesHandler
             })
             .ToList();
         
-        var response = new BaseResponsePaginated<ActionTypeResponse> { Page = 1, PageCount = 1, ItemCount = list.Count, Data = list };
-        
-        return await Task.FromResult(response);
+        return await Task.FromResult(list);
     }
 }

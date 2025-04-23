@@ -1,5 +1,6 @@
 ﻿using Actio.Application.Actions.Dtos;
 using Actio.Application.Shared.Exceptions;
+using Actio.Domain.Dto;
 using Actio.Domain.Repositories;
 
 namespace Actio.Application.Actions.Handlers.GetActionById;
@@ -10,7 +11,9 @@ internal class GetActionByIdHandler(IActionRepository actionRepository) : IGetAc
     {
         request.Validate();
 
-        var action = await actionRepository.GetByIdAsync(request.UserId, request.Id);
+        var query = new IdQuery { Id = request.Id, UserId = request.UserId };
+
+        var action = await actionRepository.GetByIdAsync(query);
 
         if (action is null) throw new NotFoundException("Action not found");
 

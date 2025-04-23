@@ -6,6 +6,7 @@ using Actio.Application.Actions.Handlers.GetActionTypes;
 using Actio.Application.Actions.Handlers.GetAllActions;
 using Actio.Application.Actions.Handlers.UpdateAction;
 using Actio.Application.Shared.Dtos;
+using Actio.Domain.Enums;
 using Actio.Web.Extensions;
 using Microsoft.AspNetCore.Authorization;
 
@@ -16,29 +17,34 @@ public static class ActionEndpoints
     public static IEndpointRouteBuilder MapActionsEndpoints(this IEndpointRouteBuilder builder)
     {
         var group = builder.MapGroup("actions");
-        group.MapGet("", [Authorize] async (int? page, int? pageSize, IGetAllActionsHandler handler, HttpContext ctx) =>
+
+        group.MapGet("", [Authorize] async (EActionType? type, bool? done, IGetAllActionsHandler handler, HttpContext ctx) =>
         {
-            var request = new GetAllActionsRequest().AssignPagination(page, pageSize);
+            var request = new GetAllActionsRequest() { ActionType = type ?? EActionType.Next, Done = done ?? false };
             ctx.SetRequestUserId(request);
-            return (await handler.Handle(request)).WriteResponse(200);
+            return await handler.Handle(request).WriteResponse(200);
         });
+
         group.MapGet("{id:int}", [Authorize] async (int id, IGetActionByIdHandler handler, HttpContext ctx) =>
         {
             var request = new GetActionByIdRequest() { Id = id };
             ctx.SetRequestUserId(request);
-            return (await handler.Handle(request)).WriteResponse(200);
+            return await handler.Handle(request).WriteResponse(200);
         });
+
         group.MapPost("", [Authorize] async (CreateActionRequest request, ICreateActionHandler handler, HttpContext ctx) =>
         {
             ctx.SetRequestUserId(request);
-            return (await handler.Handle(request)).WriteResponse(201);
+            return await handler.Handle(request).WriteResponse(201);
         });
+
         group.MapPut("{id:int}", [Authorize] async (int id, UpdateActionRequest request, IUpdateActionHandler handler, HttpContext ctx) =>
         {
             request.Id = id;
             ctx.SetRequestUserId(request);
-            return (await handler.Handle(request)).WriteResponse(200);
+            return await handler.Handle(request).WriteResponse(200);
         });
+
         group.MapDelete("{id:int}", [Authorize] async (int id, IDeleteActionHandler handler, HttpContext ctx) =>
         {
             var request = new DeleteActionRequest() { Id = id };
@@ -46,10 +52,12 @@ public static class ActionEndpoints
             await handler.Handle(request);
             return Results.NoContent();
         });
+
         group.MapGet("types", async (IGetActionTypesHandler handler) =>
         {
-            return (await handler.Handle(new BaseRequest())).WriteResponse(200);
+            return await handler.Handle(new BaseRequest()).WriteResponse(200);
         });
+
         return builder;
     }
 }

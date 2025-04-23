@@ -2,7 +2,7 @@
 
 namespace Actio.Application.Shared.Interfaces;
 
-public interface IHandler<TRequest, TResponse> where TRequest : BaseRequest where TResponse : BaseResponse
+public interface IHandler<TRequest, TResponse> where TRequest : BaseRequest
 {
     Task<TResponse> Handle(TRequest request);
 }

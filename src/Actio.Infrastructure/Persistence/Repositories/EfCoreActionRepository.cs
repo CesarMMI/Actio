@@ -9,16 +9,14 @@ internal class EfCoreActionRepository(AppDbContext context) : IActionRepository
 {
     public async Task<Domain.Models.Action> CreateAsync(Domain.Models.Action action)
     {
-
-        action.DoneAt = action.Done ? DateTime.UtcNow : null;
         await context.Actions.AddAsync(action);
         await context.SaveChangesAsync();
         return action;
     }
 
-    public async Task<Domain.Models.Action?> DeleteAsync(int userId, int id)
+    public async Task<Domain.Models.Action?> DeleteAsync(IdQuery query)
     {
-        var action = await GetByIdAsync(userId, id);
+        var action = await GetByIdAsync(query);
 
         if (action is null) return null;
 
@@ -29,38 +27,27 @@ internal class EfCoreActionRepository(AppDbContext context) : IActionRepository
         return action;
     }
 
-    public async Task<BaseResultPaginated<Domain.Models.Action>> GetAllAsync(BaseQueryPaginated query)
-    {
-        IQueryable<Domain.Models.Action> queryable = context.Actions;
-
-        var itemCount = await queryable.CountAsync();
-        var pageCount = (int)Math.Ceiling(itemCount / (double)query.PageSize);
-
-        var itens = await queryable
-            .Where(a => a.UserId == query.UserId)
-            .Skip((query.Page - 1) * query.PageSize)
-            .Take(query.PageSize)
-            .ToListAsync();
-
-        return new BaseResultPaginated<Domain.Models.Action>
-        {
-            Data = itens,
-            Page = query.Page,
-            PageCount = pageCount,
-            ItemCount = itemCount
-        };
-    }
-
-    public async Task<Domain.Models.Action?> GetByIdAsync(int userId, int id)
+    public async Task<IList<Domain.Models.Action>> GetAllAsync(ActionQuery query)
     {
         return await context.Actions
-            .Where(a => a.UserId == userId && a.Id == id)
+            .Where(a => (
+                a.Type == query.Type &&
+                a.Done == query.Done &&
+                a.UserId == query.UserId
+            ))
+            .ToListAsync();
+    }
+
+    public async Task<Domain.Models.Action?> GetByIdAsync(IdQuery query)
+    {
+        return await context.Actions
+            .Where(a => a.UserId == query.UserId && a.Id == query.Id)
             .FirstOrDefaultAsync();
     }
 
-    public async Task<Domain.Models.Action?> UpdateAsync(int userId, int id, Domain.Models.Action action)
+    public async Task<Domain.Models.Action?> UpdateAsync(IdQuery query, Domain.Models.Action action)
     {
-        var savedAction = await GetByIdAsync(userId, id);
+        var savedAction = await GetByIdAsync(query);
 
         if (savedAction is null) return null;
 

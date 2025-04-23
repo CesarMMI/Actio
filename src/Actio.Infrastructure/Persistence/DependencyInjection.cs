@@ -18,6 +18,7 @@ internal static class DependencyInjection
 
         services.AddScoped<IUserRepository, EfCoreUserRepository>();
         services.AddScoped<IActionRepository, EfCoreActionRepository>();
+        services.AddScoped<IProjectRepository, EfCoreProjectRepository>();
 
         return services;
     }

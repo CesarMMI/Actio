@@ -4,6 +4,6 @@ using Actio.Application.Shared.Interfaces;
 
 namespace Actio.Application.Actions.Handlers.GetActionTypes;
 
-public interface IGetActionTypesHandler : IHandler<BaseRequest, BaseResponsePaginated<ActionTypeResponse>>
+public interface IGetActionTypesHandler : IHandler<BaseRequest, IList<ActionTypeResponse>>
 {
 }

@@ -11,7 +11,7 @@ public class UpdateActionRequest : BaseRequest
     public string Title { get; set; } = string.Empty;
     public string? Description { get; set; }
     public bool Done { get; set; } = false;
-    public EActionType Type { get; set; } = EActionType.Next;
+    public EActionType Type { get; set; }
     public int? ProjectId { get; set; }
 
 

@@ -1,9 +1,8 @@
-﻿using Actio.Application.Shared.Dtos;
-using Actio.Domain.Enums;
+﻿using Actio.Domain.Enums;
 
 namespace Actio.Application.Actions.Dtos;
 
-public class ActionResponse : BaseResponse
+public class ActionResponse
 {
     public int Id { get; set; }
     public required string Title { get; set; }

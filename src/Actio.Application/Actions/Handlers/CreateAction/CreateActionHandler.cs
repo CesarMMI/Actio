@@ -16,6 +16,7 @@ internal class CreateActionHandler(IActionRepository actionRepository) : ICreate
             Description = request.Description,
             Type = request.Type,
             Done = request.Done,
+            DoneAt = request.Done ? DateTime.UtcNow : null
         };
 
         action = await actionRepository.CreateAsync(action);

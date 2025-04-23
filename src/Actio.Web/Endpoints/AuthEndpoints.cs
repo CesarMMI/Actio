@@ -14,17 +14,17 @@ public static class AuthEndpoints
 
         group.MapPost("login", async (LoginRequest request, ILoginHandler handler) =>
         {
-            return (await handler.Handle(request)).WriteResponse();
+            return await handler.Handle(request).WriteResponse();
         });
 
         group.MapPost("register", async (RegisterRequest request, IRegisterHandler handler) =>
         {
-            return (await handler.Handle(request)).WriteResponse(201);
+            return await handler.Handle(request).WriteResponse(201);
         });
 
         group.MapPost("refresh", async (RefreshRequest request, IRefreshHandler handler) =>
         {
-            return (await handler.Handle(request)).WriteResponse();
+            return await handler.Handle(request).WriteResponse();
         });
 
         return builder;

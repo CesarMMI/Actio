@@ -1,5 +1,6 @@
 ﻿using Actio.Application.Actions.Dtos;
 using Actio.Application.Shared.Exceptions;
+using Actio.Domain.Dto;
 using Actio.Domain.Repositories;
 
 namespace Actio.Application.Actions.Handlers.DeleteAction;
@@ -10,7 +11,9 @@ internal class DeleteActionHandler(IActionRepository actionRepository) : IDelete
     {
         request.Validate();
 
-        var action = await actionRepository.DeleteAsync(request.UserId, request.Id);
+        var query = new IdQuery { Id = request.Id, UserId = request.UserId };
+
+        var action = await actionRepository.DeleteAsync(query);
 
         if (action is null) throw new NotFoundException("Action not found");
 

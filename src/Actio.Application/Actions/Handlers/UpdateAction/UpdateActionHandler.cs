@@ -1,5 +1,6 @@
 ﻿using Actio.Application.Actions.Dtos;
 using Actio.Application.Shared.Exceptions;
+using Actio.Domain.Dto;
 using Actio.Domain.Repositories;
 
 namespace Actio.Application.Actions.Handlers.UpdateAction;
@@ -20,7 +21,9 @@ internal class UpdateActionHandler(IActionRepository actionRepository) : IUpdate
             UserId = request.UserId,
         };
 
-        action = await actionRepository.UpdateAsync(action.UserId, action.Id, action);
+        var query = new IdQuery { Id = action.Id, UserId = action.UserId };
+
+        action = await actionRepository.UpdateAsync(query, action);
 
         if (action is null) throw new NotFoundException("Action not found");
 

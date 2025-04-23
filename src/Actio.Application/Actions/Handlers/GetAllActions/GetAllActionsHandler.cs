@@ -1,28 +1,27 @@
 ﻿using Actio.Application.Actions.Dtos;
-using Actio.Application.Shared.Dtos;
-using Actio.Application.Shared.Extensions;
+using Actio.Domain.Dto;
 using Actio.Domain.Repositories;
 
 namespace Actio.Application.Actions.Handlers.GetAllActions;
 
 internal class GetAllActionsHandler(IActionRepository actionRepository) : IGetAllActionsHandler
 {
-    public async Task<BaseResponsePaginated<ActionResponse>> Handle(GetAllActionsRequest request)
+    public async Task<IList<ActionResponse>> Handle(GetAllActionsRequest request)
     {
         request.Validate();
 
-        var result = await actionRepository.GetAllAsync(request.ToQueryPaginated());
+        var query = new ActionQuery
+        {
+            Done = request.Done,
+            Type = request.ActionType,
+            UserId = request.UserId
+        };
 
-        var actions = result.Data
+        var actions = (await actionRepository
+            .GetAllAsync(query))
             .Select(item => item.ToActionResponse())
             .ToList();
 
-        return new BaseResponsePaginated<ActionResponse>
-        {
-            Data = actions,
-            Page = result.Page,
-            PageCount = result.PageCount,
-            ItemCount = result.ItemCount,
-        };
+        return actions;
     }
 }

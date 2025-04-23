@@ -1,6 +1,7 @@
 ﻿using Actio.Application.Shared.Dtos;
 using Actio.Application.Shared.Exceptions;
 using System.Security.Claims;
+using System.Text.Json;
 
 namespace Actio.Web.Extensions;
 
@@ -23,5 +24,15 @@ internal static class EndpointExtensions
         {
             throw new BadRequestException("User id is required");
         }
+    }
+
+    private static readonly JsonSerializerOptions serializerOptions = new()
+    {
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+    };
+
+    public static async Task<IResult> WriteResponse<T>(this Task<T> taskResponse, int statusCode = 200)
+    {
+        return Results.Json(await taskResponse, serializerOptions, "application/json", statusCode);
     }
 }
