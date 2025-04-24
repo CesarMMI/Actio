@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Actio.Web.Endpoints;
 
-public static class ActionEndpoints
+public static class ActionsEndpoints
 {
     public static IEndpointRouteBuilder MapActionsEndpoints(this IEndpointRouteBuilder builder)
     {

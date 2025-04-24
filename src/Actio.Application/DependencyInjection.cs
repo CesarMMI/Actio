@@ -7,6 +7,7 @@ using Actio.Application.Actions.Handlers.UpdateAction;
 using Actio.Application.Auth.Handlers.Login;
 using Actio.Application.Auth.Handlers.Refresh;
 using Actio.Application.Auth.Handlers.Register;
+using Actio.Application.Projects.Handlers.GetAllProjects;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Actio.Application;
@@ -31,6 +32,8 @@ public static class DependencyInjection
         services.AddScoped<IUpdateActionHandler, UpdateActionHandler>();
         services.AddScoped<IDeleteActionHandler, DeleteActionHandler>();
         services.AddScoped<IGetActionTypesHandler, GetActionTypesHandler>();
+
+        services.AddScoped<IGetAllProjectsHandler, GetAllProjectsHandler>();
 
         return services;
     }

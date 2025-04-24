@@ -8,6 +8,7 @@ public static class Endpoints
 
         group.MapAuthEndpoints();
         group.MapActionsEndpoints();
+        group.MapProjectsEndpoints();
 
         return app;
     }

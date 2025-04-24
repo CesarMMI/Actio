@@ -14,7 +14,7 @@ public class GetAllActionsRequest : BaseRequest
     {
         base.Validate();
 
-        if (ActionType.IsValidEnum())
+        if (!ActionType.IsValidEnum())
             throw new BadRequestException("Invalid action type");
     }
 }

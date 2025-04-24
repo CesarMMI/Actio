@@ -7,26 +7,6 @@ namespace Actio.Infrastructure.Persistence.Repositories;
 
 internal class EfCoreActionRepository(AppDbContext context) : IActionRepository
 {
-    public async Task<Domain.Models.Action> CreateAsync(Domain.Models.Action action)
-    {
-        await context.Actions.AddAsync(action);
-        await context.SaveChangesAsync();
-        return action;
-    }
-
-    public async Task<Domain.Models.Action?> DeleteAsync(IdQuery query)
-    {
-        var action = await GetByIdAsync(query);
-
-        if (action is null) return null;
-
-        context.Actions.Attach(action);
-        context.Actions.Remove(action);
-        await context.SaveChangesAsync();
-
-        return action;
-    }
-
     public async Task<IList<Domain.Models.Action>> GetAllAsync(ActionQuery query)
     {
         return await context.Actions
@@ -38,28 +18,32 @@ internal class EfCoreActionRepository(AppDbContext context) : IActionRepository
             .ToListAsync();
     }
 
-    public async Task<Domain.Models.Action?> GetByIdAsync(IdQuery query)
+    public async Task<Domain.Models.Action?> GetByIdAsync(int id, int userId)
     {
         return await context.Actions
-            .Where(a => a.UserId == query.UserId && a.Id == query.Id)
+            .Where(a => a.Id == id && a.UserId == userId)
             .FirstOrDefaultAsync();
     }
 
-    public async Task<Domain.Models.Action?> UpdateAsync(IdQuery query, Domain.Models.Action action)
+    public async Task<Domain.Models.Action> CreateAsync(Domain.Models.Action action)
     {
-        var savedAction = await GetByIdAsync(query);
-
-        if (savedAction is null) return null;
-
-        savedAction.Title = action.Title;
-        savedAction.Description = action.Description;
-        savedAction.Type = action.Type;
-        savedAction.DoneAt = action.Done && !savedAction.Done ? DateTime.UtcNow : null;
-        savedAction.Done = action.Done;
-        savedAction.UpdatedAt = DateTime.UtcNow;
-
-        context.Actions.Attach(savedAction);
+        await context.Actions.AddAsync(action);
         await context.SaveChangesAsync();
-        return savedAction;
+        return action;
+    }
+
+    public async Task<Domain.Models.Action> DeleteAsync(Domain.Models.Action action)
+    {
+        context.Actions.Attach(action);
+        context.Actions.Remove(action);
+        await context.SaveChangesAsync();
+        return action;
+    }
+
+    public async Task<Domain.Models.Action> UpdateAsync(Domain.Models.Action action)
+    {
+        context.Actions.Attach(action);
+        await context.SaveChangesAsync();
+        return action;
     }
 }

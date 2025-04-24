@@ -14,8 +14,4 @@
     <ProjectReference Include="..\Actio.Domain\Actio.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Projects\Handlers\" />
-  </ItemGroup>
-
 </Project>
