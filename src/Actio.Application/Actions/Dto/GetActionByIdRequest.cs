@@ -1,9 +1,9 @@
-﻿using Actio.Application.Shared.Dtos;
+﻿using Actio.Application.Shared.Dto;
 using Actio.Application.Shared.Exceptions;
 
-namespace Actio.Application.Actions.Dtos;
+namespace Actio.Application.Actions.Dto;
 
-public class DeleteActionRequest : BaseRequest
+public class GetActionByIdRequest : BaseRequest
 {
     public int Id { get; set; }
 
@@ -11,7 +11,7 @@ public class DeleteActionRequest : BaseRequest
     {
         base.Validate();
 
-        if (Id < 0)
+        if (Id < 1)
             throw new BadRequestException("Id is required");
     }
 }

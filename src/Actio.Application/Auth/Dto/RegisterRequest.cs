@@ -1,8 +1,8 @@
-﻿using Actio.Application.Shared.Dtos;
+﻿using Actio.Application.Shared.Dto;
 using Actio.Application.Shared.Exceptions;
 using Actio.Application.Shared.Validators;
 
-namespace Actio.Application.Auth.Dtos;
+namespace Actio.Application.Auth.Dto;
 
 public class RegisterRequest : BaseRequest
 {

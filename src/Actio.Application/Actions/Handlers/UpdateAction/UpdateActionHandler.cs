@@ -1,4 +1,4 @@
-﻿using Actio.Application.Actions.Dtos;
+﻿using Actio.Application.Actions.Dto;
 using Actio.Application.Shared.Exceptions;
 using Actio.Domain.Dto;
 using Actio.Domain.Repositories;
@@ -27,6 +27,6 @@ internal class UpdateActionHandler(IActionRepository actionRepository) : IUpdate
 
         if (action is null) throw new NotFoundException("Action not found");
 
-        return action.ToActionResponse();
+        return action.ToResponse();
     }
 }

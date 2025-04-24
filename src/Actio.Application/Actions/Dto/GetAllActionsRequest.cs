@@ -1,9 +1,9 @@
-﻿using Actio.Application.Shared.Dtos;
+﻿using Actio.Application.Shared.Dto;
 using Actio.Application.Shared.Exceptions;
 using Actio.Application.Shared.Validators;
 using Actio.Domain.Enums;
 
-namespace Actio.Application.Actions.Dtos;
+namespace Actio.Application.Actions.Dto;
 
 public class GetAllActionsRequest : BaseRequest
 {
@@ -14,7 +14,7 @@ public class GetAllActionsRequest : BaseRequest
     {
         base.Validate();
 
-        if (!ActionType.IsValidEnum())
+        if (ActionType.IsValidEnum())
             throw new BadRequestException("Invalid action type");
     }
 }

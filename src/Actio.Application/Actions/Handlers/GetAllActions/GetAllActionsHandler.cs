@@ -1,4 +1,4 @@
-﻿using Actio.Application.Actions.Dtos;
+﻿using Actio.Application.Actions.Dto;
 using Actio.Domain.Dto;
 using Actio.Domain.Repositories;
 
@@ -19,7 +19,7 @@ internal class GetAllActionsHandler(IActionRepository actionRepository) : IGetAl
 
         var actions = (await actionRepository
             .GetAllAsync(query))
-            .Select(item => item.ToActionResponse())
+            .Select(item => item.ToResponse())
             .ToList();
 
         return actions;

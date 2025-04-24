@@ -1,4 +1,4 @@
-﻿using Actio.Application.Auth.Dtos;
+﻿using Actio.Application.Auth.Dto;
 using Actio.Application.Auth.Handlers.Login;
 using Actio.Application.Auth.Handlers.Refresh;
 using Actio.Application.Auth.Handlers.Register;

@@ -1,4 +1,4 @@
-﻿using Actio.Application.Auth.Dtos;
+﻿using Actio.Application.Auth.Dto;
 using Actio.Application.Shared.Interfaces;
 
 namespace Actio.Application.Auth.Handlers.Refresh;

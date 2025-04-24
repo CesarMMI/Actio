@@ -1,11 +1,11 @@
-﻿using Actio.Application.Actions.Dtos;
+﻿using Actio.Application.Actions.Dto;
 using Actio.Application.Actions.Handlers.CreateAction;
 using Actio.Application.Actions.Handlers.DeleteAction;
 using Actio.Application.Actions.Handlers.GetActionById;
 using Actio.Application.Actions.Handlers.GetActionTypes;
 using Actio.Application.Actions.Handlers.GetAllActions;
 using Actio.Application.Actions.Handlers.UpdateAction;
-using Actio.Application.Shared.Dtos;
+using Actio.Application.Shared.Dto;
 using Actio.Domain.Enums;
 using Actio.Web.Extensions;
 using Microsoft.AspNetCore.Authorization;

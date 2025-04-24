@@ -1,4 +1,4 @@
-﻿using Actio.Application.Shared.Dtos;
+﻿using Actio.Application.Shared.Dto;
 using Actio.Application.Shared.Exceptions;
 using System.Security.Claims;
 using System.Text.Json;

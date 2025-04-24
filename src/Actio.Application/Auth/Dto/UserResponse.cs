@@ -1,6 +1,6 @@
 ﻿using Actio.Domain.Models;
 
-namespace Actio.Application.Auth.Dtos;
+namespace Actio.Application.Auth.Dto;
 
 public class UserResponse
 {
@@ -11,7 +11,7 @@ public class UserResponse
 
 public static class UserResponseExtensions
 {
-    public static UserResponse ToUserResponse(this User user)
+    public static UserResponse ToResponse(this User user)
     {
         return new UserResponse
         {

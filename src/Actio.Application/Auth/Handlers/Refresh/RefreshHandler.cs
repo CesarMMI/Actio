@@ -1,4 +1,4 @@
-﻿using Actio.Application.Auth.Dtos;
+﻿using Actio.Application.Auth.Dto;
 using Actio.Application.Auth.Interfaces;
 using Actio.Application.Shared.Exceptions;
 using Actio.Domain.Repositories;
@@ -34,7 +34,7 @@ internal class RefreshHandler(IJwtService jwtService, IUserRepository userReposi
 
         return new AuthResponse
         {
-            User = user.ToUserResponse(),
+            User = user.ToResponse(),
             AccessToken = accessToken,
             RefreshToken = request.RefreshToken
         };

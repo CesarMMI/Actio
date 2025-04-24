@@ -1,4 +1,4 @@
-﻿using Actio.Application.Auth.Dtos;
+﻿using Actio.Application.Auth.Dto;
 using Actio.Application.Auth.Interfaces;
 using Actio.Application.Shared.Exceptions;
 using Actio.Domain.Models;
@@ -28,7 +28,7 @@ internal class RegisterHandler(IPasswordHasher passwordHasher, IJwtService jwtSe
 
         return new AuthResponse
         {
-            User = user.ToUserResponse(),
+            User = user.ToResponse(),
             AccessToken = jwtService.GenerateAccessToken(user.Id),
             RefreshToken = jwtService.GenerateRefreshToken(user.Id)
         };

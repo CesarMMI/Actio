@@ -1,4 +1,4 @@
-﻿using Actio.Application.Shared.Dtos;
+﻿using Actio.Application.Shared.Dto;
 
 namespace Actio.Application.Shared.Interfaces;
 

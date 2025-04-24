@@ -1,6 +1,6 @@
 ﻿using Actio.Application.Shared.Exceptions;
 
-namespace Actio.Application.Shared.Dtos;
+namespace Actio.Application.Shared.Dto;
 
 public class BaseRequest
 {

@@ -1,4 +1,4 @@
-﻿using Actio.Application.Actions.Dtos;
+﻿using Actio.Application.Actions.Dto;
 using Actio.Domain.Repositories;
 
 namespace Actio.Application.Actions.Handlers.CreateAction;
@@ -21,6 +21,6 @@ internal class CreateActionHandler(IActionRepository actionRepository) : ICreate
 
         action = await actionRepository.CreateAsync(action);
 
-        return action.ToActionResponse();
+        return action.ToResponse();
     }
 }

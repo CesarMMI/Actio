@@ -1,6 +1,6 @@
 ﻿using Actio.Domain.Enums;
 
-namespace Actio.Application.Actions.Dtos;
+namespace Actio.Application.Actions.Dto;
 
 public class ActionResponse
 {
@@ -11,14 +11,13 @@ public class ActionResponse
     public DateTime? DoneAt { get; set; }
     public EActionType Type { get; set; }
     public int? ProjectId { get; set; }
-    public int UserId { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
 }
 
 public static class ActionResponseExtensions
 {
-    public static ActionResponse ToActionResponse(this Domain.Models.Action action)
+    public static ActionResponse ToResponse(this Domain.Models.Action action)
     {
         return new ActionResponse
         {
@@ -29,7 +28,6 @@ public static class ActionResponseExtensions
             DoneAt = action.DoneAt,
             Type = action.Type,
             ProjectId = action.ProjectId,
-            UserId = action.UserId,
             CreatedAt = action.CreatedAt,
             UpdatedAt = action.UpdatedAt
         };

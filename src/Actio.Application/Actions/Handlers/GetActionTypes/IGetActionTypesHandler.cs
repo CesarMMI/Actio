@@ -1,5 +1,5 @@
-﻿using Actio.Application.Actions.Dtos;
-using Actio.Application.Shared.Dtos;
+﻿using Actio.Application.Actions.Dto;
+using Actio.Application.Shared.Dto;
 using Actio.Application.Shared.Interfaces;
 
 namespace Actio.Application.Actions.Handlers.GetActionTypes;
