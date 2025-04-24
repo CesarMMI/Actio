@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Http;
+﻿using Actio.Application.Shared.Exceptions;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 
 namespace Actio.Infrastructure.Identity.Jwt;
@@ -14,32 +14,26 @@ internal class JwtBearerEventsHandler : JwtBearerEvents
 
     private Task OnAuthenticationFailedEvent(AuthenticationFailedContext context)
     {
-        if (context.Exception is SecurityTokenExpiredException)
+        switch (context.Exception)
         {
-            return WriteResponse(context.Response, "Token expired");
+            case SecurityTokenExpiredException _:
+                throw new UnauthorizedException("Token expired");
+            case SecurityTokenInvalidSignatureException _:
+                throw new UnauthorizedException("Invalid token");
+            case SecurityTokenInvalidIssuerException _:
+                throw new UnauthorizedException("Invalid issuer");
+            case SecurityTokenException _:
+                throw new UnauthorizedException("Token authentication failed");
         }
-
-        if (context.Exception is SecurityTokenInvalidSignatureException)
-        {
-            return WriteResponse(context.Response, "Invalid token");
-        }
-
-        return WriteResponse(context.Response, "Token authentication failed");
+        return Task.CompletedTask;
     }
 
     private Task OnChallengeEvent(JwtBearerChallengeContext context)
     {
         if (!context.Response.HasStarted)
         {
-            return WriteResponse(context.Response, "Invalid token");
+            throw new UnauthorizedException("Invalid or missing token");
         }
         return Task.CompletedTask;
-    }
-
-    private static Task WriteResponse(HttpResponse response, string message)
-    {
-        response.StatusCode = 401;
-        response.ContentType = "text/plain";
-        return response.WriteAsync(message);
     }
 }

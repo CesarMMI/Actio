@@ -1,5 +1,6 @@
 ﻿using Actio.Application.Shared.Exceptions;
 using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Actio.Web.Middlewares;
 
@@ -7,9 +8,9 @@ public static class ExceptionMiddleware
 {
     public static IApplicationBuilder UseAppExceptionHandler(this IApplicationBuilder app)
     {
-        app.UseExceptionHandler(errorApp =>
+        app.UseExceptionHandler(exceptionApp =>
         {
-            errorApp.Run(async context =>
+            exceptionApp.Run(async context =>
             {
                 var exception = context.Features.Get<IExceptionHandlerFeature>()?.Error;
 
@@ -17,10 +18,10 @@ public static class ExceptionMiddleware
                 {
                     case AppException ex:
                         var appEx = (AppException)exception;
-                        await context.WriteAsJsonAsync(appEx.StatusCode, appEx.Message);
+                        await context.WriteProblemAsync(appEx.StatusCode, appEx.Title, appEx.Message);
                         break;
                     case Exception ex:
-                        await context.WriteAsJsonAsync(500, "Internal server error");
+                        await context.WriteProblemAsync(500, "Internal server error", "Internal server error");
                         break;
                 }
             });
@@ -28,10 +29,16 @@ public static class ExceptionMiddleware
         return app;
     }
 
-    private static async Task WriteAsJsonAsync(this HttpContext context, int statusCode, string message)
+    private static async Task WriteProblemAsync(this HttpContext context, int statusCode, string title, string message)
     {
-        context.Response.StatusCode = statusCode;
-        context.Response.ContentType = "text/plain";
-        await context.Response.WriteAsync(message);
+        var problemDetails = new ProblemDetails
+        {
+            Status = statusCode,
+            Title = title,
+            Detail = message,
+            Instance = context.Request.Path
+        };
+
+        await Results.Problem(problemDetails).ExecuteAsync(context);
     }
 }

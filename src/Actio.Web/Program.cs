@@ -19,9 +19,9 @@ if (app.Environment.IsDevelopment())
 
 app
     .UseHttpsRedirection()
+    .UseAppExceptionHandler()
     .UseAuthentication()
-    .UseAuthorization()
-    .UseAppExceptionHandler();
+    .UseAuthorization();
 
 app.MapEndpoints();
 
