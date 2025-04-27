@@ -4,11 +4,11 @@ using Actio.Application.Shared.Validators;
 
 namespace Actio.Application.Stuffs.Commands.Update;
 
-public class UpdateStuffQuery : BaseQuery
+public class UpdateStuffQuery : IdQuery
 {
-    public int Id { get; set; }
-    public required string Title { get; set; }
+    public string Title { get; set; } = string.Empty;
     public string? Description { get; set; }
+    public int? ProjectId { get; set; }
 
     public override void Validate()
     {
@@ -21,5 +21,8 @@ public class UpdateStuffQuery : BaseQuery
             throw new BadRequestException("Title is required");
         if (Title.Length > 100)
             throw new BadRequestException("Title length can't be greater than 100");
+
+        if (ProjectId is not null && ProjectId < 1)
+            throw new BadRequestException("Project id is invalid");
     }
 }

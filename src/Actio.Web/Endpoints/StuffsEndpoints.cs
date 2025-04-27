@@ -25,7 +25,7 @@ public static class StuffsEndpoints
 
         group.MapGet("{id:int}", [Authorize] async (int id, IGetStuffByIdCommand command, HttpContext ctx) =>
         {
-            var request = new GetStuffByIdQuery() { Id = id };
+            var request = new IdQuery() { Id = id };
             ctx.SetRequestUserId(request);
             return await command.Handle(request).WriteResponse(200);
         });
@@ -45,7 +45,7 @@ public static class StuffsEndpoints
 
         group.MapDelete("{id:int}", [Authorize] async (int id, IDeleteStuffCommand command, HttpContext ctx) =>
         {
-            var query = new DeleteStuffQuery() { Id = id };
+            var query = new IdQuery() { Id = id };
             ctx.SetRequestUserId(query);
             await command.Handle(query);
             return Results.NoContent();

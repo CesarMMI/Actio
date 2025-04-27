@@ -6,7 +6,7 @@ namespace Actio.Application.Auth.Commands.Refresh;
 
 public class RefreshQuery : BaseQuery
 {
-    public required string RefreshToken { get; set; }
+    public string RefreshToken { get; set; } = string.Empty;
 
     public override void Validate()
     {

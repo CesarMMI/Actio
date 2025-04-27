@@ -4,9 +4,9 @@ namespace Actio.Application.Auth.Shared.Results;
 
 public class UserResult
 {
-    public required int Id { get; set; }
-    public required string Name { get; set; }
-    public required string Email { get; set; }
+    public int Id { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public string Email { get; set; } = string.Empty;
 }
 
 public static class UserResponseExtensions

@@ -9,6 +9,7 @@ public class StuffResult
     public string Title { get; set; } = string.Empty;
     public string? Description { get; set; }
     public EStuffType Type { get; set; }
+    public int? ProjectId { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 }
@@ -23,6 +24,7 @@ internal static class StuffResultExtensions
             Title = stuff.Title,
             Description = stuff.Description,
             Type = stuff.Type,
+            ProjectId = stuff.ProjectId,
             CreatedAt = stuff.CreatedAt,
             UpdatedAt = stuff.UpdatedAt
         };

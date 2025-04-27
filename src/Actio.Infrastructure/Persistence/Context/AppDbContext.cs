@@ -8,12 +8,14 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
 {
     public DbSet<User> Users { get; set; }
     public DbSet<Stuff> Stuffs { get; set; }
+    public DbSet<Project> Projects { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
         modelBuilder
             .ConfigureUserModel()
-            .ConfigureStuffModel();
+            .ConfigureStuffModel()
+            .ConfigureProjectModel();
     }
 }

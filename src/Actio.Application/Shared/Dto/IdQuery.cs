@@ -1,9 +1,8 @@
-﻿using Actio.Application.Shared.Dto;
-using Actio.Application.Shared.Exceptions;
+﻿using Actio.Application.Shared.Exceptions;
 
-namespace Actio.Application.Stuffs.Commands.Delete;
+namespace Actio.Application.Shared.Dto;
 
-public class DeleteStuffQuery : BaseQuery
+public class IdQuery : BaseQuery
 {
     public int Id { get; set; }
 

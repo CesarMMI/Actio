@@ -1,4 +1,5 @@
-﻿using Actio.Application.Shared.Exceptions;
+﻿using Actio.Application.Shared.Dto;
+using Actio.Application.Shared.Exceptions;
 using Actio.Application.Stuffs.Shared;
 using Actio.Domain.Repositories;
 
@@ -6,7 +7,7 @@ namespace Actio.Application.Stuffs.Commands.GetById;
 
 internal class GetStuffByIdCommand(IStuffRepository stuffRepository) : IGetStuffByIdCommand
 {
-    public async Task<StuffResult> Handle(GetStuffByIdQuery query)
+    public async Task<StuffResult> Handle(IdQuery query)
     {
         query.Validate();
 

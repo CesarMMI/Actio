@@ -6,8 +6,10 @@ public static class Endpoints
     {
         var group = app.MapGroup("api");
 
-        group.MapAuthEndpoints();
-        group.MapStuffsEndpoints();
+        group
+            .MapAuthEndpoints()
+            .MapStuffsEndpoints()
+            .MapProjectsEndpoints();
 
         return app;
     }
