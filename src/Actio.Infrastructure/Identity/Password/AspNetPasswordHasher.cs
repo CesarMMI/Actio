@@ -1,4 +1,4 @@
-﻿using Actio.Application.Auth.Interfaces;
+﻿using Actio.Application.Auth.Shared.Interfaces;
 
 namespace Actio.Infrastructure.Identity.Password;
 

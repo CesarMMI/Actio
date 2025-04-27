@@ -7,7 +7,7 @@ namespace Actio.Web.Extensions;
 
 internal static class EndpointExtensions
 {
-    public static BaseRequest SetRequestUserId<T>(this HttpContext ctx, T request) where T : BaseRequest
+    public static BaseQuery SetRequestUserId<T>(this HttpContext ctx, T request) where T : BaseQuery
     {
         request.UserId = ctx.GetUserIdFromToken();
         return request;

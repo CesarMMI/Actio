@@ -1,7 +1,6 @@
-﻿using Actio.Application.Auth.Dto;
-using Actio.Application.Auth.Handlers.Login;
-using Actio.Application.Auth.Handlers.Refresh;
-using Actio.Application.Auth.Handlers.Register;
+﻿using Actio.Application.Auth.Commands.Login;
+using Actio.Application.Auth.Commands.Refresh;
+using Actio.Application.Auth.Commands.Register;
 using Actio.Web.Extensions;
 
 namespace Actio.Web.Endpoints;
@@ -12,19 +11,19 @@ public static class AuthEndpoints
     {
         var group = builder.MapGroup("auth");
 
-        group.MapPost("login", async (LoginRequest request, ILoginHandler handler) =>
+        group.MapPost("login", async (LoginQuery query, ILoginCommand command) =>
         {
-            return await handler.Handle(request).WriteResponse();
+            return await command.Handle(query).WriteResponse();
         });
 
-        group.MapPost("register", async (RegisterRequest request, IRegisterHandler handler) =>
+        group.MapPost("register", async (RegisterQuery query, IRegisterCommand command) =>
         {
-            return await handler.Handle(request).WriteResponse(201);
+            return await command.Handle(query).WriteResponse(201);
         });
 
-        group.MapPost("refresh", async (RefreshRequest request, IRefreshHandler handler) =>
+        group.MapPost("refresh", async (RefreshQuery query, IRefreshCommand command) =>
         {
-            return await handler.Handle(request).WriteResponse();
+            return await command.Handle(query).WriteResponse();
         });
 
         return builder;

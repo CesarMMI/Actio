@@ -1,4 +1,4 @@
-﻿using Actio.Application.Auth.Interfaces;
+﻿using Actio.Application.Auth.Shared.Interfaces;
 using Actio.Infrastructure.Identity.Jwt;
 using Actio.Infrastructure.Identity.Password;
 using Microsoft.AspNetCore.Authentication.JwtBearer;

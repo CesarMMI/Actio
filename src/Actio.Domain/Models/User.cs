@@ -8,8 +8,7 @@ public class User
     public string Email { get; set; } = string.Empty;
     public string Password { get; set; } = string.Empty;
 
-    public ICollection<Action> Actions { get; set; } = [];
-    public ICollection<Project> Projects { get; set; } = [];
+    public ICollection<Stuff> Stuffs { get; set; } = [];
 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;

@@ -1,13 +1,12 @@
-﻿using Actio.Application.Actions.Handlers.CreateAction;
-using Actio.Application.Actions.Handlers.DeleteAction;
-using Actio.Application.Actions.Handlers.GetActionById;
-using Actio.Application.Actions.Handlers.GetActionTypes;
-using Actio.Application.Actions.Handlers.GetAllActions;
-using Actio.Application.Actions.Handlers.UpdateAction;
-using Actio.Application.Auth.Handlers.Login;
-using Actio.Application.Auth.Handlers.Refresh;
-using Actio.Application.Auth.Handlers.Register;
-using Actio.Application.Projects.Handlers.GetAllProjects;
+﻿using Actio.Application.Auth.Commands.Login;
+using Actio.Application.Auth.Commands.Refresh;
+using Actio.Application.Auth.Commands.Register;
+using Actio.Application.Stuffs.Commands.Create;
+using Actio.Application.Stuffs.Commands.Delete;
+using Actio.Application.Stuffs.Commands.GetAll;
+using Actio.Application.Stuffs.Commands.GetById;
+using Actio.Application.Stuffs.Commands.GetTypes;
+using Actio.Application.Stuffs.Commands.Update;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Actio.Application;
@@ -16,24 +15,16 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddApplication(this IServiceCollection services)
     {
-        return services
-            .AddHandlers();
-    }
+        services.AddScoped<ILoginCommand, LoginCommand>();
+        services.AddScoped<IRegisterCommand, RegisterCommand>();
+        services.AddScoped<IRefreshCommand, RefreshCommand>();
 
-    private static IServiceCollection AddHandlers(this IServiceCollection services)
-    {
-        services.AddScoped<ILoginHandler, LoginHandler>();
-        services.AddScoped<IRegisterHandler, RegisterHandler>();
-        services.AddScoped<IRefreshHandler, RefreshHandler>();
-
-        services.AddScoped<IGetAllActionsHandler, GetAllActionsHandler>();
-        services.AddScoped<IGetActionByIdHandler, GetActionByIdHandler>();
-        services.AddScoped<ICreateActionHandler, CreateActionHandler>();
-        services.AddScoped<IUpdateActionHandler, UpdateActionHandler>();
-        services.AddScoped<IDeleteActionHandler, DeleteActionHandler>();
-        services.AddScoped<IGetActionTypesHandler, GetActionTypesHandler>();
-
-        services.AddScoped<IGetAllProjectsHandler, GetAllProjectsHandler>();
+        services.AddScoped<ICreateStuffCommand, CreateStuffCommand>();
+        services.AddScoped<IDeleteStuffCommand, DeleteStuffCommand>();
+        services.AddScoped<IGetAllStuffsCommand, GetAllStuffsCommand>();
+        services.AddScoped<IGetStuffByIdCommand, GetStuffByIdCommand>();
+        services.AddScoped<IGetStuffTypesCommand, GetStuffTypesCommand>();
+        services.AddScoped<IUpdateStuffCommand, UpdateStuffCommand>();
 
         return services;
     }

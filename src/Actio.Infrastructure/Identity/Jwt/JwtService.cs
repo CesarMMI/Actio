@@ -1,4 +1,4 @@
-﻿using Actio.Application.Auth.Interfaces;
+﻿using Actio.Application.Auth.Shared.Interfaces;
 using Actio.Application.Shared.Exceptions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
