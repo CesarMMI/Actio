@@ -361,3 +361,5 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/src/Actio.API/appsettings.Development.json
+/src/Actio.API/appsettings.json
