@@ -13,12 +13,10 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddDbContext<AppDbContext>(options => options.UseSqlServer(configuration.GetConnectionString("SqlServer")));
-        
-        services.AddScoped<IUserRepository, UserEfRepository>();
-        services.AddScoped<IPasswordService, PasswordService>();
-        services.AddScoped<IJwtService, JwtService>();
-
-        return services;
+        return services
+            .AddDbContext<AppDbContext>(options => options.UseSqlServer(configuration.GetConnectionString("SqlServer")))
+            .AddScoped<IUserRepository, UserEfRepository>()
+            .AddScoped<IPasswordService, PasswordService>()
+            .AddScoped<IJwtService, JwtService>();
     }
 }
