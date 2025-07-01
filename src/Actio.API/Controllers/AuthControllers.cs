@@ -1,4 +1,5 @@
 ﻿using Actio.Application.Auth.Commands.Login;
+using Actio.Application.Auth.Commands.Register;
 using Actio.Application.Auth.Queries;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,10 +11,13 @@ public static class AuthControllers
     {
         var group = app.MapGroup("/auth").WithTags("Auth");
         // Login
-        group
-            .MapPost("/login", async (ILoginCommand command, [FromBody] LoginQuery query) =>
-                Results.Ok(await command.ExecuteAsync(query)))
-            .WithName("Login");
+        group.MapPost("/login", async (ILoginCommand command, [FromBody] LoginQuery query) =>
+            Results.Ok(await command.ExecuteAsync(query))
+        ).WithName("Login");
+        // Register
+        group.MapPost("/register", async (IRegisterCommand command, [FromBody] RegisterQuery query) =>
+            Results.Ok(await command.ExecuteAsync(query))
+        ).WithName("Register");
         return app;
     }
 }
