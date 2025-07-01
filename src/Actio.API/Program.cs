@@ -1,3 +1,4 @@
+using Actio.API.Controllers;
 using Actio.Application;
 using Actio.Infrastructure;
 
@@ -14,5 +15,7 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 
 app.UseHttpsRedirection();
+
+app.MapAuthControllers();
 
 app.Run();
