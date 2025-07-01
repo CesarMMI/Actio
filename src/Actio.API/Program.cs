@@ -1,6 +1,12 @@
+using Actio.Application;
+using Actio.Infrastructure;
+
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddOpenApi();
+builder.Services
+    .AddOpenApi()
+    .AddInfrastructure(builder.Configuration)
+    .AddApplication();
 
 var app = builder.Build();
 
