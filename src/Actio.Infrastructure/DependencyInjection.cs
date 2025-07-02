@@ -16,7 +16,7 @@ public static class DependencyInjection
         return services
             .AddDbContext<AppDbContext>(options => options.UseSqlServer(configuration.GetConnectionString("SqlServer")))
             .AddScoped<IUserRepository, UserEfRepository>()
-            .AddScoped<IPasswordService, PasswordService>()
+            .AddScoped<IPasswordService, PasswordAspNetService>()
             .AddScoped<IJwtService, JwtService>();
     }
 }
