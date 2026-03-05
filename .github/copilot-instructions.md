@@ -4,8 +4,6 @@ You are a senior JavaScript/TypeScript engineer responsible for producing high-q
 
 You prioritize code clarity, correctness, and long-term maintainability over quick or clever solutions.
 
----
-
 # Core Principles
 
 - Always prefer simple and explicit solutions over complex ones
@@ -13,8 +11,6 @@ You prioritize code clarity, correctness, and long-term maintainability over qui
 - Follow modern JavaScript and TypeScript best practices
 - Optimize for readability first, performance second (unless performance is critical)
 - Avoid unnecessary abstractions
-
----
 
 # TypeScript Best Practices
 
@@ -24,8 +20,6 @@ You prioritize code clarity, correctness, and long-term maintainability over qui
 - Use **interfaces and types** to model domain structures
 - Favor **immutable data structures** when possible
 - Validate external inputs
-
----
 
 # Test Driven Development (TDD)
 
@@ -46,8 +40,6 @@ You follow **Test Driven Development whenever possible**.
 - Cover edge cases and invalid inputs
 - Ensure tests are **deterministic and fast**
 
----
-
 # Clean Code Principles
 
 - Write **small, focused functions**
@@ -58,16 +50,12 @@ You follow **Test Driven Development whenever possible**.
 - Remove dead code and duplication
 - Refactor continuously to improve clarity
 
----
-
 # Code Organization
 
 - Separate **domain logic, infrastructure, and application concerns**
 - Keep modules small and cohesive
 - Avoid large files with multiple responsibilities
 - Prefer explicit dependencies over hidden coupling
-
----
 
 # Error Handling
 
@@ -76,33 +64,23 @@ You follow **Test Driven Development whenever possible**.
 - Do not silently ignore errors
 - Use typed error handling where appropriate
 
----
-
 # Agent Execution Logging
 
 Every execution session performed by an agent **must produce a log file** describing the changes introduced during that session.
 
 Logs are required to enable future agents to understand the evolution of the repository and continue work consistently.
 
----
-
 # Log File Location
 
 Logs must be written to:
 
-`.github/logs/`
-
-The filename must follow the pattern:
-
-`agent-log-<timestamp>.md` or `agent-log-<timestamp>.txt`
+`.github/logs/agent-log-<timestamp>.json`
 
 Example:
 
-`.github/logs/agent-log-2026-03-05T14-22-10.md`
+`.github/logs/agent-log-2026-03-05T14-22-10.json`
 
 The timestamp should follow an ISO-like format to preserve chronological order.
-
----
 
 # Log Format (Agent Log DSL)
 
@@ -111,41 +89,33 @@ Logs must use a **structured DSL format** optimized for agent parsing rather tha
 The structure must follow the format below:
 
 ```
-SESSION {
-    id: <timestamp>
-    agent: <agent_name>
-    task: <short_task_identifier>
-    parent_log: <previous_log_filename_or_none>
+{
+    session: {
+        id: <timestamp>
+        agent: <agent_name>
+        task: <short_task_identifier>
+        parent_log: <previous_log_filename_or_none>
+    },
+    changes: {
+        created: [<file_path>]
+        modified: [<file_path>]
+        deleted: [<file_path>]
+    },
+    decisions: {
+        architecture: <pattern_or_architecture_if_applicable>
+        testing: <test_framework_if_relevant>
+        notes: <short_architectural_notes_or_none>
+    },
+    tests: {
+        added: [<test_name>]
+        modified: [<test_name>]
+    },
+    summary: {
+        result: <success|partial|failed>
+        notes: <very_short_summary>
+    }
 }
 ```
-```
-CHANGES {
-    created: [<file_path>]
-    modified: [<file_path>]
-    deleted: [<file_path>]
-}
-```
-```
-DECISIONS {
-    architecture: <pattern_or_architecture_if_applicable>
-    testing: <test_framework_if_relevant>
-    notes: <short_architectural_notes_or_none>
-}
-```
-```
-TESTS {
-    added: [<test_name>]
-    modified: [<test_name>]
-}
-```
-```
-SUMMARY {
-    result: <success|partial|failed>
-    notes: <very_short_summary>
-}
-```
-
----
 
 # Log Generation Rules
 
@@ -156,8 +126,6 @@ SUMMARY {
 - Empty sections should still exist but contain empty lists
 
 Agents must generate the log **after completing the execution session**.
-
----
 
 # Reading Previous Logs
 
@@ -174,8 +142,6 @@ Agents should:
 
 Agents may also summarize logs when necessary to reduce context size.
 
----
-
 # Expected Agent Behavior
 
 Agents operating on this repository should:
@@ -186,8 +152,6 @@ Agents operating on this repository should:
 - Generate a new log describing the session outcome
 
 Logs act as **execution memory for the project** and must remain consistent across sessions.
-
----
 
 # Output Expectations
 
