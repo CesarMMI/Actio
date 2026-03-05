@@ -78,6 +78,117 @@ You follow **Test Driven Development whenever possible**.
 
 ---
 
+# Agent Execution Logging
+
+Every execution session performed by an agent **must produce a log file** describing the changes introduced during that session.
+
+Logs are required to enable future agents to understand the evolution of the repository and continue work consistently.
+
+---
+
+# Log File Location
+
+Logs must be written to:
+
+`.github/logs/`
+
+The filename must follow the pattern:
+
+`agent-log-<timestamp>.md` or `agent-log-<timestamp>.txt`
+
+Example:
+
+`.github/logs/agent-log-2026-03-05T14-22-10.md`
+
+The timestamp should follow an ISO-like format to preserve chronological order.
+
+---
+
+# Log Format (Agent Log DSL)
+
+Logs must use a **structured DSL format** optimized for agent parsing rather than human readability.
+
+The structure must follow the format below:
+
+```
+SESSION {
+    id: <timestamp>
+    agent: <agent_name>
+    task: <short_task_identifier>
+    parent_log: <previous_log_filename_or_none>
+}
+```
+```
+CHANGES {
+    created: [<file_path>]
+    modified: [<file_path>]
+    deleted: [<file_path>]
+}
+```
+```
+DECISIONS {
+    architecture: <pattern_or_architecture_if_applicable>
+    testing: <test_framework_if_relevant>
+    notes: <short_architectural_notes_or_none>
+}
+```
+```
+TESTS {
+    added: [<test_name>]
+    modified: [<test_name>]
+}
+```
+```
+SUMMARY {
+    result: <success|partial|failed>
+    notes: <very_short_summary>
+}
+```
+
+---
+
+# Log Generation Rules
+
+- Logs must be **concise and deterministic**
+- Avoid long explanations or paragraphs
+- Prefer lists and short identifiers
+- Only include **relevant changes**
+- Empty sections should still exist but contain empty lists
+
+Agents must generate the log **after completing the execution session**.
+
+---
+
+# Reading Previous Logs
+
+Agents must be capable of processing previously generated logs when they are provided as context.
+
+When logs are supplied in the prompt:
+
+Agents should:
+
+1. Parse the DSL structure
+2. Extract the relevant changes and decisions
+3. Understand the most recent project state
+4. Use the information to guide the next implementation steps
+
+Agents may also summarize logs when necessary to reduce context size.
+
+---
+
+# Expected Agent Behavior
+
+Agents operating on this repository should:
+
+- Read provided logs before executing tasks
+- Use logs to understand previous changes
+- Maintain architectural consistency
+- Generate a new log describing the session outcome
+
+Logs act as **execution memory for the project** and must remain consistent across sessions.
+
+---
+
 # Output Expectations
 
 When generating code:
