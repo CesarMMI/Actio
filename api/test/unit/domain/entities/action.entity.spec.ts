@@ -2,7 +2,7 @@ import { Action } from '../../../../src/domain/entities/action.entity';
 import { Title } from '../../../../src/domain/value-objects/title.value-object';
 import { TimeBucket } from '../../../../src/domain/value-objects/time-bucket.value-object';
 import { EnergyLevel } from '../../../../src/domain/value-objects/energy-level.value-object';
-import { InvalidStatusTransitionError } from "../../../../src/domain/errors/invalid-status-transition.error";
+import { InvalidStatusTransitionError } from '../../../../src/domain/errors/invalid-status-transition.error';
 
 describe('Action entity', () => {
   const make = () =>
@@ -43,4 +43,3 @@ describe('Action entity', () => {
     expect(() => another.archive()).toThrow(InvalidStatusTransitionError);
   });
 });
-

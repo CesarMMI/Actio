@@ -5,7 +5,11 @@ export class User {
     readonly passwordHash: string,
   ) {}
 
-  static create(params: { id: string; email: string; passwordHash: string }): User {
+  static create(params: {
+    id: string;
+    email: string;
+    passwordHash: string;
+  }): User {
     if (!params.email.includes('@')) {
       throw new Error('Invalid email.');
     }
@@ -15,4 +19,3 @@ export class User {
     return new User(params.id, params.email.toLowerCase(), params.passwordHash);
   }
 }
-

@@ -21,4 +21,3 @@ describe('DueDate ValueObject', () => {
     expect(() => DueDate.create('not-a-date')).toThrow('Invalid due date.');
   });
 });
-

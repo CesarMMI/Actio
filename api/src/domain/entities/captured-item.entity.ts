@@ -9,9 +9,13 @@ export class CapturedItem {
     readonly id: string,
     readonly title: Title,
     readonly notes?: string,
-  ) { }
+  ) {}
 
-  static create(params: { id: string; title: Title; notes?: string }): CapturedItem {
+  static create(params: {
+    id: string;
+    title: Title;
+    notes?: string;
+  }): CapturedItem {
     return new CapturedItem(params.id, params.title, params.notes);
   }
 
@@ -46,10 +50,12 @@ export class CapturedItem {
 
   private ensureInbox(): void {
     if (this.status !== 'INBOX') {
-      throw new BusinessRuleViolationError('Captured item has already been clarified.', {
-        status: this.status,
-      });
+      throw new BusinessRuleViolationError(
+        'Captured item has already been clarified.',
+        {
+          status: this.status,
+        },
+      );
     }
   }
 }
-

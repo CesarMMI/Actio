@@ -3,8 +3,10 @@ import baseConfig from './jest.config';
 
 const config: Config = {
   ...baseConfig,
-  testMatch: ['<rootDir>/test/unit/**/*.spec.ts', '<rootDir>/test/unit/**/*.test.ts'],
+  testMatch: [
+    '<rootDir>/test/unit/**/*.spec.ts',
+    '<rootDir>/test/unit/**/*.test.ts',
+  ],
 };
 
 export default config;
-

@@ -19,5 +19,17 @@ describe('Context entity', () => {
       'Context name cannot be empty.',
     );
   });
-});
 
+  it('allows renaming with non-empty name', () => {
+    const context = Context.create({ id: 'ctx-1', name: 'Home' });
+    context.rename('  Errands  ');
+    expect(context.getName()).toBe('Errands');
+  });
+
+  it('rejects empty rename', () => {
+    const context = Context.create({ id: 'ctx-1', name: 'Home' });
+    expect(() => context.rename('   ')).toThrow(
+      'Context name cannot be empty.',
+    );
+  });
+});

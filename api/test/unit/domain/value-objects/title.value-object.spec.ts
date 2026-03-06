@@ -12,7 +12,8 @@ describe('Title ValueObject', () => {
 
   it('rejects overly long titles', () => {
     const long = 'a'.repeat(201);
-    expect(() => Title.create(long)).toThrow('Title cannot exceed 200 characters.');
+    expect(() => Title.create(long)).toThrow(
+      'Title cannot exceed 200 characters.',
+    );
   });
 });
-

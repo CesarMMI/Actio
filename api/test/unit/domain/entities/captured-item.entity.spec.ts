@@ -42,4 +42,3 @@ describe('CapturedItem entity', () => {
     expect(() => item.clarifyAsProject()).toThrow(BusinessRuleViolationError);
   });
 });
-

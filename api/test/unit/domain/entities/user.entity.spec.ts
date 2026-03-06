@@ -30,4 +30,3 @@ describe('User entity', () => {
     ).toThrow('Password hash appears invalid.');
   });
 });
-

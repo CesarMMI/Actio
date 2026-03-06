@@ -1,16 +1,22 @@
 import { Action } from '../entities/action.entity';
 import { CapturedItem } from '../entities/captured-item.entity';
-import { ClarifyAsActionResult, ClarifyAsProjectResult, IClarifyItemService } from '../interfaces/clarify-item-service.interface';
+import {
+  ClarifyAsActionResult,
+  ClarifyAsProjectResult,
+  IClarifyItemService,
+} from '../interfaces/services/clarify-item-service.interface';
 import { Project } from '../entities/project.entity';
-import { Title } from '../value-objects/title.value-object';
 
 export class ClarifyItemService implements IClarifyItemService {
-  clarifyAsAction(item: CapturedItem, options: { actionId: string; projectId?: string; contextId?: string }): ClarifyAsActionResult {
+  clarifyAsAction(
+    item: CapturedItem,
+    options: { actionId: string; projectId?: string; contextId?: string },
+  ): ClarifyAsActionResult {
     item.clarifyAsAction();
 
     const action = Action.create({
       id: options.actionId,
-      title: item['title'] as Title,
+      title: item['title'],
       projectId: options.projectId ?? null,
       contextId: options.contextId ?? null,
     });
@@ -18,18 +24,28 @@ export class ClarifyItemService implements IClarifyItemService {
     return { updatedItem: item, actions: [action] };
   }
 
-  clarifyAsProject(item: CapturedItem, options: { projectId: string; projectNameOverride?: string; firstActionId?: string }): ClarifyAsProjectResult {
+  clarifyAsProject(
+    item: CapturedItem,
+    options: {
+      projectId: string;
+      projectNameOverride?: string;
+      firstActionId?: string;
+    },
+  ): ClarifyAsProjectResult {
     item.clarifyAsProject();
 
     const actions: Action[] = [];
     const projectName = options.projectNameOverride ?? item.title.getValue();
-    const project = Project.create({ id: options.projectId, name: projectName });
+    const project = Project.create({
+      id: options.projectId,
+      name: projectName,
+    });
 
     if (options.firstActionId) {
       actions.push(
         Action.create({
           id: options.firstActionId,
-          title: item['title'] as Title,
+          title: item['title'],
           projectId: project.id,
         }),
       );
@@ -38,4 +54,3 @@ export class ClarifyItemService implements IClarifyItemService {
     return { updatedItem: item, project, actions };
   }
 }
-

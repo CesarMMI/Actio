@@ -35,4 +35,3 @@ describe('Project next action policy', () => {
     expect(policy.ensureProjectHasNextAction(project, actions)).toBe(false);
   });
 });
-

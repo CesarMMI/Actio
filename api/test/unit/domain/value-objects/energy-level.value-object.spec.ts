@@ -7,7 +7,8 @@ describe('EnergyLevel ValueObject', () => {
   });
 
   it('rejects invalid energy level values', () => {
-    expect(() => EnergyLevel.create('extreme')).toThrow('Invalid energy level.');
+    expect(() => EnergyLevel.create('extreme')).toThrow(
+      'Invalid energy level.',
+    );
   });
 });
-

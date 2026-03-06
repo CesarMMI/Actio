@@ -16,4 +16,3 @@ export class EnergyLevel {
     return this.value;
   }
 }
-

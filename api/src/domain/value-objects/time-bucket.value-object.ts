@@ -16,4 +16,3 @@ export class TimeBucket {
     return this.value;
   }
 }
-

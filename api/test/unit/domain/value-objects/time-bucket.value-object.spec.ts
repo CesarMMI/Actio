@@ -7,6 +7,8 @@ describe('TimeBucket ValueObject', () => {
   });
 
   it('rejects invalid time bucket values', () => {
-    expect(() => TimeBucket.create('very-long')).toThrow('Invalid time bucket.');
+    expect(() => TimeBucket.create('very-long')).toThrow(
+      'Invalid time bucket.',
+    );
   });
 });

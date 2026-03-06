@@ -1,4 +1,4 @@
-import { InvalidStatusTransitionError } from "../errors/invalid-status-transition.error";
+import { InvalidStatusTransitionError } from '../errors/invalid-status-transition.error';
 import { EnergyLevel } from '../value-objects/energy-level.value-object';
 import { TimeBucket } from '../value-objects/time-bucket.value-object';
 import { Title } from '../value-objects/title.value-object';
@@ -17,7 +17,7 @@ export class Action {
     readonly energyLevel: EnergyLevel | null,
     private projectId: string | null,
     private contextId: string | null,
-  ) { }
+  ) {}
 
   static create(params: {
     id: string;
@@ -63,7 +63,11 @@ export class Action {
 
   complete(): void {
     if (this.status !== 'OPEN') {
-      throw new InvalidStatusTransitionError('Action', this.status, 'COMPLETED');
+      throw new InvalidStatusTransitionError(
+        'Action',
+        this.status,
+        'COMPLETED',
+      );
     }
     this.status = 'COMPLETED';
     this.completedAt = new Date();
@@ -76,4 +80,3 @@ export class Action {
     this.status = 'ARCHIVED';
   }
 }
-

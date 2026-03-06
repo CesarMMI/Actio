@@ -1,5 +1,5 @@
 import { Action } from '../entities/action.entity';
-import { IProjectNextActionPolicy } from '../interfaces/project-next-action-policy.interface';
+import { IProjectNextActionPolicy } from '../interfaces/policies/project-next-action-policy.interface';
 import { Project } from '../entities/project.entity';
 
 export class ProjectNextActionPolicy implements IProjectNextActionPolicy {
@@ -7,4 +7,3 @@ export class ProjectNextActionPolicy implements IProjectNextActionPolicy {
     return actions.some((a) => a.getStatus() === 'OPEN');
   }
 }
-

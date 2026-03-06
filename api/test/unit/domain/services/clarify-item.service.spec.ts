@@ -41,4 +41,3 @@ describe('ClarifyItemService', () => {
     expect(result.actions).toHaveLength(1);
   });
 });
-
