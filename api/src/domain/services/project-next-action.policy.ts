@@ -1,6 +1,6 @@
-import { Action } from '../action/action.entity';
+import { Action } from '../entities/action.entity';
 import { IProjectNextActionPolicy } from '../interfaces/project-next-action-policy.interface';
-import { Project } from '../project/project.entity';
+import { Project } from '../entities/project.entity';
 
 export class ProjectNextActionPolicy implements IProjectNextActionPolicy {
   ensureProjectHasNextAction(_project: Project, actions: Action[]): boolean {

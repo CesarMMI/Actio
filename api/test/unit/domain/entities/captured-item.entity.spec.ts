@@ -1,4 +1,4 @@
-import { CapturedItem } from '../../../../src/domain/captured-item/captured-item.entity';
+import { CapturedItem } from '../../../../src/domain/entities/captured-item.entity';
 import { Title } from '../../../../src/domain/value-objects/title.value-object';
 import { BusinessRuleViolationError } from '../../../../src/domain/errors/business-rule-violation.error';
 

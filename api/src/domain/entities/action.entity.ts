@@ -2,7 +2,7 @@ import { InvalidStatusTransitionError } from "../errors/invalid-status-transitio
 import { EnergyLevel } from '../value-objects/energy-level.value-object';
 import { TimeBucket } from '../value-objects/time-bucket.value-object';
 import { Title } from '../value-objects/title.value-object';
-import { ActionStatus } from './action-status';
+import { ActionStatus } from '../enums/action-status';
 
 export class Action {
   private status: ActionStatus = 'OPEN';

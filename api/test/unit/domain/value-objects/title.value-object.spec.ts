@@ -1,6 +1,6 @@
 import { Title } from '../../../../src/domain/value-objects/title.value-object';
 
-describe('Title VO', () => {
+describe('Title ValueObject', () => {
   it('trims whitespace and accepts a normal title', () => {
     const title = Title.create('  Do something  ');
     expect(title.getValue()).toBe('Do something');

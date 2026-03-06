@@ -1,4 +1,4 @@
-import { User } from '../../../../src/domain/user/user.entity';
+import { User } from '../../../../src/domain/entities/user.entity';
 
 describe('User entity', () => {
   it('creates a user with valid email and password hash', () => {

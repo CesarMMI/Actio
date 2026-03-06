@@ -1,7 +1,7 @@
-import { Action } from '../action/action.entity';
-import { CapturedItem } from '../captured-item/captured-item.entity';
+import { Action } from '../entities/action.entity';
+import { CapturedItem } from '../entities/captured-item.entity';
 import { ClarifyAsActionResult, ClarifyAsProjectResult, IClarifyItemService } from '../interfaces/clarify-item-service.interface';
-import { Project } from '../project/project.entity';
+import { Project } from '../entities/project.entity';
 import { Title } from '../value-objects/title.value-object';
 
 export class ClarifyItemService implements IClarifyItemService {

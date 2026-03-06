@@ -1,6 +1,6 @@
 import { InvalidStatusTransitionError } from "../errors/invalid-status-transition.error";
-import { Action } from '../action/action.entity';
-import { ProjectStatus } from "./project-status";
+import { Action } from './action.entity';
+import { ProjectStatus } from "../enums/project-status";
 
 export class Project {
   private status: ProjectStatus = 'ACTIVE';

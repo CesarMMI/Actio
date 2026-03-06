@@ -1,6 +1,6 @@
 import { ProjectNextActionPolicy } from '../../../../src/domain/services/project-next-action.policy';
-import { Project } from '../../../../src/domain/project/project.entity';
-import { Action } from '../../../../src/domain/action/action.entity';
+import { Project } from '../../../../src/domain/entities/project.entity';
+import { Action } from '../../../../src/domain/entities/action.entity';
 import { Title } from '../../../../src/domain/value-objects/title.value-object';
 
 describe('Project next action policy', () => {

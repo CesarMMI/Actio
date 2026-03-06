@@ -1,4 +1,4 @@
-import { Context } from '../../../../src/domain/context/context.entity';
+import { Context } from '../../../../src/domain/entities/context.entity';
 
 describe('Context entity', () => {
   it('creates active context by default', () => {

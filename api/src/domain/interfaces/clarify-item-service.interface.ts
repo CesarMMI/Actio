@@ -1,6 +1,6 @@
-import { Action } from '../action/action.entity';
-import { CapturedItem } from '../captured-item/captured-item.entity';
-import { Project } from '../project/project.entity';
+import { Action } from '../entities/action.entity';
+import { CapturedItem } from '../entities/captured-item.entity';
+import { Project } from '../entities/project.entity';
 
 export type ClarifyAsActionResult = {
   updatedItem: CapturedItem;

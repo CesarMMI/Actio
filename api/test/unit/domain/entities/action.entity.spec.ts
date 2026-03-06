@@ -1,4 +1,4 @@
-import { Action } from '../../../../src/domain/action/action.entity';
+import { Action } from '../../../../src/domain/entities/action.entity';
 import { Title } from '../../../../src/domain/value-objects/title.value-object';
 import { TimeBucket } from '../../../../src/domain/value-objects/time-bucket.value-object';
 import { EnergyLevel } from '../../../../src/domain/value-objects/energy-level.value-object';

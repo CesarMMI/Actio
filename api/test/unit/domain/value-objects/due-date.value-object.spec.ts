@@ -1,6 +1,6 @@
 import { DueDate } from '../../../../src/domain/value-objects/due-date.value-object';
 
-describe('DueDate VO', () => {
+describe('DueDate ValueObject', () => {
   it('accepts a valid Date instance', () => {
     const now = new Date();
     const due = DueDate.create(now);

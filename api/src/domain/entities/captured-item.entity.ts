@@ -1,6 +1,6 @@
 import { BusinessRuleViolationError } from '../errors/business-rule-violation.error';
 import { Title } from '../value-objects/title.value-object';
-import { CapturedItemStatus } from './captured-item-status';
+import { CapturedItemStatus } from '../enums/captured-item-status';
 
 export class CapturedItem {
   private status: CapturedItemStatus = 'INBOX';
