@@ -13,14 +13,18 @@ export class RegisterUserUseCase {
     private readonly users: IUserRepository,
     private readonly ids: IIdGenerator,
     private readonly hasher: IPasswordHasher,
-  ) { }
+  ) {}
 
   async execute(input: RegisterUserInput): Promise<RegisterUserOutput> {
     const existing = await this.users.findByEmail(input.email.toLowerCase());
     if (existing) throw new ConflictError('Email already in use.');
 
     const passwordHash = await this.hasher.hash(input.password);
-    const user = User.create({ id: this.ids.newId(), email: input.email, passwordHash });
+    const user = User.create({
+      id: this.ids.newId(),
+      email: input.email,
+      passwordHash,
+    });
 
     const saved = await this.users.save(user);
     return { user: { id: saved.id, email: saved.email } };

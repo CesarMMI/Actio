@@ -13,24 +13,41 @@ export class ListActionsByContextUseCase {
   constructor(
     private readonly contexts: IContextRepository,
     private readonly actions: IActionRepository,
-  ) { }
+  ) {}
 
-  async execute(input: ListActionsByContextInput): Promise<ListActionsByContextOutput> {
-    const ctx = await this.contexts.findByIdForUser(input.userId, input.contextId);
+  async execute(
+    input: ListActionsByContextInput,
+  ): Promise<ListActionsByContextOutput> {
+    const ctx = await this.contexts.findByIdForUser(
+      input.userId,
+      input.contextId,
+    );
     if (!ctx) throw new EntityNotFoundError('Context', input.contextId);
 
     const filters = {
-      timeBucket: input.timeBucket ? TimeBucket.create(input.timeBucket) : undefined,
-      energyLevel: input.energyLevel ? EnergyLevel.create(input.energyLevel) : undefined,
+      timeBucket: input.timeBucket
+        ? TimeBucket.create(input.timeBucket)
+        : undefined,
+      energyLevel: input.energyLevel
+        ? EnergyLevel.create(input.energyLevel)
+        : undefined,
       dueFrom: input.dueFrom ? new Date(input.dueFrom) : undefined,
       dueTo: input.dueTo ? new Date(input.dueTo) : undefined,
     };
 
-    const result = await this.actions.findOpenByContext(input.userId, input.contextId, filters);
+    const result = await this.actions.findOpenByContext(
+      input.userId,
+      input.contextId,
+      filters,
+    );
 
     const sorted = [...result].sort((a, b) => {
-      const aDue = a['dueDate'] ? a['dueDate'].getTime() : Number.POSITIVE_INFINITY;
-      const bDue = b['dueDate'] ? b['dueDate'].getTime() : Number.POSITIVE_INFINITY;
+      const aDue = a['dueDate']
+        ? a['dueDate'].getTime()
+        : Number.POSITIVE_INFINITY;
+      const bDue = b['dueDate']
+        ? b['dueDate'].getTime()
+        : Number.POSITIVE_INFINITY;
       return aDue - bDue;
     });
 

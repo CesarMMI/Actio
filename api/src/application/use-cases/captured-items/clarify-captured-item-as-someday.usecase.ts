@@ -7,11 +7,17 @@ import {
 import { toCapturedItemDto } from '../../mappers/captured-item.mapper';
 
 export class ClarifyCapturedItemAsSomedayUseCase {
-  constructor(private readonly items: ICapturedItemRepository) { }
+  constructor(private readonly items: ICapturedItemRepository) {}
 
-  async execute(input: ClarifyCapturedItemTerminalInput): Promise<ClarifyCapturedItemTerminalOutput> {
-    const item = await this.items.findByIdForUser(input.userId, input.capturedItemId);
-    if (!item) throw new EntityNotFoundError('CapturedItem', input.capturedItemId);
+  async execute(
+    input: ClarifyCapturedItemTerminalInput,
+  ): Promise<ClarifyCapturedItemTerminalOutput> {
+    const item = await this.items.findByIdForUser(
+      input.userId,
+      input.capturedItemId,
+    );
+    if (!item)
+      throw new EntityNotFoundError('CapturedItem', input.capturedItemId);
 
     item.clarifyAsSomeday();
     const saved = await this.items.saveForUser(input.userId, item);

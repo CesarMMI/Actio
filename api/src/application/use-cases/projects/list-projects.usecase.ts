@@ -9,7 +9,7 @@ export class ListProjectsUseCase {
   constructor(
     private readonly projects: IProjectRepository,
     private readonly actions: IActionRepository,
-  ) { }
+  ) {}
 
   async execute(input: ListProjectsInput): Promise<ListProjectsOutput> {
     const projects = await this.projects.findAllByUser(input.userId);
@@ -17,7 +17,9 @@ export class ListProjectsUseCase {
     const summaries = await Promise.all(
       projects.map(async (p) => {
         const actions = await this.actions.findByProject(input.userId, p.id);
-        const openActionCount = actions.filter((a) => a.getStatus() === 'OPEN',).length;
+        const openActionCount = actions.filter(
+          (a) => a.getStatus() === 'OPEN',
+        ).length;
         return {
           id: p.id,
           name: p.getName(),

@@ -21,14 +21,22 @@ export class ClarifyCapturedItemAsProjectUseCase {
     private readonly actions: IActionRepository,
     private readonly clarify: IClarifyItemService,
     private readonly ids: IIdGenerator,
-  ) { }
+  ) {}
 
-  async execute(input: ClarifyCapturedItemAsProjectInput): Promise<ClarifyCapturedItemAsProjectOutput> {
-    const item = await this.items.findByIdForUser(input.userId, input.capturedItemId);
-    if (!item) throw new EntityNotFoundError('CapturedItem', input.capturedItemId);
+  async execute(
+    input: ClarifyCapturedItemAsProjectInput,
+  ): Promise<ClarifyCapturedItemAsProjectOutput> {
+    const item = await this.items.findByIdForUser(
+      input.userId,
+      input.capturedItemId,
+    );
+    if (!item)
+      throw new EntityNotFoundError('CapturedItem', input.capturedItemId);
 
     const projectId = this.ids.newId();
-    const firstActionId = input.createFirstAction ? this.ids.newId() : undefined;
+    const firstActionId = input.createFirstAction
+      ? this.ids.newId()
+      : undefined;
 
     const { updatedItem, project, actions } = this.clarify.clarifyAsProject(
       item,
@@ -41,8 +49,13 @@ export class ClarifyCapturedItemAsProjectUseCase {
 
     return await this.uow.runInTransaction(async () => {
       const savedItem = await this.items.saveForUser(input.userId, updatedItem);
-      const savedProject = await this.projects.saveForUser(input.userId, project);
-      const savedActions = actions.length ? await this.actions.saveManyForUser(input.userId, actions) : [];
+      const savedProject = await this.projects.saveForUser(
+        input.userId,
+        project,
+      );
+      const savedActions = actions.length
+        ? await this.actions.saveManyForUser(input.userId, actions)
+        : [];
       return {
         item: toCapturedItemDto(savedItem),
         project: toProjectDto(savedProject),

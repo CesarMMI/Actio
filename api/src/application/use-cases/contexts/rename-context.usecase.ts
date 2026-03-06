@@ -7,10 +7,13 @@ import {
 import { toContextDto } from '../../mappers/context.mapper';
 
 export class RenameContextUseCase {
-  constructor(private readonly contexts: IContextRepository) { }
+  constructor(private readonly contexts: IContextRepository) {}
 
   async execute(input: RenameContextInput): Promise<RenameContextOutput> {
-    const ctx = await this.contexts.findByIdForUser(input.userId, input.contextId);
+    const ctx = await this.contexts.findByIdForUser(
+      input.userId,
+      input.contextId,
+    );
     if (!ctx) throw new EntityNotFoundError('Context', input.contextId);
 
     ctx.rename(input.name);

@@ -7,10 +7,13 @@ import {
 import { toProjectDto } from '../../mappers/project.mapper';
 
 export class ArchiveProjectUseCase {
-  constructor(private readonly projects: IProjectRepository) { }
+  constructor(private readonly projects: IProjectRepository) {}
 
   async execute(input: ArchiveProjectInput): Promise<ArchiveProjectOutput> {
-    const project = await this.projects.findByIdForUser(input.userId, input.projectId);
+    const project = await this.projects.findByIdForUser(
+      input.userId,
+      input.projectId,
+    );
     if (!project) throw new EntityNotFoundError('Project', input.projectId);
 
     project.archive();

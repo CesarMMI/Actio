@@ -7,10 +7,15 @@ import {
 import { toContextDto } from '../../mappers/context.mapper';
 
 export class DeactivateContextUseCase {
-  constructor(private readonly contexts: IContextRepository) { }
+  constructor(private readonly contexts: IContextRepository) {}
 
-  async execute(input: DeactivateContextInput): Promise<DeactivateContextOutput> {
-    const ctx = await this.contexts.findByIdForUser(input.userId, input.contextId);
+  async execute(
+    input: DeactivateContextInput,
+  ): Promise<DeactivateContextOutput> {
+    const ctx = await this.contexts.findByIdForUser(
+      input.userId,
+      input.contextId,
+    );
     if (!ctx) throw new EntityNotFoundError('Context', input.contextId);
 
     ctx.deactivate();

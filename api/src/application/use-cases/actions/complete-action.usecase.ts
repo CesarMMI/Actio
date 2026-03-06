@@ -7,10 +7,13 @@ import {
 import { toActionDto } from '../../mappers/action.mapper';
 
 export class CompleteActionUseCase {
-  constructor(private readonly actions: IActionRepository) { }
+  constructor(private readonly actions: IActionRepository) {}
 
   async execute(input: CompleteActionInput): Promise<CompleteActionOutput> {
-    const action = await this.actions.findByIdForUser(input.userId, input.actionId);
+    const action = await this.actions.findByIdForUser(
+      input.userId,
+      input.actionId,
+    );
     if (!action) throw new EntityNotFoundError('Action', input.actionId);
 
     action.complete();

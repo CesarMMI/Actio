@@ -18,11 +18,17 @@ export class ClarifyCapturedItemAsActionUseCase {
     private readonly actions: IActionRepository,
     private readonly clarify: IClarifyItemService,
     private readonly ids: IIdGenerator,
-  ) { }
+  ) {}
 
-  async execute(input: ClarifyCapturedItemAsActionInput): Promise<ClarifyCapturedItemAsActionOutput> {
-    const item = await this.items.findByIdForUser(input.userId, input.capturedItemId);
-    if (!item) throw new EntityNotFoundError('CapturedItem', input.capturedItemId);
+  async execute(
+    input: ClarifyCapturedItemAsActionInput,
+  ): Promise<ClarifyCapturedItemAsActionOutput> {
+    const item = await this.items.findByIdForUser(
+      input.userId,
+      input.capturedItemId,
+    );
+    if (!item)
+      throw new EntityNotFoundError('CapturedItem', input.capturedItemId);
 
     const { updatedItem, actions } = this.clarify.clarifyAsAction(item, {
       actionId: this.ids.newId(),
@@ -32,11 +38,14 @@ export class ClarifyCapturedItemAsActionUseCase {
 
     return await this.uow.runInTransaction(async () => {
       const savedItem = await this.items.saveForUser(input.userId, updatedItem);
-      const savedActions = await this.actions.saveManyForUser(input.userId, actions);
+      const savedActions = await this.actions.saveManyForUser(
+        input.userId,
+        actions,
+      );
 
       return {
         item: toCapturedItemDto(savedItem),
-        actions: savedActions.map(toActionDto)
+        actions: savedActions.map(toActionDto),
       };
     });
   }

@@ -8,7 +8,9 @@ export function toActionDto(action: Action): ActionDto {
     notes: action['notes'],
     dueDate: action['dueDate'] ? action['dueDate'].toISOString() : null,
     timeBucket: action['timeBucket'] ? action['timeBucket'].getValue() : null,
-    energyLevel: action['energyLevel'] ? action['energyLevel'].getValue() : null,
+    energyLevel: action['energyLevel']
+      ? action['energyLevel'].getValue()
+      : null,
     projectId: action.getProjectId(),
     contextId: action.getContextId(),
     status: action.getStatus(),

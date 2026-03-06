@@ -11,14 +11,22 @@ export class AssignActionToContextUseCase {
   constructor(
     private readonly actions: IActionRepository,
     private readonly contexts: IContextRepository,
-  ) { }
+  ) {}
 
-  async execute(input: AssignActionToContextInput): Promise<AssignActionToContextOutput> {
-    const action = await this.actions.findByIdForUser(input.userId, input.actionId);
+  async execute(
+    input: AssignActionToContextInput,
+  ): Promise<AssignActionToContextOutput> {
+    const action = await this.actions.findByIdForUser(
+      input.userId,
+      input.actionId,
+    );
     if (!action) throw new EntityNotFoundError('Action', input.actionId);
 
     if (input.contextId) {
-      const ctx = await this.contexts.findByIdForUser(input.userId, input.contextId);
+      const ctx = await this.contexts.findByIdForUser(
+        input.userId,
+        input.contextId,
+      );
       if (!ctx) throw new EntityNotFoundError('Context', input.contextId);
     }
 

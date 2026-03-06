@@ -12,13 +12,19 @@ export class GetProjectDetailUseCase {
   constructor(
     private readonly projects: IProjectRepository,
     private readonly actions: IActionRepository,
-  ) { }
+  ) {}
 
   async execute(input: GetProjectDetailInput): Promise<GetProjectDetailOutput> {
-    const project = await this.projects.findByIdForUser(input.userId, input.projectId);
+    const project = await this.projects.findByIdForUser(
+      input.userId,
+      input.projectId,
+    );
     if (!project) throw new EntityNotFoundError('Project', input.projectId);
 
-    const actions = await this.actions.findByProject(input.userId, input.projectId);
+    const actions = await this.actions.findByProject(
+      input.userId,
+      input.projectId,
+    );
     const open = actions.filter((a) => a.getStatus() === 'OPEN');
     const done = actions.filter((a) => a.getStatus() !== 'OPEN');
 

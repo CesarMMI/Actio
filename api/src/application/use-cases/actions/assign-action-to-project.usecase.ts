@@ -11,14 +11,22 @@ export class AssignActionToProjectUseCase {
   constructor(
     private readonly actions: IActionRepository,
     private readonly projects: IProjectRepository,
-  ) { }
+  ) {}
 
-  async execute(input: AssignActionToProjectInput): Promise<AssignActionToProjectOutput> {
-    const action = await this.actions.findByIdForUser(input.userId, input.actionId);
+  async execute(
+    input: AssignActionToProjectInput,
+  ): Promise<AssignActionToProjectOutput> {
+    const action = await this.actions.findByIdForUser(
+      input.userId,
+      input.actionId,
+    );
     if (!action) throw new EntityNotFoundError('Action', input.actionId);
 
     if (input.projectId) {
-      const project = await this.projects.findByIdForUser(input.userId, input.projectId);
+      const project = await this.projects.findByIdForUser(
+        input.userId,
+        input.projectId,
+      );
       if (!project) throw new EntityNotFoundError('Project', input.projectId);
     }
 

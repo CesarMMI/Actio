@@ -9,7 +9,7 @@ export class LoginUseCase {
     private readonly users: IUserRepository,
     private readonly hasher: IPasswordHasher,
     private readonly tokens: ITokenService,
-  ) { }
+  ) {}
 
   async execute(input: LoginInput): Promise<LoginOutput> {
     const user = await this.users.findByEmail(input.email.toLowerCase());
@@ -18,7 +18,10 @@ export class LoginUseCase {
     const ok = await this.hasher.verify(input.password, user.passwordHash);
     if (!ok) throw new AuthenticationError('Invalid credentials.');
 
-    const accessToken = await this.tokens.signAccessToken({ userId: user.id, email: user.email });
+    const accessToken = await this.tokens.signAccessToken({
+      userId: user.id,
+      email: user.email,
+    });
     return { accessToken };
   }
 }

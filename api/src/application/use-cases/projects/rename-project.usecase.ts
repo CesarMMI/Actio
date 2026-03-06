@@ -7,10 +7,13 @@ import {
 import { toProjectDto } from '../../mappers/project.mapper';
 
 export class RenameProjectUseCase {
-  constructor(private readonly projects: IProjectRepository) { }
+  constructor(private readonly projects: IProjectRepository) {}
 
   async execute(input: RenameProjectInput): Promise<RenameProjectOutput> {
-    const project = await this.projects.findByIdForUser(input.userId, input.projectId);
+    const project = await this.projects.findByIdForUser(
+      input.userId,
+      input.projectId,
+    );
     if (!project) throw new EntityNotFoundError('Project', input.projectId);
 
     project.rename(input.name);
