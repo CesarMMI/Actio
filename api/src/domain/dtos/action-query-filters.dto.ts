@@ -1,5 +1,5 @@
-import { EnergyLevel } from 'src/domain/value-objects/energy-level.value-object';
-import { TimeBucket } from 'src/domain/value-objects/time-bucket.value-object';
+import { EnergyLevel } from '../value-objects/energy-level.value-object';
+import { TimeBucket } from '../value-objects/time-bucket.value-object';
 
 export type ActionQueryFiltersDto = {
   timeBucket?: TimeBucket;
