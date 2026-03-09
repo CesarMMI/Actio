@@ -1,4 +1,5 @@
 import express from "express";
+import cors from "cors";
 import { DataSource } from "typeorm";
 import { buildContainer } from "./di-container";
 import { inboxRouter } from "./routes/inbox.routes";
@@ -9,6 +10,7 @@ import { errorHandler } from "./middleware/error-handler";
 
 export function createApp(dataSource: DataSource) {
   const app = express();
+  app.use(cors());
   app.use(express.json());
 
   const uc = buildContainer(dataSource);
