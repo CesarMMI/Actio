@@ -1,0 +1,9 @@
+export { DomainError } from './domain-error';
+export { ItemAlreadyResolvedError } from './item-already-resolved-error';
+export { ActionNotOpenError } from './action-not-open-error';
+export { ActionNotCompletedError } from './action-not-completed-error';
+export { ProjectNotActiveError } from './project-not-active-error';
+export { ProjectHasOpenActionsError } from './project-has-open-actions-error';
+export { ProjectNotCompletedError } from './project-not-completed-error';
+export { ContextNotActiveError } from './context-not-active-error';
+export { ContextAlreadyActiveError } from './context-already-active-error';
