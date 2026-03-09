@@ -1,3 +1,4 @@
+import { Inject, Injectable } from '@nestjs/common';
 import { Project } from '../../../domain/entities/project.entity';
 import { IProjectRepository } from '../../../domain/interfaces/repositories/project-repository.interface';
 import { IIdGenerator } from '../../interfaces/services/id-generator.interface';
@@ -6,11 +7,13 @@ import {
   CreateProjectOutput,
 } from '../../dtos/projects/create-project.dto';
 import { toProjectDto } from '../../mappers/project.mapper';
+import { ICreateProjectUseCase } from '../../interfaces/use-cases/projects/create-project.usecase.interface';
 
-export class CreateProjectUseCase {
+@Injectable()
+export class CreateProjectUseCase implements ICreateProjectUseCase {
   constructor(
-    private readonly projects: IProjectRepository,
-    private readonly ids: IIdGenerator,
+    @Inject(IProjectRepository) private readonly projects: IProjectRepository,
+    @Inject(IIdGenerator) private readonly ids: IIdGenerator,
   ) {}
 
   async execute(input: CreateProjectInput): Promise<CreateProjectOutput> {

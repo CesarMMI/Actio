@@ -1,3 +1,4 @@
+import { Inject, Injectable } from '@nestjs/common';
 import { EntityNotFoundError } from '../../../domain/errors/entity-not-found.error';
 import { IClarifyItemService } from '../../../domain/interfaces/services/clarify-item-service.interface';
 import { ICapturedItemRepository } from '../../../domain/interfaces/repositories/captured-item-repository.interface';
@@ -10,14 +11,16 @@ import {
 } from '../../dtos/captured-items/clarify-as-action.dto';
 import { toCapturedItemDto } from '../../mappers/captured-item.mapper';
 import { toActionDto } from '../../mappers/action.mapper';
+import { IClarifyCapturedItemAsActionUseCase } from '../../interfaces/use-cases/captured-items/clarify-captured-item-as-action.usecase.interface';
 
-export class ClarifyCapturedItemAsActionUseCase {
+@Injectable()
+export class ClarifyCapturedItemAsActionUseCase implements IClarifyCapturedItemAsActionUseCase {
   constructor(
-    private readonly uow: IUnitOfWork,
-    private readonly items: ICapturedItemRepository,
-    private readonly actions: IActionRepository,
-    private readonly clarify: IClarifyItemService,
-    private readonly ids: IIdGenerator,
+    @Inject(IUnitOfWork) private readonly uow: IUnitOfWork,
+    @Inject(ICapturedItemRepository) private readonly items: ICapturedItemRepository,
+    @Inject(IActionRepository) private readonly actions: IActionRepository,
+    @Inject(IClarifyItemService) private readonly clarify: IClarifyItemService,
+    @Inject(IIdGenerator) private readonly ids: IIdGenerator,
   ) {}
 
   async execute(

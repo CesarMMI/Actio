@@ -1,3 +1,4 @@
+import { Inject, Injectable } from '@nestjs/common';
 import { EntityNotFoundError } from '../../../domain/errors/entity-not-found.error';
 import { TimeBucket } from '../../../domain/value-objects/time-bucket.value-object';
 import { EnergyLevel } from '../../../domain/value-objects/energy-level.value-object';
@@ -8,11 +9,13 @@ import {
   ListActionsByContextOutput,
 } from '../../dtos/actions/list-actions-by-context.dto';
 import { toActionDto } from '../../mappers/action.mapper';
+import { IListActionsByContextUseCase } from '../../interfaces/use-cases/actions/list-actions-by-context.usecase.interface';
 
-export class ListActionsByContextUseCase {
+@Injectable()
+export class ListActionsByContextUseCase implements IListActionsByContextUseCase {
   constructor(
-    private readonly contexts: IContextRepository,
-    private readonly actions: IActionRepository,
+    @Inject(IContextRepository) private readonly contexts: IContextRepository,
+    @Inject(IActionRepository) private readonly actions: IActionRepository,
   ) {}
 
   async execute(

@@ -1,5 +1,7 @@
 import { CapturedItem } from '../../entities/captured-item.entity';
 
+export const ICapturedItemRepository = Symbol('ICapturedItemRepository');
+
 export interface ICapturedItemRepository {
   saveForUser(userId: string, item: CapturedItem): Promise<CapturedItem>;
   findByIdForUser(userId: string, id: string): Promise<CapturedItem | null>;

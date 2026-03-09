@@ -1,3 +1,4 @@
+import { Inject, Injectable } from '@nestjs/common';
 import { Context } from '../../../domain/entities/context.entity';
 import { IContextRepository } from '../../../domain/interfaces/repositories/context-repository.interface';
 import { IIdGenerator } from '../../interfaces/services/id-generator.interface';
@@ -6,11 +7,13 @@ import {
   CreateContextOutput,
 } from '../../dtos/contexts/create-context.dto';
 import { toContextDto } from '../../mappers/context.mapper';
+import { ICreateContextUseCase } from '../../interfaces/use-cases/contexts/create-context.usecase.interface';
 
-export class CreateContextUseCase {
+@Injectable()
+export class CreateContextUseCase implements ICreateContextUseCase {
   constructor(
-    private readonly contexts: IContextRepository,
-    private readonly ids: IIdGenerator,
+    @Inject(IContextRepository) private readonly contexts: IContextRepository,
+    @Inject(IIdGenerator) private readonly ids: IIdGenerator,
   ) {}
 
   async execute(input: CreateContextInput): Promise<CreateContextOutput> {

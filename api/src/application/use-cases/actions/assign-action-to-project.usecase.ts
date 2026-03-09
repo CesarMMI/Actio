@@ -1,3 +1,4 @@
+import { Inject, Injectable } from '@nestjs/common';
 import { EntityNotFoundError } from '../../../domain/errors/entity-not-found.error';
 import { IActionRepository } from '../../../domain/interfaces/repositories/action-repository.interface';
 import { IProjectRepository } from '../../../domain/interfaces/repositories/project-repository.interface';
@@ -6,11 +7,13 @@ import {
   AssignActionToProjectOutput,
 } from '../../dtos/actions/assign-action-to-project.dto';
 import { toActionDto } from '../../mappers/action.mapper';
+import { IAssignActionToProjectUseCase } from '../../interfaces/use-cases/actions/assign-action-to-project.usecase.interface';
 
-export class AssignActionToProjectUseCase {
+@Injectable()
+export class AssignActionToProjectUseCase implements IAssignActionToProjectUseCase {
   constructor(
-    private readonly actions: IActionRepository,
-    private readonly projects: IProjectRepository,
+    @Inject(IActionRepository) private readonly actions: IActionRepository,
+    @Inject(IProjectRepository) private readonly projects: IProjectRepository,
   ) {}
 
   async execute(

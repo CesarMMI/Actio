@@ -1,5 +1,7 @@
 import { Context } from '../../entities/context.entity';
 
+export const IContextRepository = Symbol('IContextRepository');
+
 export interface IContextRepository {
   saveForUser(userId: string, context: Context): Promise<Context>;
   findByIdForUser(userId: string, id: string): Promise<Context | null>;

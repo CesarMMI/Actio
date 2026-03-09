@@ -1,3 +1,4 @@
+import { Inject, Injectable } from '@nestjs/common';
 import { EntityNotFoundError } from '../../../domain/errors/entity-not-found.error';
 import { IContextRepository } from '../../../domain/interfaces/repositories/context-repository.interface';
 import {
@@ -5,9 +6,13 @@ import {
   RenameContextOutput,
 } from '../../dtos/contexts/rename-context.dto';
 import { toContextDto } from '../../mappers/context.mapper';
+import { IRenameContextUseCase } from '../../interfaces/use-cases/contexts/rename-context.usecase.interface';
 
-export class RenameContextUseCase {
-  constructor(private readonly contexts: IContextRepository) {}
+@Injectable()
+export class RenameContextUseCase implements IRenameContextUseCase {
+  constructor(
+    @Inject(IContextRepository) private readonly contexts: IContextRepository,
+  ) {}
 
   async execute(input: RenameContextInput): Promise<RenameContextOutput> {
     const ctx = await this.contexts.findByIdForUser(

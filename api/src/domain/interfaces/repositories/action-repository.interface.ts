@@ -1,6 +1,8 @@
 import { Action } from '../../entities/action.entity';
 import { ActionQueryFiltersDto } from '../../dtos/action-query-filters.dto';
 
+export const IActionRepository = Symbol('IActionRepository');
+
 export interface IActionRepository {
   saveForUser(userId: string, action: Action): Promise<Action>;
   saveManyForUser(userId: string, actions: Action[]): Promise<Action[]>;

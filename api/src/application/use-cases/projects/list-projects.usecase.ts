@@ -1,14 +1,17 @@
+import { Inject, Injectable } from '@nestjs/common';
 import { IActionRepository } from '../../../domain/interfaces/repositories/action-repository.interface';
 import { IProjectRepository } from '../../../domain/interfaces/repositories/project-repository.interface';
 import {
   ListProjectsInput,
   ListProjectsOutput,
 } from '../../dtos/projects/list-projects.dto';
+import { IListProjectsUseCase } from '../../interfaces/use-cases/projects/list-projects.usecase.interface';
 
-export class ListProjectsUseCase {
+@Injectable()
+export class ListProjectsUseCase implements IListProjectsUseCase {
   constructor(
-    private readonly projects: IProjectRepository,
-    private readonly actions: IActionRepository,
+    @Inject(IProjectRepository) private readonly projects: IProjectRepository,
+    @Inject(IActionRepository) private readonly actions: IActionRepository,
   ) {}
 
   async execute(input: ListProjectsInput): Promise<ListProjectsOutput> {

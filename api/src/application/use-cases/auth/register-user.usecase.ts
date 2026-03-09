@@ -1,3 +1,4 @@
+import { Inject, Injectable } from '@nestjs/common';
 import { User } from '../../../domain/entities/user.entity';
 import { ConflictError } from '../../errors/conflict.error';
 import { IUserRepository } from '../../../domain/interfaces/repositories/user-repository.interface';
@@ -7,12 +8,14 @@ import {
   RegisterUserInput,
   RegisterUserOutput,
 } from '../../dtos/auth/register-user.dto';
+import { IRegisterUserUseCase } from '../../interfaces/use-cases/auth/register-user.usecase.interface';
 
-export class RegisterUserUseCase {
+@Injectable()
+export class RegisterUserUseCase implements IRegisterUserUseCase {
   constructor(
-    private readonly users: IUserRepository,
-    private readonly ids: IIdGenerator,
-    private readonly hasher: IPasswordHasher,
+    @Inject(IUserRepository) private readonly users: IUserRepository,
+    @Inject(IIdGenerator) private readonly ids: IIdGenerator,
+    @Inject(IPasswordHasher) private readonly hasher: IPasswordHasher,
   ) {}
 
   async execute(input: RegisterUserInput): Promise<RegisterUserOutput> {

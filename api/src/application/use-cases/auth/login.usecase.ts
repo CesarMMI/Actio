@@ -1,14 +1,17 @@
+import { Inject, Injectable } from '@nestjs/common';
 import { AuthenticationError } from '../../errors/authentication.error';
 import { IUserRepository } from '../../../domain/interfaces/repositories/user-repository.interface';
 import { IPasswordHasher } from '../../interfaces/services/password-hasher.interface';
 import { ITokenService } from '../../interfaces/services/token-service.interface';
 import { LoginInput, LoginOutput } from '../../dtos/auth/login.dto';
+import { ILoginUseCase } from '../../interfaces/use-cases/auth/login.usecase.interface';
 
-export class LoginUseCase {
+@Injectable()
+export class LoginUseCase implements ILoginUseCase {
   constructor(
-    private readonly users: IUserRepository,
-    private readonly hasher: IPasswordHasher,
-    private readonly tokens: ITokenService,
+    @Inject(IUserRepository) private readonly users: IUserRepository,
+    @Inject(IPasswordHasher) private readonly hasher: IPasswordHasher,
+    @Inject(ITokenService) private readonly tokens: ITokenService,
   ) {}
 
   async execute(input: LoginInput): Promise<LoginOutput> {

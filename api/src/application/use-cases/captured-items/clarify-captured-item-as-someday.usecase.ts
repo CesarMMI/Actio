@@ -1,3 +1,4 @@
+import { Inject, Injectable } from '@nestjs/common';
 import { EntityNotFoundError } from '../../../domain/errors/entity-not-found.error';
 import { ICapturedItemRepository } from '../../../domain/interfaces/repositories/captured-item-repository.interface';
 import {
@@ -5,9 +6,13 @@ import {
   ClarifyCapturedItemTerminalOutput,
 } from '../../dtos/captured-items/clarify-terminal.dto';
 import { toCapturedItemDto } from '../../mappers/captured-item.mapper';
+import { IClarifyCapturedItemAsSomedayUseCase } from '../../interfaces/use-cases/captured-items/clarify-captured-item-as-someday.usecase.interface';
 
-export class ClarifyCapturedItemAsSomedayUseCase {
-  constructor(private readonly items: ICapturedItemRepository) {}
+@Injectable()
+export class ClarifyCapturedItemAsSomedayUseCase implements IClarifyCapturedItemAsSomedayUseCase {
+  constructor(
+    @Inject(ICapturedItemRepository) private readonly items: ICapturedItemRepository,
+  ) {}
 
   async execute(
     input: ClarifyCapturedItemTerminalInput,

@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Global, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { JwtModule } from '@nestjs/jwt';
 
@@ -22,52 +22,34 @@ import { JwtTokenService } from './services/jwt-token-service';
 import { UuidIdGenerator } from './services/uuid-id-generator';
 import { SystemClock } from './services/system-clock';
 
+import { IUserRepository } from '../domain/interfaces/repositories/user-repository.interface';
+import { ICapturedItemRepository } from '../domain/interfaces/repositories/captured-item-repository.interface';
+import { IActionRepository } from '../domain/interfaces/repositories/action-repository.interface';
+import { IProjectRepository } from '../domain/interfaces/repositories/project-repository.interface';
+import { IContextRepository } from '../domain/interfaces/repositories/context-repository.interface';
+import { IUnitOfWork } from '../application/interfaces/unit-of-work.interface';
+import { IPasswordHasher } from '../application/interfaces/services/password-hasher.interface';
+import { ITokenService } from '../application/interfaces/services/token-service.interface';
+import { IIdGenerator } from '../application/interfaces/services/id-generator.interface';
+import { IClock } from '../application/interfaces/services/clock.interface';
+
 const repositories = [
-  {
-    provide: 'USER_REPOSITORY',
-    useClass: TypeOrmUserRepository,
-  },
-  {
-    provide: 'CAPTURED_ITEM_REPOSITORY',
-    useClass: TypeOrmCapturedItemRepository,
-  },
-  {
-    provide: 'ACTION_REPOSITORY',
-    useClass: TypeOrmActionRepository,
-  },
-  {
-    provide: 'PROJECT_REPOSITORY',
-    useClass: TypeOrmProjectRepository,
-  },
-  {
-    provide: 'CONTEXT_REPOSITORY',
-    useClass: TypeOrmContextRepository,
-  },
-  {
-    provide: 'UNIT_OF_WORK',
-    useClass: TypeOrmUnitOfWork,
-  },
+  { provide: IUserRepository, useClass: TypeOrmUserRepository },
+  { provide: ICapturedItemRepository, useClass: TypeOrmCapturedItemRepository },
+  { provide: IActionRepository, useClass: TypeOrmActionRepository },
+  { provide: IProjectRepository, useClass: TypeOrmProjectRepository },
+  { provide: IContextRepository, useClass: TypeOrmContextRepository },
+  { provide: IUnitOfWork, useClass: TypeOrmUnitOfWork },
 ];
 
 const services = [
-  {
-    provide: 'PASSWORD_HASHER',
-    useClass: BcryptPasswordHasher,
-  },
-  {
-    provide: 'TOKEN_SERVICE',
-    useClass: JwtTokenService,
-  },
-  {
-    provide: 'ID_GENERATOR',
-    useClass: UuidIdGenerator,
-  },
-  {
-    provide: 'CLOCK',
-    useClass: SystemClock,
-  },
+  { provide: IPasswordHasher, useClass: BcryptPasswordHasher },
+  { provide: ITokenService, useClass: JwtTokenService },
+  { provide: IIdGenerator, useClass: UuidIdGenerator },
+  { provide: IClock, useClass: SystemClock },
 ];
 
+@Global()
 @Module({
   imports: [
     TypeOrmModule.forRootAsync({
@@ -82,8 +64,8 @@ const services = [
     ]),
     JwtModule.registerAsync({
       useFactory: () => ({
-        secret: process.env.JWT_SECRET || 'super-secret', // fallback for dev
-        signOptions: { expiresIn: process.env.JWT_EXPIRES_IN || '1h' },
+        secret: process.env.JWT_SECRET || 'super-secret',
+        signOptions: { expiresIn: (process.env.JWT_EXPIRES_IN || '1h') as any },
       }),
     }),
   ],

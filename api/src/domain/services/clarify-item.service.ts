@@ -1,17 +1,15 @@
 import { Action } from '../entities/action.entity';
 import { CapturedItem } from '../entities/captured-item.entity';
-import {
-  ClarifyAsActionResult,
-  ClarifyAsProjectResult,
-  IClarifyItemService,
-} from '../interfaces/services/clarify-item-service.interface';
+import { IClarifyItemService } from '../interfaces/services/clarify-item-service.interface';
+import { ClarifyAsActionResultDto } from '../dtos/clarify-as-action-result.dto';
+import { ClarifyAsProjectResultDto } from '../dtos/clarify-as-project-result.dto';
 import { Project } from '../entities/project.entity';
 
 export class ClarifyItemService implements IClarifyItemService {
   clarifyAsAction(
     item: CapturedItem,
     options: { actionId: string; projectId?: string; contextId?: string },
-  ): ClarifyAsActionResult {
+  ): ClarifyAsActionResultDto {
     item.clarifyAsAction();
 
     const action = Action.create({
@@ -31,7 +29,7 @@ export class ClarifyItemService implements IClarifyItemService {
       projectNameOverride?: string;
       firstActionId?: string;
     },
-  ): ClarifyAsProjectResult {
+  ): ClarifyAsProjectResultDto {
     item.clarifyAsProject();
 
     const actions: Action[] = [];

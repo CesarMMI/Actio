@@ -1,3 +1,4 @@
+import { Inject, Injectable } from '@nestjs/common';
 import { EntityNotFoundError } from '../../../domain/errors/entity-not-found.error';
 import { IActionRepository } from '../../../domain/interfaces/repositories/action-repository.interface';
 import { IContextRepository } from '../../../domain/interfaces/repositories/context-repository.interface';
@@ -6,11 +7,13 @@ import {
   AssignActionToContextOutput,
 } from '../../dtos/actions/assign-action-to-context.dto';
 import { toActionDto } from '../../mappers/action.mapper';
+import { IAssignActionToContextUseCase } from '../../interfaces/use-cases/actions/assign-action-to-context.usecase.interface';
 
-export class AssignActionToContextUseCase {
+@Injectable()
+export class AssignActionToContextUseCase implements IAssignActionToContextUseCase {
   constructor(
-    private readonly actions: IActionRepository,
-    private readonly contexts: IContextRepository,
+    @Inject(IActionRepository) private readonly actions: IActionRepository,
+    @Inject(IContextRepository) private readonly contexts: IContextRepository,
   ) {}
 
   async execute(
