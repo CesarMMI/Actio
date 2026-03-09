@@ -1,0 +1,18 @@
+{
+  "/inbox": {
+    "target": "http://localhost:3000",
+    "secure": false
+  },
+  "/actions": {
+    "target": "http://localhost:3000",
+    "secure": false
+  },
+  "/projects": {
+    "target": "http://localhost:3000",
+    "secure": false
+  },
+  "/contexts": {
+    "target": "http://localhost:3000",
+    "secure": false
+  }
+}
