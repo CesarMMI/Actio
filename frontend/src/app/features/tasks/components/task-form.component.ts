@@ -1,14 +1,21 @@
-import { ChangeDetectionStrategy, Component, computed, input, OnInit, output, signal } from '@angular/core';
-import { Context } from '../../core/models/context.model';
-import { Project } from '../../core/models/project.model';
-import { TaskPayload } from './tasks.service';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  input,
+  OnInit,
+  output,
+  signal,
+} from '@angular/core';
+import { Context } from '../../../core/models/context.model';
+import { Project } from '../../../core/models/project.model';
+import { TaskPayload } from '../services/tasks.service';
 
 @Component({
   selector: 'app-task-form',
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <form (submit)="submit($event)" class="flex flex-col gap-3">
-
       <div>
         <label for="task-description" class="sr-only">Task description</label>
         <input
@@ -60,15 +67,18 @@ import { TaskPayload } from './tasks.service';
           type="submit"
           [disabled]="saving()"
           class="bg-neutral-100 text-neutral-900 text-sm px-4 py-2 rounded hover:bg-white transition-colors disabled:opacity-50"
-        >{{ saving() ? 'Saving…' : submitLabel() }}</button>
+        >
+          {{ saving() ? 'Saving…' : submitLabel() }}
+        </button>
 
         <button
           type="button"
           (click)="cancel.emit()"
           class="border border-neutral-700 text-neutral-300 text-sm px-4 py-2 rounded hover:bg-neutral-800 transition-colors"
-        >Cancel</button>
+        >
+          Cancel
+        </button>
       </div>
-
     </form>
   `,
 })

@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
-import { ContextsService } from './contexts.service';
-import { ListItemComponent } from '../../shared/list-item/list-item.component';
-import { ContextFormComponent } from './context-form.component';
+import { ContextsService } from '../services/contexts.service';
+import { ListItemComponent } from '../../../shared/components/list-item/list-item.component';
+import { ContextFormComponent } from '../components/context-form.component';
 
 @Component({
   selector: 'app-contexts',
@@ -9,7 +9,6 @@ import { ContextFormComponent } from './context-form.component';
   imports: [ListItemComponent, ContextFormComponent],
   template: `
     <div class="max-w-2xl mx-auto px-6 py-10">
-
       <div class="flex items-baseline justify-between mb-8">
         <div class="flex items-baseline gap-3">
           <h1 class="text-neutral-100 text-lg font-medium">Contexts</h1>
@@ -21,7 +20,9 @@ import { ContextFormComponent } from './context-form.component';
           <button
             (click)="showCreateForm.set(true)"
             class="bg-neutral-100 text-neutral-900 text-sm px-4 py-2 rounded hover:bg-white transition-colors"
-          >New context</button>
+          >
+            New context
+          </button>
         }
       </div>
 
@@ -73,7 +74,6 @@ import { ContextFormComponent } from './context-form.component';
           }
         </ul>
       }
-
     </div>
   `,
 })

@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
 import { RouterLink, ActivatedRoute } from '@angular/router';
-import { ContextsService } from './contexts.service';
-import { ContextFormComponent } from './context-form.component';
+import { ContextsService } from '../services/contexts.service';
+import { ContextFormComponent } from '../components/context-form.component';
 
 @Component({
   selector: 'app-context-detail',
@@ -9,8 +9,10 @@ import { ContextFormComponent } from './context-form.component';
   imports: [RouterLink, ContextFormComponent],
   template: `
     <div class="max-w-2xl mx-auto px-6 py-10">
-
-      <a routerLink="/contexts" class="text-neutral-600 text-xs hover:text-neutral-400 transition-colors mb-8 inline-block">
+      <a
+        routerLink="/contexts"
+        class="text-neutral-600 text-xs hover:text-neutral-400 transition-colors mb-8 inline-block"
+      >
         &larr; Contexts
       </a>
 
@@ -40,11 +42,12 @@ import { ContextFormComponent } from './context-form.component';
             <button
               (click)="editing.set(true)"
               class="border border-neutral-700 text-neutral-300 text-sm px-4 py-2 rounded hover:bg-neutral-800 transition-colors"
-            >Edit</button>
+            >
+              Edit
+            </button>
           </div>
         }
       }
-
     </div>
   `,
 })

@@ -1,9 +1,16 @@
-import { ChangeDetectionStrategy, Component, computed, inject, OnInit, signal } from '@angular/core';
-import { TasksService, TaskPayload } from './tasks.service';
-import { TaskFormComponent } from './task-form.component';
-import { ProjectsService } from '../projects/projects.service';
-import { ContextsService } from '../contexts/contexts.service';
-import { Task } from '../../core/models/task.model';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  OnInit,
+  signal,
+} from '@angular/core';
+import { TasksService, TaskPayload } from '../services/tasks.service';
+import { TaskFormComponent } from '../components/task-form.component';
+import { ProjectsService } from '../../projects/services/projects.service';
+import { ContextsService } from '../../contexts/services/contexts.service';
+import { Task } from '../../../core/models/task.model';
 
 @Component({
   selector: 'app-tasks',
@@ -11,7 +18,6 @@ import { Task } from '../../core/models/task.model';
   imports: [TaskFormComponent],
   template: `
     <div class="max-w-2xl mx-auto px-6 py-10">
-
       <div class="flex items-baseline justify-between mb-8">
         <div class="flex items-baseline gap-3">
           <h1 class="text-neutral-100 text-lg font-medium">Tasks</h1>
@@ -23,7 +29,9 @@ import { Task } from '../../core/models/task.model';
           <button
             (click)="showCreateForm.set(true)"
             class="bg-neutral-100 text-neutral-900 text-sm px-4 py-2 rounded hover:bg-white transition-colors"
-          >New task</button>
+          >
+            New task
+          </button>
         }
       </div>
 
@@ -75,18 +83,41 @@ import { Task } from '../../core/models/task.model';
                 <div class="flex items-start gap-3">
                   <button
                     (click)="onToggleDone(task)"
-                    [attr.aria-label]="task.done ? 'Reopen task: ' + task.description : 'Complete task: ' + task.description"
+                    [attr.aria-label]="
+                      task.done
+                        ? 'Reopen task: ' + task.description
+                        : 'Complete task: ' + task.description
+                    "
                     class="mt-0.5 w-4 h-4 rounded border flex-shrink-0 flex items-center justify-center transition-colors"
-                    [class]="task.done ? 'bg-neutral-100 border-neutral-100' : 'border-neutral-600 hover:border-neutral-400'"
+                    [class]="
+                      task.done
+                        ? 'bg-neutral-100 border-neutral-100'
+                        : 'border-neutral-600 hover:border-neutral-400'
+                    "
                   >
                     @if (task.done) {
-                      <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 text-neutral-900" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        class="w-3 h-3 text-neutral-900"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                        aria-hidden="true"
+                      >
+                        <path
+                          fill-rule="evenodd"
+                          d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                          clip-rule="evenodd"
+                        />
                       </svg>
                     }
                   </button>
                   <div class="flex-1 min-w-0">
-                    <p class="text-sm" [class]="task.done ? 'text-neutral-600 line-through' : 'text-neutral-100'">{{ task.description }}</p>
+                    <p
+                      class="text-sm"
+                      [class]="task.done ? 'text-neutral-600 line-through' : 'text-neutral-100'"
+                    >
+                      {{ task.description }}
+                    </p>
                     @if (tagsFor(task.id).length > 0) {
                       <div class="flex gap-3 flex-wrap mt-2">
                         @for (tag of tagsFor(task.id); track tag) {
@@ -94,9 +125,23 @@ import { Task } from '../../core/models/task.model';
                         }
                       </div>
                     }
-                    <div class="flex gap-4 mt-3" role="group" [attr.aria-label]="'Actions for ' + task.description">
-                      <button (click)="editingId.set(task.id)" class="text-xs text-neutral-400 hover:text-neutral-100 transition-colors">Edit</button>
-                      <button (click)="tasks.delete(task.id)" class="text-xs text-neutral-600 hover:text-red-400 transition-colors">Delete</button>
+                    <div
+                      class="flex gap-4 mt-3"
+                      role="group"
+                      [attr.aria-label]="'Actions for ' + task.description"
+                    >
+                      <button
+                        (click)="editingId.set(task.id)"
+                        class="text-xs text-neutral-400 hover:text-neutral-100 transition-colors"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        (click)="tasks.delete(task.id)"
+                        class="text-xs text-neutral-600 hover:text-red-400 transition-colors"
+                      >
+                        Delete
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -105,7 +150,6 @@ import { Task } from '../../core/models/task.model';
           }
         </ul>
       }
-
     </div>
   `,
 })
@@ -117,13 +161,9 @@ export class TasksComponent implements OnInit {
   showCreateForm = signal(false);
   editingId = signal<string | null>(null);
 
-  private contextMap = computed(() =>
-    new Map(this.contexts.items().map((c) => [c.id, c.title]))
-  );
+  private contextMap = computed(() => new Map(this.contexts.items().map((c) => [c.id, c.title])));
 
-  private projectMap = computed(() =>
-    new Map(this.projects.items().map((p) => [p.id, p.title]))
-  );
+  private projectMap = computed(() => new Map(this.projects.items().map((p) => [p.id, p.title])));
 
   ngOnInit(): void {
     this.tasks.load();

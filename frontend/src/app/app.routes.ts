@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { ShellComponent } from './shared/shell/shell.component';
+import { ShellComponent } from './core/components/shell/shell.component';
 
 export const routes: Routes = [
   {
@@ -13,11 +13,13 @@ export const routes: Routes = [
       },
       {
         path: 'projects',
-        loadChildren: () => import('./features/projects/projects.routes').then((m) => m.PROJECTS_ROUTES),
+        loadChildren: () =>
+          import('./features/projects/projects.routes').then((m) => m.PROJECTS_ROUTES),
       },
       {
         path: 'contexts',
-        loadChildren: () => import('./features/contexts/contexts.routes').then((m) => m.CONTEXTS_ROUTES),
+        loadChildren: () =>
+          import('./features/contexts/contexts.routes').then((m) => m.CONTEXTS_ROUTES),
       },
     ],
   },

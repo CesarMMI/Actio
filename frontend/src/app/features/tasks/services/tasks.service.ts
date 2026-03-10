@@ -1,7 +1,7 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Task } from '../../core/models/task.model';
-import { environment } from '../../../environments/environment';
+import { Task } from '../../../core/models/task.model';
+import { environment } from '../../../../environments/environment';
 
 export interface TaskPayload {
   description: string;

@@ -1,33 +1,33 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Project } from '../../core/models/project.model';
-import { environment } from '../../../environments/environment';
+import { Context } from '../../../core/models/context.model';
+import { environment } from '../../../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
-export class ProjectsService {
+export class ContextsService {
   private readonly http = inject(HttpClient);
-  private readonly apiUrl = `${environment.apiUrl}/projects`;
+  private readonly apiUrl = `${environment.apiUrl}/contexts`;
 
-  items = signal<Project[]>([]);
+  items = signal<Context[]>([]);
   loading = signal(false);
   error = signal<string | null>(null);
 
   saving = signal(false);
 
-  current = signal<Project | null>(null);
+  current = signal<Context | null>(null);
   detailLoading = signal(false);
   detailError = signal<string | null>(null);
 
   load(): void {
     this.loading.set(true);
     this.error.set(null);
-    this.http.get<Project[]>(this.apiUrl).subscribe({
+    this.http.get<Context[]>(this.apiUrl).subscribe({
       next: (data) => {
         this.items.set(data);
         this.loading.set(false);
       },
       error: () => {
-        this.error.set('Failed to load projects');
+        this.error.set('Failed to load contexts');
         this.loading.set(false);
       },
     });
@@ -36,13 +36,13 @@ export class ProjectsService {
   loadOne(id: string): void {
     this.detailLoading.set(true);
     this.detailError.set(null);
-    this.http.get<Project>(`${this.apiUrl}/${id}`).subscribe({
-      next: (project) => {
-        this.current.set(project);
+    this.http.get<Context>(`${this.apiUrl}/${id}`).subscribe({
+      next: (context) => {
+        this.current.set(context);
         this.detailLoading.set(false);
       },
       error: () => {
-        this.detailError.set('Failed to load project');
+        this.detailError.set('Failed to load context');
         this.detailLoading.set(false);
       },
     });
@@ -51,14 +51,14 @@ export class ProjectsService {
   create(title: string, onSuccess: () => void): void {
     this.saving.set(true);
     this.error.set(null);
-    this.http.post<Project>(this.apiUrl, { title }).subscribe({
-      next: (project) => {
-        this.items.update((items) => [...items, project]);
+    this.http.post<Context>(this.apiUrl, { title }).subscribe({
+      next: (context) => {
+        this.items.update((items) => [...items, context]);
         this.saving.set(false);
         onSuccess();
       },
       error: () => {
-        this.error.set('Failed to create project');
+        this.error.set('Failed to create context');
         this.saving.set(false);
       },
     });
@@ -67,15 +67,15 @@ export class ProjectsService {
   update(id: string, title: string, onSuccess: () => void): void {
     this.saving.set(true);
     this.detailError.set(null);
-    this.http.patch<Project>(`${this.apiUrl}/${id}`, { title }).subscribe({
-      next: (project) => {
-        this.current.set(project);
-        this.items.update((items) => items.map((p) => (p.id === id ? project : p)));
+    this.http.patch<Context>(`${this.apiUrl}/${id}`, { title }).subscribe({
+      next: (context) => {
+        this.current.set(context);
+        this.items.update((items) => items.map((c) => (c.id === id ? context : c)));
         this.saving.set(false);
         onSuccess();
       },
       error: () => {
-        this.detailError.set('Failed to update project');
+        this.detailError.set('Failed to update context');
         this.saving.set(false);
       },
     });
@@ -83,8 +83,8 @@ export class ProjectsService {
 
   delete(id: string): void {
     this.http.delete<void>(`${this.apiUrl}/${id}`).subscribe({
-      next: () => this.items.update((items) => items.filter((p) => p.id !== id)),
-      error: () => this.error.set('Failed to delete project'),
+      next: () => this.items.update((items) => items.filter((c) => c.id !== id)),
+      error: () => this.error.set('Failed to delete context'),
     });
   }
 }
