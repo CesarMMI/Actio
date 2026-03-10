@@ -1,24 +1,14 @@
-import { v4 as uuid } from 'uuid';
-import { InvalidProjectTitleError } from '../errors/invalid-project-title.error';
+import { v4 as uuid } from "uuid";
+import { InvalidProjectTitleError } from "../../errors/project/invalid-project-title.error";
+import { Entity } from "../entity/entity";
+import { ProjectProps } from "./project.props";
 
-export interface ProjectProps {
-  readonly id: string;
+export class Project extends Entity {
   title: string;
-  readonly createdAt: Date;
-  updatedAt: Date;
-}
-
-export class Project {
-  readonly id: string;
-  title: string;
-  readonly createdAt: Date;
-  updatedAt: Date;
 
   private constructor(props: ProjectProps) {
-    this.id = props.id;
+    super(props);
     this.title = props.title;
-    this.createdAt = props.createdAt;
-    this.updatedAt = props.updatedAt;
   }
 
   static create(input: { title: string }): Project {
@@ -32,7 +22,7 @@ export class Project {
     });
   }
 
-  static reconstitute(props: ProjectProps): Project {
+  static load(props: ProjectProps): Project {
     return new Project(props);
   }
 

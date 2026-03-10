@@ -1,24 +1,14 @@
-import { v4 as uuid } from 'uuid';
-import { InvalidContextTitleError } from '../errors/invalid-context-title.error';
+import { v4 as uuid } from "uuid";
+import { InvalidContextTitleError } from "../../errors/context/invalid-context-title.error";
+import { Entity } from "../entity/entity";
+import { ContextProps } from "./context.props";
 
-export interface ContextProps {
-  readonly id: string;
+export class Context extends Entity {
   title: string;
-  readonly createdAt: Date;
-  updatedAt: Date;
-}
-
-export class Context {
-  readonly id: string;
-  title: string;
-  readonly createdAt: Date;
-  updatedAt: Date;
 
   private constructor(props: ContextProps) {
-    this.id = props.id;
+    super(props);
     this.title = props.title;
-    this.createdAt = props.createdAt;
-    this.updatedAt = props.updatedAt;
   }
 
   static create(input: { title: string }): Context {
@@ -32,7 +22,7 @@ export class Context {
     });
   }
 
-  static reconstitute(props: ContextProps): Context {
+  static load(props: ContextProps): Context {
     return new Context(props);
   }
 
