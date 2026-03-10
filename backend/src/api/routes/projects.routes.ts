@@ -4,6 +4,7 @@ import { IDeleteProjectUseCase } from '../../application/interfaces/project/dele
 import { IGetProjectUseCase } from '../../application/interfaces/project/get-project.use-case.interface';
 import { IListProjectsUseCase } from '../../application/interfaces/project/list-projects.use-case.interface';
 import { IUpdateProjectUseCase } from '../../application/interfaces/project/update-project.use-case.interface';
+import type { ProjectListQuery } from '../../domain/interfaces/project-list-query';
 
 export function projectsRouter(useCases: {
   createProject: ICreateProjectUseCase;
@@ -22,9 +23,15 @@ export function projectsRouter(useCases: {
     }
   });
   // UC-P03: List Projects
-  router.get('/', async (_req: Request, res: Response, next: NextFunction) => {
+  router.get('/', async (req: Request, res: Response, next: NextFunction) => {
     try {
-      res.json(await useCases.listProjects.execute());
+      const { page, limit, sortBy, order } = req.query;
+      const query: ProjectListQuery = {};
+      if (page !== undefined) query.page = parseInt(String(page), 10);
+      if (limit !== undefined) query.limit = parseInt(String(limit), 10);
+      if (sortBy !== undefined) query.sortBy = String(sortBy) as ProjectListQuery['sortBy'];
+      if (order !== undefined) query.order = String(order) as 'asc' | 'desc';
+      res.json(await useCases.listProjects.execute(query));
     } catch (err) {
       next(err);
     }

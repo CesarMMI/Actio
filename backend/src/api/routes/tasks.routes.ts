@@ -6,6 +6,7 @@ import { IGetTaskUseCase } from '../../application/interfaces/task/get-task.use-
 import { IListTasksUseCase } from '../../application/interfaces/task/list-tasks.use-case.interface';
 import { IReopenTaskUseCase } from '../../application/interfaces/task/reopen-task.use-case.interface';
 import { IUpdateTaskUseCase } from '../../application/interfaces/task/update-task.use-case.interface';
+import type { TaskListQuery } from '../../domain/interfaces/task-list-query';
 
 export function tasksRouter(useCases: {
   createTask: ICreateTaskUseCase;
@@ -31,9 +32,18 @@ export function tasksRouter(useCases: {
     }
   });
   // UC-T03: List Tasks
-  router.get('/', async (_req: Request, res: Response, next: NextFunction) => {
+  router.get('/', async (req: Request, res: Response, next: NextFunction) => {
     try {
-      res.json(await useCases.listTasks.execute());
+      const { done, contextId, projectId, page, limit, sortBy, order } = req.query;
+      const query: TaskListQuery = {};
+      if (done !== undefined) query.done = done === 'true';
+      if (contextId !== undefined) query.contextId = String(contextId);
+      if (projectId !== undefined) query.projectId = String(projectId);
+      if (page !== undefined) query.page = parseInt(String(page), 10);
+      if (limit !== undefined) query.limit = parseInt(String(limit), 10);
+      if (sortBy !== undefined) query.sortBy = String(sortBy) as TaskListQuery['sortBy'];
+      if (order !== undefined) query.order = String(order) as 'asc' | 'desc';
+      res.json(await useCases.listTasks.execute(query));
     } catch (err) {
       next(err);
     }
