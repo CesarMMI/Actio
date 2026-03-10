@@ -1,7 +1,6 @@
 import { DataSource, Repository } from 'typeorm';
-import { Project } from '../../domain/entities/project';
-import { ProjectStatus } from '../../domain/enums';
-import { IProjectRepository } from '../../domain/interfaces';
+import { Project } from '../../domain/entities/project.entity';
+import { IProjectRepository } from '../../domain/interfaces/IProjectRepository';
 import { ProjectOrmEntity } from '../entities/ProjectOrmEntity';
 
 export class TypeOrmProjectRepository implements IProjectRepository {
@@ -11,8 +10,9 @@ export class TypeOrmProjectRepository implements IProjectRepository {
     this.repo = dataSource.getRepository(ProjectOrmEntity);
   }
 
-  async save(project: Project): Promise<void> {
+  async save(project: Project): Promise<Project> {
     await this.repo.save(this.toOrm(project));
+    return project;
   }
 
   async findById(id: string): Promise<Project | null> {
@@ -20,23 +20,38 @@ export class TypeOrmProjectRepository implements IProjectRepository {
     return entity ? this.toDomain(entity) : null;
   }
 
+  async findAll(): Promise<Project[]> {
+    const entities = await this.repo.find({ order: { createdAt: 'ASC' } });
+    return entities.map(e => this.toDomain(e));
+  }
+
+  async findByTitle(title: string): Promise<Project | null> {
+    const entity = await this.repo
+      .createQueryBuilder('proj')
+      .where('LOWER(proj.title) = LOWER(:title)', { title })
+      .getOne();
+    return entity ? this.toDomain(entity) : null;
+  }
+
+  async delete(id: string): Promise<void> {
+    await this.repo.delete(id);
+  }
+
   private toDomain(entity: ProjectOrmEntity): Project {
-    return new Project({
+    return Project.reconstitute({
       id: entity.id,
-      name: entity.name,
-      description: entity.description ?? undefined,
-      status: entity.status as ProjectStatus,
+      title: entity.title,
       createdAt: entity.createdAt,
+      updatedAt: entity.updatedAt,
     });
   }
 
   private toOrm(project: Project): ProjectOrmEntity {
     const entity = new ProjectOrmEntity();
     entity.id = project.id;
-    entity.name = project.name;
-    entity.description = project.description ?? null;
-    entity.status = project.status;
+    entity.title = project.title;
     entity.createdAt = project.createdAt;
+    entity.updatedAt = project.updatedAt;
     return entity;
   }
 }

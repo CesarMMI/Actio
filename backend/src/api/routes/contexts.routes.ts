@@ -1,22 +1,22 @@
 import { Router, Request, Response, NextFunction } from 'express';
 import {
-  ICreateContextUseCase,
-  IRenameContextUseCase,
-  IActivateContextUseCase,
-  IDeactivateContextUseCase,
-  IExecuteByContextUseCase,
+  CreateContextUseCase,
+  GetContextUseCase,
+  ListContextsUseCase,
+  UpdateContextUseCase,
+  DeleteContextUseCase,
 } from '../../application';
 
 export function contextsRouter(useCases: {
-  createContext: ICreateContextUseCase;
-  renameContext: IRenameContextUseCase;
-  activateContext: IActivateContextUseCase;
-  deactivateContext: IDeactivateContextUseCase;
-  executeByContext: IExecuteByContextUseCase;
+  createContext: CreateContextUseCase;
+  getContext: GetContextUseCase;
+  listContexts: ListContextsUseCase;
+  updateContext: UpdateContextUseCase;
+  deleteContext: DeleteContextUseCase;
 }): Router {
   const router = Router();
 
-  // UC-18: Create a Context
+  // UC-C01: Create Context
   router.post('/', async (req: Request, res: Response, next: NextFunction) => {
     try {
       const context = await useCases.createContext.execute(req.body);
@@ -26,41 +26,41 @@ export function contextsRouter(useCases: {
     }
   });
 
-  // UC-19: Rename a Context
-  router.patch('/:id/name', async (req: Request, res: Response, next: NextFunction) => {
+  // UC-C03: List Contexts
+  router.get('/', async (_req: Request, res: Response, next: NextFunction) => {
     try {
-      await useCases.renameContext.execute({ contextId: req.params.id, name: req.body.name });
-      res.status(204).send();
+      const contexts = await useCases.listContexts.execute();
+      res.json(contexts);
     } catch (err) {
       next(err);
     }
   });
 
-  // UC-21: Activate a Context
-  router.post('/:id/activate', async (req: Request, res: Response, next: NextFunction) => {
+  // UC-C02: Get Context
+  router.get('/:id', async (req: Request, res: Response, next: NextFunction) => {
     try {
-      await useCases.activateContext.execute(req.params.id);
-      res.status(204).send();
+      const context = await useCases.getContext.execute({ id: req.params.id });
+      res.json(context);
     } catch (err) {
       next(err);
     }
   });
 
-  // UC-20: Deactivate a Context
-  router.post('/:id/deactivate', async (req: Request, res: Response, next: NextFunction) => {
+  // UC-C04: Update Context
+  router.patch('/:id', async (req: Request, res: Response, next: NextFunction) => {
     try {
-      await useCases.deactivateContext.execute(req.params.id);
-      res.status(204).send();
+      const context = await useCases.updateContext.execute({ id: req.params.id, title: req.body.title });
+      res.json(context);
     } catch (err) {
       next(err);
     }
   });
 
-  // UC-22: Execute by Context
-  router.get('/:id/actions', async (req: Request, res: Response, next: NextFunction) => {
+  // UC-C05: Delete Context
+  router.delete('/:id', async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const actions = await useCases.executeByContext.execute(req.params.id);
-      res.json(actions);
+      await useCases.deleteContext.execute({ id: req.params.id });
+      res.status(204).send();
     } catch (err) {
       next(err);
     }

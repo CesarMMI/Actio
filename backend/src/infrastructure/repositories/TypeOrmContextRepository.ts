@@ -1,6 +1,6 @@
 import { DataSource, Repository } from 'typeorm';
-import { Context } from '../../domain/entities/context';
-import { IContextRepository } from '../../domain/interfaces';
+import { Context } from '../../domain/entities/context.entity';
+import { IContextRepository } from '../../domain/interfaces/IContextRepository';
 import { ContextOrmEntity } from '../entities/ContextOrmEntity';
 
 export class TypeOrmContextRepository implements IContextRepository {
@@ -10,8 +10,9 @@ export class TypeOrmContextRepository implements IContextRepository {
     this.repo = dataSource.getRepository(ContextOrmEntity);
   }
 
-  async save(context: Context): Promise<void> {
+  async save(context: Context): Promise<Context> {
     await this.repo.save(this.toOrm(context));
+    return context;
   }
 
   async findById(id: string): Promise<Context | null> {
@@ -19,23 +20,38 @@ export class TypeOrmContextRepository implements IContextRepository {
     return entity ? this.toDomain(entity) : null;
   }
 
+  async findAll(): Promise<Context[]> {
+    const entities = await this.repo.find({ order: { createdAt: 'ASC' } });
+    return entities.map(e => this.toDomain(e));
+  }
+
+  async findByTitle(title: string): Promise<Context | null> {
+    const entity = await this.repo
+      .createQueryBuilder('ctx')
+      .where('LOWER(ctx.title) = LOWER(:title)', { title })
+      .getOne();
+    return entity ? this.toDomain(entity) : null;
+  }
+
+  async delete(id: string): Promise<void> {
+    await this.repo.delete(id);
+  }
+
   private toDomain(entity: ContextOrmEntity): Context {
-    return new Context({
+    return Context.reconstitute({
       id: entity.id,
-      name: entity.name,
-      description: entity.description ?? undefined,
-      active: entity.active,
+      title: entity.title,
       createdAt: entity.createdAt,
+      updatedAt: entity.updatedAt,
     });
   }
 
   private toOrm(context: Context): ContextOrmEntity {
     const entity = new ContextOrmEntity();
     entity.id = context.id;
-    entity.name = context.name;
-    entity.description = context.description ?? null;
-    entity.active = context.active;
+    entity.title = context.title;
     entity.createdAt = context.createdAt;
+    entity.updatedAt = context.updatedAt;
     return entity;
   }
 }

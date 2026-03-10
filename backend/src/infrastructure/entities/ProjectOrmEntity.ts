@@ -6,14 +6,11 @@ export class ProjectOrmEntity {
   id!: string;
 
   @Column('text')
-  name!: string;
-
-  @Column({ type: 'text', nullable: true })
-  description!: string | null;
-
-  @Column('text')
-  status!: string;
+  title!: string;
 
   @Column('datetime')
   createdAt!: Date;
+
+  @Column('datetime')
+  updatedAt!: Date;
 }

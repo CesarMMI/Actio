@@ -1,65 +1,42 @@
-// Errors
-export { CapturedItemNotFoundError } from './errors/captured-item-not-found.error';
-export { ActionNotFoundError } from './errors/action-not-found.error';
-export { ProjectNotFoundError } from './errors/project-not-found.error';
-export { ContextNotFoundError } from './errors/context-not-found.error';
-
-// Interfaces — CapturedItem
-export { IQuickCaptureUseCase, QuickCaptureInput } from './interfaces/captured-item/quick-capture.use-case.interface';
-export { ICaptureAndResolveUseCase, CaptureAndResolveInput, CaptureAndResolveOutput } from './interfaces/captured-item/capture-and-resolve.use-case.interface';
-export { IViewInboxUseCase } from './interfaces/captured-item/view-inbox.use-case.interface';
-export { IClarifyAsActionUseCase, ClarifyAsActionInput } from './interfaces/captured-item/clarify-as-action.use-case.interface';
-export { IClarifyAsProjectUseCase, ClarifyAsProjectInput } from './interfaces/captured-item/clarify-as-project.use-case.interface';
-export { IClarifyAsReferenceUseCase } from './interfaces/captured-item/clarify-as-reference.use-case.interface';
-export { IClarifyAsSomedayUseCase } from './interfaces/captured-item/clarify-as-someday.use-case.interface';
-export { IMoveToTrashUseCase } from './interfaces/captured-item/move-to-trash.use-case.interface';
-
-// Interfaces — Action
-export { IViewActionsUseCase } from './interfaces/action/view-actions.use-case.interface';
-export { IAssignActionToProjectUseCase, AssignActionToProjectInput } from './interfaces/action/assign-action-to-project.use-case.interface';
-export { IAssignActionToContextUseCase, AssignActionToContextInput } from './interfaces/action/assign-action-to-context.use-case.interface';
-export { ICompleteActionUseCase } from './interfaces/action/complete-action.use-case.interface';
-export { IArchiveActionUseCase } from './interfaces/action/archive-action.use-case.interface';
-
-// Interfaces — Project
-export { IViewProjectUseCase, ViewProjectOutput } from './interfaces/project/view-project.use-case.interface';
-export { IRenameProjectUseCase, RenameProjectInput } from './interfaces/project/rename-project.use-case.interface';
-export { ICompleteProjectUseCase } from './interfaces/project/complete-project.use-case.interface';
-export { IArchiveProjectUseCase } from './interfaces/project/archive-project.use-case.interface';
+// Interfaces — Task
+export type { CreateTaskInput } from './interfaces/task/create-task.input';
+export type { GetTaskInput } from './interfaces/task/get-task.input';
+export type { UpdateTaskInput } from './interfaces/task/update-task.input';
+export type { DeleteTaskInput } from './interfaces/task/delete-task.input';
+export type { AssignChildTaskInput } from './interfaces/task/assign-child-task.input';
+export type { RemoveChildTaskLinkInput } from './interfaces/task/remove-child-task-link.input';
 
 // Interfaces — Context
-export { ICreateContextUseCase, CreateContextInput } from './interfaces/context/create-context.use-case.interface';
-export { IRenameContextUseCase, RenameContextInput } from './interfaces/context/rename-context.use-case.interface';
-export { IActivateContextUseCase } from './interfaces/context/activate-context.use-case.interface';
-export { IDeactivateContextUseCase } from './interfaces/context/deactivate-context.use-case.interface';
-export { IExecuteByContextUseCase } from './interfaces/context/execute-by-context.use-case.interface';
+export type { CreateContextInput } from './interfaces/context/create-context.input';
+export type { GetContextInput } from './interfaces/context/get-context.input';
+export type { UpdateContextInput } from './interfaces/context/update-context.input';
+export type { DeleteContextInput } from './interfaces/context/delete-context.input';
 
-// Use cases — CapturedItem
-export { QuickCaptureUseCase } from './use-cases/captured-item/quick-capture.use-case';
-export { CaptureAndResolveUseCase } from './use-cases/captured-item/capture-and-resolve.use-case';
-export { ViewInboxUseCase } from './use-cases/captured-item/view-inbox.use-case';
-export { ClarifyAsActionUseCase } from './use-cases/captured-item/clarify-as-action.use-case';
-export { ClarifyAsProjectUseCase } from './use-cases/captured-item/clarify-as-project.use-case';
-export { ClarifyAsReferenceUseCase } from './use-cases/captured-item/clarify-as-reference.use-case';
-export { ClarifyAsSomedayUseCase } from './use-cases/captured-item/clarify-as-someday.use-case';
-export { MoveToTrashUseCase } from './use-cases/captured-item/move-to-trash.use-case';
+// Interfaces — Project
+export type { CreateProjectInput } from './interfaces/project/create-project.input';
+export type { GetProjectInput } from './interfaces/project/get-project.input';
+export type { UpdateProjectInput } from './interfaces/project/update-project.input';
+export type { DeleteProjectInput } from './interfaces/project/delete-project.input';
 
-// Use cases — Action
-export { ViewActionsUseCase } from './use-cases/action/view-actions.use-case';
-export { AssignActionToProjectUseCase } from './use-cases/action/assign-action-to-project.use-case';
-export { AssignActionToContextUseCase } from './use-cases/action/assign-action-to-context.use-case';
-export { CompleteActionUseCase } from './use-cases/action/complete-action.use-case';
-export { ArchiveActionUseCase } from './use-cases/action/archive-action.use-case';
-
-// Use cases — Project
-export { ViewProjectUseCase } from './use-cases/project/view-project.use-case';
-export { RenameProjectUseCase } from './use-cases/project/rename-project.use-case';
-export { CompleteProjectUseCase } from './use-cases/project/complete-project.use-case';
-export { ArchiveProjectUseCase } from './use-cases/project/archive-project.use-case';
+// Use cases — Task
+export { CreateTaskUseCase } from './use-cases/task/create-task.use-case';
+export { GetTaskUseCase } from './use-cases/task/get-task.use-case';
+export { ListTasksUseCase } from './use-cases/task/list-tasks.use-case';
+export { UpdateTaskUseCase } from './use-cases/task/update-task.use-case';
+export { DeleteTaskUseCase } from './use-cases/task/delete-task.use-case';
+export { AssignChildTaskUseCase } from './use-cases/task/assign-child-task.use-case';
+export { RemoveChildTaskLinkUseCase } from './use-cases/task/remove-child-task-link.use-case';
 
 // Use cases — Context
 export { CreateContextUseCase } from './use-cases/context/create-context.use-case';
-export { RenameContextUseCase } from './use-cases/context/rename-context.use-case';
-export { DeactivateContextUseCase } from './use-cases/context/deactivate-context.use-case';
-export { ActivateContextUseCase } from './use-cases/context/activate-context.use-case';
-export { ExecuteByContextUseCase } from './use-cases/context/execute-by-context.use-case';
+export { GetContextUseCase } from './use-cases/context/get-context.use-case';
+export { ListContextsUseCase } from './use-cases/context/list-contexts.use-case';
+export { UpdateContextUseCase } from './use-cases/context/update-context.use-case';
+export { DeleteContextUseCase } from './use-cases/context/delete-context.use-case';
+
+// Use cases — Project
+export { CreateProjectUseCase } from './use-cases/project/create-project.use-case';
+export { GetProjectUseCase } from './use-cases/project/get-project.use-case';
+export { ListProjectsUseCase } from './use-cases/project/list-projects.use-case';
+export { UpdateProjectUseCase } from './use-cases/project/update-project.use-case';
+export { DeleteProjectUseCase } from './use-cases/project/delete-project.use-case';

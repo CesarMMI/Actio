@@ -1,0 +1,524 @@
+openapi: 3.1.0
+info:
+  title: Actio API
+  version: 1.0.0
+  description: Task management API following GTD principles.
+
+servers:
+  - url: http://localhost:3000
+    description: Local development
+
+components:
+  schemas:
+    Task:
+      type: object
+      required: [id, description, createdAt, updatedAt]
+      properties:
+        id:
+          type: string
+          format: uuid
+        description:
+          type: string
+        contextId:
+          type: string
+          format: uuid
+          nullable: true
+        projectId:
+          type: string
+          format: uuid
+          nullable: true
+        parentTaskId:
+          type: string
+          format: uuid
+          nullable: true
+        childTaskId:
+          type: string
+          format: uuid
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    Context:
+      type: object
+      required: [id, title, createdAt, updatedAt]
+      properties:
+        id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    Project:
+      type: object
+      required: [id, title, createdAt, updatedAt]
+      properties:
+        id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    TaskPair:
+      type: object
+      required: [parent, child]
+      properties:
+        parent:
+          $ref: '#/components/schemas/Task'
+        child:
+          $ref: '#/components/schemas/Task'
+
+    Problem:
+      type: object
+      required: [type, title, status, detail, instance]
+      properties:
+        type:
+          type: string
+          format: uri
+          example: https://actio.app/errors/task-not-found
+        title:
+          type: string
+          example: Task Not Found
+        status:
+          type: integer
+          example: 404
+        detail:
+          type: string
+          example: Task with id "abc-123" was not found.
+        instance:
+          type: string
+          example: /tasks/abc-123
+
+  responses:
+    NotFound:
+      description: Resource not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Problem'
+
+    Conflict:
+      description: Title already exists.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Problem'
+
+    UnprocessableEntity:
+      description: Validation or domain rule violation.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Problem'
+
+paths:
+
+  # ──────────────────────────────────────────
+  # Tasks
+  # ──────────────────────────────────────────
+
+  /tasks:
+    post:
+      summary: UC-T01 — Create Task
+      operationId: createTask
+      tags: [Tasks]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [description]
+              properties:
+                description:
+                  type: string
+                  example: Buy groceries
+                contextId:
+                  type: string
+                  format: uuid
+                projectId:
+                  type: string
+                  format: uuid
+                parentTaskId:
+                  type: string
+                  format: uuid
+      responses:
+        '201':
+          description: Task created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+
+    get:
+      summary: UC-T03 — List Tasks
+      operationId: listTasks
+      tags: [Tasks]
+      responses:
+        '200':
+          description: Array of all tasks.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Task'
+
+  /tasks/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+
+    get:
+      summary: UC-T02 — Get Task
+      operationId: getTask
+      tags: [Tasks]
+      responses:
+        '200':
+          description: The requested task.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    patch:
+      summary: UC-T04 — Update Task
+      operationId: updateTask
+      tags: [Tasks]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                description:
+                  type: string
+                  example: Updated description
+                contextId:
+                  type: string
+                  format: uuid
+                  nullable: true
+                projectId:
+                  type: string
+                  format: uuid
+                  nullable: true
+      responses:
+        '200':
+          description: Updated task.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+
+    delete:
+      summary: UC-T05 — Delete Task
+      operationId: deleteTask
+      tags: [Tasks]
+      responses:
+        '204':
+          description: Task deleted.
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /tasks/{id}/child:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: ID of the parent task.
+        schema:
+          type: string
+          format: uuid
+
+    post:
+      summary: UC-T06 — Assign Child Task
+      operationId: assignChildTask
+      tags: [Tasks]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [childId]
+              properties:
+                childId:
+                  type: string
+                  format: uuid
+      responses:
+        '200':
+          description: Both updated tasks.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskPair'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+
+    delete:
+      summary: UC-T07 — Remove Child Task Link
+      operationId: removeChildTaskLink
+      tags: [Tasks]
+      responses:
+        '200':
+          description: Both updated tasks after unlinking.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskPair'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+
+  # ──────────────────────────────────────────
+  # Contexts
+  # ──────────────────────────────────────────
+
+  /contexts:
+    post:
+      summary: UC-C01 — Create Context
+      operationId: createContext
+      tags: [Contexts]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [title]
+              properties:
+                title:
+                  type: string
+                  example: Home
+      responses:
+        '201':
+          description: Context created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Context'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+
+    get:
+      summary: UC-C03 — List Contexts
+      operationId: listContexts
+      tags: [Contexts]
+      responses:
+        '200':
+          description: Array of all contexts.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Context'
+
+  /contexts/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+
+    get:
+      summary: UC-C02 — Get Context
+      operationId: getContext
+      tags: [Contexts]
+      responses:
+        '200':
+          description: The requested context.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Context'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    patch:
+      summary: UC-C04 — Update Context
+      operationId: updateContext
+      tags: [Contexts]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [title]
+              properties:
+                title:
+                  type: string
+                  example: Office
+      responses:
+        '200':
+          description: Updated context.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Context'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+
+    delete:
+      summary: UC-C05 — Delete Context
+      operationId: deleteContext
+      tags: [Contexts]
+      responses:
+        '204':
+          description: Context deleted.
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+
+  # ──────────────────────────────────────────
+  # Projects
+  # ──────────────────────────────────────────
+
+  /projects:
+    post:
+      summary: UC-P01 — Create Project
+      operationId: createProject
+      tags: [Projects]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [title]
+              properties:
+                title:
+                  type: string
+                  example: Launch website
+      responses:
+        '201':
+          description: Project created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+
+    get:
+      summary: UC-P03 — List Projects
+      operationId: listProjects
+      tags: [Projects]
+      responses:
+        '200':
+          description: Array of all projects.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Project'
+
+  /projects/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+
+    get:
+      summary: UC-P02 — Get Project
+      operationId: getProject
+      tags: [Projects]
+      responses:
+        '200':
+          description: The requested project.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    patch:
+      summary: UC-P04 — Update Project
+      operationId: updateProject
+      tags: [Projects]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [title]
+              properties:
+                title:
+                  type: string
+                  example: Redesign website
+      responses:
+        '200':
+          description: Updated project.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+
+    delete:
+      summary: UC-P05 — Delete Project
+      operationId: deleteProject
+      tags: [Projects]
+      responses:
+        '204':
+          description: Project deleted.
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'

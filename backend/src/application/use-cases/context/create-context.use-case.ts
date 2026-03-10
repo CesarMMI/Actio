@@ -1,20 +1,16 @@
-import { v4 as uuidv4 } from 'uuid';
-import { Context } from '../../../domain/entities/context';
-import { IContextRepository } from '../../../domain/interfaces';
-import { ICreateContextUseCase, CreateContextInput } from '../../interfaces/context/create-context.use-case.interface';
+import { Context } from '../../../domain/entities/context.entity';
+import { ContextTitleAlreadyExistsError } from '../../../domain/errors/context-title-already-exists.error';
+import { IContextRepository } from '../../../domain/interfaces/IContextRepository';
+import type { CreateContextInput } from '../../interfaces/context/create-context.input';
 
-export class CreateContextUseCase implements ICreateContextUseCase {
+export class CreateContextUseCase {
   constructor(private readonly contexts: IContextRepository) {}
 
   async execute(input: CreateContextInput): Promise<Context> {
-    const context = new Context({
-      id: uuidv4(),
-      name: input.name,
-      description: input.description,
-      active: true,
-      createdAt: new Date(),
-    });
-    await this.contexts.save(context);
-    return context;
+    const existing = await this.contexts.findByTitle(input.title);
+    if (existing) throw new ContextTitleAlreadyExistsError(input.title);
+
+    const context = Context.create(input);
+    return this.contexts.save(context);
   }
 }

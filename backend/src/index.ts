@@ -1,15 +1,17 @@
 import "reflect-metadata";
 import "dotenv/config";
-import { AppDataSource } from "./infrastructure";
+import { SqliteDataSource } from "./infrastructure";
 import { createApp } from "./api/app";
 
-const PORT = parseInt(process.env.PORT!);
+const port = parseInt(process.env.PORT!);
+const dataSource = new SqliteDataSource(process.env);
 
-AppDataSource.initialize()
+dataSource
+  .initialize()
   .then(() => {
-    const app = createApp(AppDataSource);
-    app.listen(PORT, () => {
-      console.log(`Actio API running on http://localhost:${PORT}`);
+    const app = createApp(dataSource);
+    app.listen(port, () => {
+      console.log(`Actio API running on http://localhost:${port}`);
     });
   })
   .catch((err) => {
