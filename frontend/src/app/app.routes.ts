@@ -6,18 +6,18 @@ export const routes: Routes = [
     path: '',
     component: ShellComponent,
     children: [
-      { path: '', redirectTo: 'inbox', pathMatch: 'full' },
+      { path: '', redirectTo: 'tasks', pathMatch: 'full' },
       {
-        path: 'inbox',
-        loadChildren: () => import('./features/inbox/inbox.routes').then((m) => m.INBOX_ROUTES),
-      },
-      {
-        path: 'actions',
-        loadChildren: () => import('./features/actions/actions.routes').then((m) => m.ACTIONS_ROUTES),
+        path: 'tasks',
+        loadChildren: () => import('./features/tasks/tasks.routes').then((m) => m.TASKS_ROUTES),
       },
       {
         path: 'projects',
         loadChildren: () => import('./features/projects/projects.routes').then((m) => m.PROJECTS_ROUTES),
+      },
+      {
+        path: 'contexts',
+        loadChildren: () => import('./features/contexts/contexts.routes').then((m) => m.CONTEXTS_ROUTES),
       },
     ],
   },

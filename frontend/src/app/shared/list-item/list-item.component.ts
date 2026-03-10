@@ -27,13 +27,13 @@ import { RouterLink } from '@angular/router';
 
       <div class="flex gap-4 mt-3" role="group" [attr.aria-label]="'Actions for ' + title()">
         <button
-          (click)="complete.emit()"
+          (click)="edit.emit()"
           class="text-xs text-neutral-400 hover:text-neutral-100 transition-colors"
-        >Complete</button>
+        >Edit</button>
         <button
-          (click)="archive.emit()"
+          (click)="delete.emit()"
           class="text-xs text-neutral-600 hover:text-red-400 transition-colors"
-        >Archive</button>
+        >Delete</button>
       </div>
     </li>
   `,
@@ -44,6 +44,6 @@ export class ListItemComponent {
   subtitle = input<string | undefined>(undefined);
   tags = input<string[]>([]);
 
-  complete = output<void>();
-  archive = output<void>();
+  edit = output<void>();
+  delete = output<void>();
 }

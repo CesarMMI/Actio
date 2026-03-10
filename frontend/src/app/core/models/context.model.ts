@@ -1,4 +1,4 @@
-export interface Project {
+export interface Context {
   id: string;
   title: string;
   createdAt: string;
