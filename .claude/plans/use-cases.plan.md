@@ -196,6 +196,56 @@ This document specifies every use case in the system. Each use case describes it
 
 ---
 
+### UC-T08 — Complete Task
+
+**Description:** Mark a Task as done.
+
+**Input:**
+| Field | Required | Description        |
+|-------|----------|--------------------|
+| `id`  | Yes      | ID of the Task     |
+
+**Preconditions:**
+- The Task identified by `id` must exist.
+- The Task must not already be done.
+
+**Output:** The updated Task object with `done` set to `true`, `doneAt` set to the current timestamp, and refreshed `updatedAt`.
+
+**Side effects:** None.
+
+**Failure cases:**
+| Condition                  | Result    |
+|----------------------------|-----------|
+| `id` does not exist        | Not found |
+| Task is already done       | Rejected  |
+
+---
+
+### UC-T09 — Reopen Task
+
+**Description:** Mark a previously completed Task as not done.
+
+**Input:**
+| Field | Required | Description        |
+|-------|----------|--------------------|
+| `id`  | Yes      | ID of the Task     |
+
+**Preconditions:**
+- The Task identified by `id` must exist.
+- The Task must currently be done.
+
+**Output:** The updated Task object with `done` set to `false`, `doneAt` cleared to `null`, and refreshed `updatedAt`.
+
+**Side effects:** None.
+
+**Failure cases:**
+| Condition                  | Result    |
+|----------------------------|-----------|
+| `id` does not exist        | Not found |
+| Task is not done           | Rejected  |
+
+---
+
 ## Contexts
 
 ### UC-C01 — Create Context
@@ -439,6 +489,8 @@ This document specifies every use case in the system. Each use case describes it
 | UC-T05  | Delete Task             | Task    | Delete    |
 | UC-T06  | Assign Child Task       | Task    | Update    |
 | UC-T07  | Remove Child Task Link  | Task    | Update    |
+| UC-T08  | Complete Task           | Task    | Update    |
+| UC-T09  | Reopen Task             | Task    | Update    |
 | UC-C01  | Create Context          | Context | Create    |
 | UC-C02  | Get Context             | Context | Read      |
 | UC-C03  | List Contexts           | Context | Read      |

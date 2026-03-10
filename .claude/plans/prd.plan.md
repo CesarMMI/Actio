@@ -20,13 +20,14 @@ The foundation. Establishes the data model and business rules for the three core
 - Full CRUD for Tasks, Contexts, and Projects
 - Optional association of a Task to a Context and/or a Project
 - Hierarchical Tasks: a Task may have a single child Task (one level of nesting)
+- Task completion: a Task can be marked as done and reopened
 - Enforcement of all core business rules (validation, referential integrity, cascade behavior)
 
 **What v1 explicitly excludes:**
 - Authentication and authorization
 - User accounts and multi-tenancy
 - Due dates, scheduling, or reminders
-- Task status, prioritization, or ordering
+- Task prioritization or ordering
 - Recurring tasks
 - Attachments or comments
 - Audit logs and activity history
@@ -39,10 +40,10 @@ The foundation. Establishes the data model and business rules for the three core
 
 ### v2 — Task Lifecycle (planned)
 
-Introduces **task status** (e.g., inbox, active, done, dropped) and supports the full GTD-style workflow. Users can capture tasks freely and process them into actionable states.
+Extends task completion into a richer **status lifecycle** (e.g., inbox, active, done, dropped) supporting the full GTD-style workflow.
 
 **Anticipated additions:**
-- Task status field with defined valid transitions
+- Expanded status field with defined valid transitions (beyond binary done/not-done)
 - Status-based filtering
 - Bulk status updates (e.g., complete all tasks in a project)
 

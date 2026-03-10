@@ -14,6 +14,8 @@ The central entity. Represents a discrete unit of work.
 |----------------|------------|----------|---------|-----------------------------------------------------------|
 | `id`           | Identifier | Yes      | No      | Unique, system-generated at creation                      |
 | `description`  | Text       | Yes      | Yes     | Human-readable description of the work; cannot be empty  |
+| `done`         | Boolean    | Yes      | Yes     | Whether the task has been completed; defaults to `false`  |
+| `doneAt`       | Timestamp  | No       | Yes     | Set when the task is completed; cleared when reopened     |
 | `contextId`    | Identifier | No       | Yes     | FK → Context. Situational tag for the task                |
 | `projectId`    | Identifier | No       | Yes     | FK → Project. Goal grouping for the task                  |
 | `parentTaskId` | Identifier | No       | Yes     | FK → Task (self). The task that owns this one as a child  |
@@ -23,6 +25,8 @@ The central entity. Represents a discrete unit of work.
 
 **Constraints:**
 - `description` must be a non-empty, non-whitespace string at all times.
+- `done` defaults to `false` on creation and can be toggled freely at any time.
+- `doneAt` is `null` on creation. It is set to the current timestamp when the task is completed and cleared to `null` when the task is reopened. It must always be consistent with `done` (`done: true` ↔ `doneAt` is set).
 - `contextId`, if set, must reference an existing Context.
 - `projectId`, if set, must reference an existing Project.
 - `parentTaskId` and `childTaskId` cannot reference the task's own `id`.
@@ -124,9 +128,11 @@ Task 0..1 ──── 0..1 Task (child)
 │─────────────│       │─────────────│       │─────────────│
 │ id          │◄──────│ contextId   │       │ id          │
 │ title       │ 0..1  │ description │  0..1 │ title       │
-│ createdAt   │       │ projectId   │──────►│ createdAt   │
-│ updatedAt   │       │ parentTaskId│       │ updatedAt   │
-└─────────────┘       │ childTaskId │       └─────────────┘
+│ createdAt   │       │ done        │──────►│ createdAt   │
+│ updatedAt   │       │ doneAt      │       │ updatedAt   │
+└─────────────┘       │ projectId   │       └─────────────┘
+                      │ parentTaskId│
+                      │ childTaskId │
                       │ createdAt   │◄──┐
                       │ updatedAt   │   │ self (0..1)
                       └─────────────┘───┘
@@ -140,6 +146,8 @@ Task 0..1 ──── 0..1 Task (child)
 |--------|---------|--------------------------------------------------------------------------|
 | BR-001 | Task    | `description` is required and non-empty on creation                      |
 | BR-002 | Task    | `description` cannot be cleared or set to whitespace on update           |
+| BR-002b| Task    | `done` defaults to `false` on creation; can be set to `true` or `false` at any time |
+| BR-002c| Task    | `doneAt` is set to the current timestamp when `done` becomes `true`; cleared to `null` when `done` becomes `false` |
 | BR-003 | Task    | `contextId`, if provided, must reference an existing Context             |
 | BR-004 | Task    | `projectId`, if provided, must reference an existing Project             |
 | BR-005 | Task    | A Task may have at most one child at any time                            |
