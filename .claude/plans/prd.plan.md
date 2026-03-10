@@ -1,133 +1,80 @@
-# Actio — Product Requirements Document
+# PRD — Actio Task Management System
 
-## Product Overview
+## 1. Overview
 
-**Actio** helps users manage their work by giving every idea, task, and obligation a place to land and a clear path to resolution. Inspired by GTD, it strips the methodology to its most valuable core: get things out of your head, decide what they are, organize them, and act on them.
+**Actio** is a personal task management system built around two organizational axes: **Projects** (goal-based grouping) and **Contexts** (situational tagging). Instead of a flat to-do list, Actio lets users structure work the way they think about it — by outcome and by circumstance.
 
----
+**Problem it solves:** Flat task lists create noise. People waste time deciding what to do next because they lack a structured way to filter tasks by what they're working toward or what conditions they're currently in. Actio solves this by making context and project first-class concepts, not just labels.
 
-## Goals
-
-- Zero-friction capture: anything can be captured immediately as text
-- Clear resolution: every captured item gets processed into a known state
-- Organized execution: actions are grouped by projects and contexts for focused work
-- Inline resolve: users can skip the inbox and capture + resolve in one step
-
-## Non-Goals (V1)
-
-- Authentication and user accounts
-- Rich media capture (images, files, links)
-- Recurring or repeating tasks
-- Calendar integration and reminders
-- Review workflows (weekly review, etc.)
-- Team collaboration or sharing
+**Core value proposition:** A minimal, expressive task model that reduces decision overhead and improves focus without the complexity of full project management tools.
 
 ---
 
-## Core Concepts
+## 2. Version Roadmap
 
-### Captured Item (Inbox)
+### v1 — Core Domain (current)
 
-The entry point for everything. A captured item is something the user noticed, thought of, or needs to deal with — but hasn't decided what it is yet. In v1, captured items are text only.
+The foundation. Establishes the data model and business rules for the three core entities: **Tasks**, **Contexts**, and **Projects**. This version is intentionally narrow — it covers only the essential domain logic needed to represent and manage work items.
 
-A captured item can be resolved into:
-- An **Action** — something to do
-- A **Project** — a goal that requires multiple actions
-- **Reference** — useful information, no action needed
-- **Someday/Maybe** — not now, but keep it
-- **Trash** — not needed
+**What v1 delivers:**
+- Full CRUD for Tasks, Contexts, and Projects
+- Optional association of a Task to a Context and/or a Project
+- Hierarchical Tasks: a Task may have a single child Task (one level of nesting)
+- Enforcement of all core business rules (validation, referential integrity, cascade behavior)
 
-### Action
-
-A concrete, single step the user can perform. Actions are the primary unit of execution in the system.
-
-An action can belong to a **Project** (what goal does this serve?) and/or a **Context** (where or how can this be done?).
-
-Optional metadata:
-- Due date
-- Time bucket (short / medium / long — how long will it take?)
-- Energy level (low / medium / high — how much focus does it require?)
-
-### Project
-
-A goal or outcome that requires more than one action to complete. Projects exist to group related actions together. A project cannot be marked complete until all its actions are resolved.
-
-### Context
-
-A condition or location under which actions can be done. Examples: @computer, @phone, @errands, @home. Contexts allow users to filter their action list to only what's possible right now.
-
----
-
-## User Flows
-
-### Flow A — Quick Capture
-User enters an item title → item is saved to the Inbox. No decisions required.
-
-### Flow B — Capture + Resolve Inline
-User enters an item title and immediately resolves it (assigns it to a project/context, sets it as an action). Item bypasses the inbox and is created directly as an Action.
-
-### Flow C — Process Inbox
-User opens the Inbox and sees all unresolved captured items. For each item, they choose a resolution:
-- **Make Action** → becomes an Action (optionally assign project, context, due date)
-- **Make Project** → becomes a Project
-- **Reference** → archived as reference material
-- **Someday/Maybe** → deferred, kept for future consideration
-- **Trash** → discarded
-
-Once resolved, a captured item cannot be re-processed.
-
-### Flow D — Execute by Context
-User selects a Context → sees all open Actions for that context → marks actions done.
-
-### Flow E — View by Project
-User opens a Project → sees all associated Actions → can mark them done.
-
----
-
-## Functional Requirements
-
-### Capture
-- User can create a captured item with only a title (required) and optional notes
-- A captured item defaults to Inbox status upon creation
-- User can capture and immediately resolve an item as an Action in one operation (inline resolve), assigning optional project, context, and due date at that moment
-
-### Clarify (Inbox Processing)
-- User can resolve a captured item as an Action
-- User can resolve a captured item as a Project
-- User can mark a captured item as Reference
-- User can mark a captured item as Someday/Maybe
-- User can trash a captured item
-- A captured item that has already been resolved cannot be resolved again
-
-### Actions
-- An Action has: title (required), notes (optional), due date (optional), time bucket (optional: short / medium / long), energy level (optional: low / medium / high)
-- An Action can be assigned to at most one Project
-- An Action can be assigned to at most one Context
-- An Action can be marked as complete
-- A completed Action can be archived
-- Actions can be listed filtered by context, time bucket, energy level, and due date range
-
-### Projects
-- A Project has: name (required), description (optional)
-- A Project contains zero or more Actions
-- A Project can only be marked complete if all its Actions are completed or archived
-- A completed Project can be archived
-- A Project can be renamed
-
-### Contexts
-- A Context has: name (required), description (optional)
-- A Context can be activated or deactivated
-- A Context can be renamed
-
----
-
-## Future Considerations (Post-V1)
-
-- User authentication and accounts
-- Rich capture: images, file attachments, URLs/links
-- Weekly review workflow
+**What v1 explicitly excludes:**
+- Authentication and authorization
+- User accounts and multi-tenancy
+- Due dates, scheduling, or reminders
+- Task status, prioritization, or ordering
 - Recurring tasks
-- Due date reminders and notifications
-- Mobile app
-- Tags as an additional organizational layer
-- Sharing and collaboration
+- Attachments or comments
+- Audit logs and activity history
+- Search and filtering (deferred to presentation layer)
+- Infrastructure, persistence engine, or deployment concerns
+
+> See [`data-modeling.md`](./data-modeling.md) for entity definitions and [`use-cases.md`](./use-cases.md) for detailed use case specifications.
+
+---
+
+### v2 — Task Lifecycle (planned)
+
+Introduces **task status** (e.g., inbox, active, done, dropped) and supports the full GTD-style workflow. Users can capture tasks freely and process them into actionable states.
+
+**Anticipated additions:**
+- Task status field with defined valid transitions
+- Status-based filtering
+- Bulk status updates (e.g., complete all tasks in a project)
+
+---
+
+### v3 — Scheduling & Time (planned)
+
+Adds time awareness to tasks without imposing deadlines as a hard requirement.
+
+**Anticipated additions:**
+- Optional due date per Task
+- Optional scheduled date (when to work on it, not when it's due)
+- Overdue detection rule
+- Calendar-style views (presentation layer concern)
+
+---
+
+### v4 — Collaboration (planned)
+
+Expands the system to support multiple users sharing projects and contexts.
+
+**Anticipated additions:**
+- User accounts and authentication
+- Project membership and permissions
+- Shared Contexts within a workspace
+- Activity history and audit trail
+
+---
+
+## 3. Design Principles
+
+- **Minimal by default.** Every field and rule must earn its place. No speculative complexity.
+- **Explicit over implicit.** Business rules are stated atomically and unambiguously. Edge cases are not left to interpretation.
+- **Domain-first.** The model is defined independently of any technology, persistence layer, or UI framework.
+- **Additive versioning.** Each version builds on the previous without breaking the core model.

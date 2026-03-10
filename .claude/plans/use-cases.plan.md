@@ -1,330 +1,451 @@
-# Actio — System Use Cases
+# Use Cases — Actio v1
 
-## Context
-
-This document defines the abstract use cases for Actio V1. It is derived from the PRD and entities spec. It covers every user-facing operation, the preconditions that must hold, and the outcomes produced. No implementation details are included.
+This document specifies every use case in the system. Each use case describes its inputs, preconditions, outputs, side effects, and failure paths.
 
 ---
 
-## Actor
+## Tasks
 
-**User** — the single actor in V1. No authentication, no roles.
+### UC-T01 — Create Task
+
+**Description:** Create a new standalone or associated task.
+
+**Input:**
+| Field          | Required | Description                                        |
+|----------------|----------|----------------------------------------------------|
+| `description`  | Yes      | Non-empty text describing the work to be done      |
+| `contextId`    | No       | ID of an existing Context to associate             |
+| `projectId`    | No       | ID of an existing Project to associate             |
+| `parentTaskId` | No       | ID of an existing Task to set as parent            |
+
+**Preconditions:**
+- If `contextId` is provided, the referenced Context must exist.
+- If `projectId` is provided, the referenced Project must exist.
+- If `parentTaskId` is provided, the referenced Task must exist and must not already have a child.
+
+**Output:** The created Task object with all fields populated, including system-generated `id`, `createdAt`, and `updatedAt`.
+
+**Side effects:**
+- If `parentTaskId` is provided, the parent Task's `childTaskId` is set to the new Task's `id` and its `updatedAt` is refreshed.
+
+**Failure cases:**
+| Condition                                      | Result                  |
+|------------------------------------------------|-------------------------|
+| `description` is empty or whitespace           | Rejected                |
+| `contextId` does not reference an existing Context | Rejected            |
+| `projectId` does not reference an existing Project | Rejected            |
+| `parentTaskId` does not reference an existing Task | Rejected            |
+| The referenced parent Task already has a child | Rejected                |
 
 ---
 
-## Use Case Groups
+### UC-T02 — Get Task
 
-1. Capture
-2. Inbox Processing (Clarify)
-3. Actions
-4. Projects
-5. Contexts
+**Description:** Retrieve a single Task by its identifier.
 
----
-
-## 1. Capture
-
-### UC-01 — Quick Capture
-
-**Summary:** User saves an idea or obligation to the Inbox immediately, with no decisions required.
+**Input:**
+| Field | Required | Description          |
+|-------|----------|----------------------|
+| `id`  | Yes      | ID of the Task       |
 
 **Preconditions:** None.
 
-**Inputs:** Title (required), Notes (optional).
+**Output:** The Task object with all fields, or a not-found error if the ID does not exist.
 
-**Outputs:**
-- A CapturedItem is created with status `INBOX`.
-- The item appears in the Inbox.
+**Side effects:** None.
+
+**Failure cases:**
+| Condition               | Result    |
+|-------------------------|-----------|
+| `id` does not exist     | Not found |
 
 ---
 
-### UC-02 — Capture and Resolve Inline
+### UC-T03 — List Tasks
 
-**Summary:** User captures an item and immediately converts it into an Action in a single operation, bypassing the Inbox.
+**Description:** Retrieve all Tasks in the system.
+
+**Input:** None (filtering is a presentation-layer concern in v1).
 
 **Preconditions:** None.
 
-**Inputs:** Title (required), Notes (optional), Project (optional), Context (optional), Due date (optional), Time bucket (optional), Energy level (optional).
+**Output:** An ordered collection of all Task objects.
 
-**Outputs:**
-- A CapturedItem is created with status `CLARIFIED_AS_ACTION`.
-- An Action is created with the provided metadata.
-- The item does **not** appear in the Inbox.
+**Side effects:** None.
+
+**Failure cases:** None.
 
 ---
 
-## 2. Inbox Processing (Clarify)
+### UC-T04 — Update Task
 
-All clarification use cases share the same precondition:
+**Description:** Modify one or more mutable fields of an existing Task.
 
-> **Precondition:** The CapturedItem must have status `INBOX`. A previously resolved item cannot be resolved again.
+**Input:**
+| Field         | Required | Description                                             |
+|---------------|----------|---------------------------------------------------------|
+| `id`          | Yes      | ID of the Task to update                                |
+| `description` | No       | New non-empty description                               |
+| `contextId`   | No       | New Context ID, or `null` to remove the association     |
+| `projectId`   | No       | New Project ID, or `null` to remove the association     |
 
-### UC-03 — View Inbox
+> Only fields explicitly provided are updated. Omitted fields remain unchanged.
 
-**Summary:** User sees all items awaiting a decision.
+**Preconditions:**
+- The Task identified by `id` must exist.
+- If `contextId` is provided (and not null), the referenced Context must exist.
+- If `projectId` is provided (and not null), the referenced Project must exist.
+
+**Output:** The updated Task object with refreshed `updatedAt`.
+
+**Side effects:** None beyond the Task itself.
+
+**Failure cases:**
+| Condition                                          | Result    |
+|----------------------------------------------------|-----------|
+| `id` does not exist                                | Not found |
+| `description` is empty or whitespace               | Rejected  |
+| `contextId` references a non-existent Context      | Rejected  |
+| `projectId` references a non-existent Project      | Rejected  |
+
+---
+
+### UC-T05 — Delete Task
+
+**Description:** Permanently remove a Task from the system.
+
+**Input:**
+| Field | Required | Description          |
+|-------|----------|----------------------|
+| `id`  | Yes      | ID of the Task       |
+
+**Preconditions:**
+- The Task identified by `id` must exist.
+
+**Output:** Confirmation of deletion.
+
+**Side effects:**
+- If the deleted Task had a **child**: the child's `parentTaskId` is set to `null` and its `updatedAt` is refreshed. The child remains in the system.
+- If the deleted Task had a **parent**: the parent's `childTaskId` is set to `null` and its `updatedAt` is refreshed. The parent remains in the system.
+- Both side effects apply if the deleted Task was a middle node in a parent-child chain.
+
+**Failure cases:**
+| Condition           | Result    |
+|---------------------|-----------|
+| `id` does not exist | Not found |
+
+---
+
+### UC-T06 — Assign Child Task
+
+**Description:** Link an existing Task as the child of another existing Task.
+
+**Input:**
+| Field         | Required | Description                        |
+|---------------|----------|------------------------------------|
+| `parentId`    | Yes      | ID of the Task that will be parent |
+| `childId`     | Yes      | ID of the Task that will be child  |
+
+**Preconditions:**
+- Both Tasks must exist.
+- `parentId` and `childId` must be different.
+- The parent Task must not already have a child.
+- The child Task must not already have a parent.
+- Assigning this child must not create a cycle in the chain.
+
+**Output:** Both updated Task objects with refreshed `updatedAt`.
+
+**Side effects:**
+- Parent Task's `childTaskId` is set to `childId`.
+- Child Task's `parentTaskId` is set to `parentId`.
+
+**Failure cases:**
+| Condition                                    | Result   |
+|----------------------------------------------|----------|
+| Either Task does not exist                   | Not found|
+| `parentId` equals `childId`                  | Rejected |
+| Parent Task already has a child              | Rejected |
+| Child Task already has a parent              | Rejected |
+| Assignment would create a circular chain     | Rejected |
+
+---
+
+### UC-T07 — Remove Child Task Link
+
+**Description:** Unlink the parent-child relationship between two Tasks without deleting either.
+
+**Input:**
+| Field      | Required | Description               |
+|------------|----------|---------------------------|
+| `parentId` | Yes      | ID of the parent Task     |
+
+**Preconditions:**
+- The parent Task must exist and must currently have a child.
+
+**Output:** Both updated Task objects with refreshed `updatedAt`.
+
+**Side effects:**
+- Parent Task's `childTaskId` is set to `null`.
+- Child Task's `parentTaskId` is set to `null`.
+
+**Failure cases:**
+| Condition                            | Result   |
+|--------------------------------------|----------|
+| Parent Task does not exist           | Not found|
+| Parent Task has no child             | Rejected |
+
+---
+
+## Contexts
+
+### UC-C01 — Create Context
+
+**Description:** Create a new Context.
+
+**Input:**
+| Field   | Required | Description                    |
+|---------|----------|--------------------------------|
+| `title` | Yes      | Non-empty, unique context name |
+
+**Preconditions:**
+- No existing Context may share the same `title` (case-insensitive).
+
+**Output:** The created Context object with `id`, `title`, `createdAt`, and `updatedAt`.
+
+**Side effects:** None.
+
+**Failure cases:**
+| Condition                                         | Result   |
+|---------------------------------------------------|----------|
+| `title` is empty or whitespace                    | Rejected |
+| A Context with the same title already exists      | Rejected |
+
+---
+
+### UC-C02 — Get Context
+
+**Description:** Retrieve a single Context by its identifier.
+
+**Input:**
+| Field | Required | Description       |
+|-------|----------|-------------------|
+| `id`  | Yes      | ID of the Context |
 
 **Preconditions:** None.
 
-**Inputs:** None.
+**Output:** The Context object, or a not-found error.
 
-**Outputs:** A list of all CapturedItems with status `INBOX`.
+**Side effects:** None.
 
----
-
-### UC-04 — Clarify as Action
-
-**Summary:** User decides an inbox item is a concrete step and converts it into an Action.
-
-**Inputs:** CapturedItem reference. Optionally: Project, Context, Due date, Time bucket, Energy level.
-
-**Outputs:**
-- CapturedItem status changes to `CLARIFIED_AS_ACTION`.
-- A new Action is created, inheriting the item's title and notes, with any supplied metadata.
-- Item is removed from the Inbox view.
+**Failure cases:**
+| Condition           | Result    |
+|---------------------|-----------|
+| `id` does not exist | Not found |
 
 ---
 
-### UC-05 — Clarify as Project
+### UC-C03 — List Contexts
 
-**Summary:** User decides an inbox item represents a multi-step goal and promotes it to a Project.
+**Description:** Retrieve all Contexts in the system.
 
-**Inputs:** CapturedItem reference. Optionally: Description.
+**Input:** None.
 
-**Outputs:**
-- CapturedItem status changes to `CLARIFIED_AS_PROJECT`.
-- A new Project is created with the item's title and optional description.
-- Item is removed from the Inbox view.
+**Preconditions:** None.
 
----
+**Output:** An ordered collection of all Context objects.
 
-### UC-06 — Clarify as Reference
+**Side effects:** None.
 
-**Summary:** User decides the item is useful information that requires no action.
-
-**Inputs:** CapturedItem reference.
-
-**Outputs:**
-- CapturedItem status changes to `REFERENCE`.
-- Item is removed from the Inbox view.
+**Failure cases:** None.
 
 ---
 
-### UC-07 — Clarify as Someday/Maybe
+### UC-C04 — Update Context
 
-**Summary:** User defers the item — not now, but don't discard it.
+**Description:** Rename an existing Context.
 
-**Inputs:** CapturedItem reference.
+**Input:**
+| Field   | Required | Description                        |
+|---------|----------|------------------------------------|
+| `id`    | Yes      | ID of the Context to update        |
+| `title` | Yes      | New non-empty, unique context name |
 
-**Outputs:**
-- CapturedItem status changes to `SOMEDAY`.
-- Item is removed from the Inbox view.
+**Preconditions:**
+- The Context identified by `id` must exist.
+- No other Context may share the new `title` (case-insensitive).
 
----
+**Output:** The updated Context object with refreshed `updatedAt`.
 
-### UC-08 — Move to Trash
+**Side effects:** None. Tasks referencing this Context automatically reflect the updated title via the association.
 
-**Summary:** User discards an inbox item.
-
-**Inputs:** CapturedItem reference.
-
-**Outputs:**
-- CapturedItem status changes to `TRASH`.
-- Item is removed from the Inbox view.
-
----
-
-## 3. Actions
-
-### UC-09 — View Actions (with filters)
-
-**Summary:** User lists actions, optionally narrowed by one or more criteria.
-
-**Inputs (all optional):** Context, Time bucket (`short | medium | long`), Energy level (`low | medium | high`), Due date range.
-
-**Outputs:** A filtered list of Actions matching all supplied criteria.
+**Failure cases:**
+| Condition                                        | Result    |
+|--------------------------------------------------|-----------|
+| `id` does not exist                              | Not found |
+| `title` is empty or whitespace                   | Rejected  |
+| Another Context with the same title already exists | Rejected|
 
 ---
 
-### UC-10 — Assign Action to Project
+### UC-C05 — Delete Context
 
-**Summary:** User associates an action with a project, or clears an existing association.
+**Description:** Permanently remove a Context from the system.
 
-**Preconditions:** Action exists.
+**Input:**
+| Field | Required | Description       |
+|-------|----------|-------------------|
+| `id`  | Yes      | ID of the Context |
 
-**Inputs:** Action reference, Project reference (or null to clear).
+**Preconditions:**
+- The Context identified by `id` must exist.
+- No Task may currently reference this Context.
 
-**Outputs:** Action's project association is updated.
+**Output:** Confirmation of deletion.
 
----
+**Side effects:** None.
 
-### UC-11 — Assign Action to Context
-
-**Summary:** User associates an action with a context, or clears an existing association.
-
-**Preconditions:** Action exists.
-
-**Inputs:** Action reference, Context reference (or null to clear).
-
-**Outputs:** Action's context association is updated.
-
----
-
-### UC-12 — Complete an Action
-
-**Summary:** User marks an open action as done.
-
-**Preconditions:** Action status is `OPEN`.
-
-**Inputs:** Action reference.
-
-**Outputs:**
-- Action status changes to `COMPLETED`.
-- If the action belongs to a project, the project may now be eligible for completion (see UC-16).
+**Failure cases:**
+| Condition                              | Result    |
+|----------------------------------------|-----------|
+| `id` does not exist                    | Not found |
+| One or more Tasks reference this Context | Rejected |
 
 ---
 
-### UC-13 — Archive an Action
+## Projects
 
-**Summary:** User archives a completed action to remove it from active views.
+### UC-P01 — Create Project
 
-**Preconditions:** Action status is `COMPLETED`.
+**Description:** Create a new Project.
 
-**Inputs:** Action reference.
+**Input:**
+| Field   | Required | Description                    |
+|---------|----------|--------------------------------|
+| `title` | Yes      | Non-empty, unique project name |
 
-**Outputs:** Action status changes to `ARCHIVED`. Action no longer appears in active action lists.
+**Preconditions:**
+- No existing Project may share the same `title` (case-insensitive).
 
----
+**Output:** The created Project object with `id`, `title`, `createdAt`, and `updatedAt`.
 
-## 4. Projects
+**Side effects:** None.
 
-### UC-14 — View Project
-
-**Summary:** User opens a project to see all its associated actions.
-
-**Inputs:** Project reference.
-
-**Outputs:** Project details and a list of all Actions belonging to that project.
-
----
-
-### UC-15 — Rename Project
-
-**Summary:** User changes the name of a project.
-
-**Preconditions:** Project exists.
-
-**Inputs:** Project reference, new name (required).
-
-**Outputs:** Project name is updated.
+**Failure cases:**
+| Condition                                        | Result   |
+|--------------------------------------------------|----------|
+| `title` is empty or whitespace                   | Rejected |
+| A Project with the same title already exists     | Rejected |
 
 ---
 
-### UC-16 — Complete a Project
+### UC-P02 — Get Project
 
-**Summary:** User marks a project as done.
+**Description:** Retrieve a single Project by its identifier.
 
-**Preconditions:** Project status is `ACTIVE`. All associated Actions must be `COMPLETED` or `ARCHIVED` — no `OPEN` actions may remain.
+**Input:**
+| Field | Required | Description       |
+|-------|----------|-------------------|
+| `id`  | Yes      | ID of the Project |
 
-**Inputs:** Project reference.
+**Preconditions:** None.
 
-**Outputs:**
-- Project status changes to `COMPLETED`.
-- If any associated action is still `OPEN`, the operation is rejected and the user is informed of the blocker.
+**Output:** The Project object, or a not-found error.
 
----
+**Side effects:** None.
 
-### UC-17 — Archive a Project
-
-**Summary:** User archives a completed project.
-
-**Preconditions:** Project status is `COMPLETED`.
-
-**Inputs:** Project reference.
-
-**Outputs:** Project status changes to `ARCHIVED`. Project no longer appears in active project views.
+**Failure cases:**
+| Condition           | Result    |
+|---------------------|-----------|
+| `id` does not exist | Not found |
 
 ---
 
-## 5. Contexts
+### UC-P03 — List Projects
 
-### UC-18 — Create a Context
+**Description:** Retrieve all Projects in the system.
 
-**Summary:** User defines a new context (e.g. @computer, @errands).
+**Input:** None.
 
-**Inputs:** Name (required), Description (optional).
+**Preconditions:** None.
 
-**Outputs:** A new Context is created in active state.
+**Output:** An ordered collection of all Project objects.
 
----
+**Side effects:** None.
 
-### UC-19 — Rename a Context
-
-**Summary:** User updates a context's name.
-
-**Preconditions:** Context exists.
-
-**Inputs:** Context reference, new name (required).
-
-**Outputs:** Context name is updated across all associated actions.
+**Failure cases:** None.
 
 ---
 
-### UC-20 — Deactivate a Context
+### UC-P04 — Update Project
 
-**Summary:** User temporarily disables a context so its actions are excluded from the active list.
+**Description:** Rename an existing Project.
 
-**Preconditions:** Context is currently active.
+**Input:**
+| Field   | Required | Description                        |
+|---------|----------|------------------------------------|
+| `id`    | Yes      | ID of the Project to update        |
+| `title` | Yes      | New non-empty, unique project name |
 
-**Inputs:** Context reference.
+**Preconditions:**
+- The Project identified by `id` must exist.
+- No other Project may share the new `title` (case-insensitive).
 
-**Outputs:** Context `active` flag set to `false`. Actions in this context are hidden from the default action list.
+**Output:** The updated Project object with refreshed `updatedAt`.
 
----
+**Side effects:** None. Tasks referencing this Project automatically reflect the updated title via the association.
 
-### UC-21 — Activate a Context
-
-**Summary:** User re-enables a previously deactivated context.
-
-**Preconditions:** Context is currently inactive.
-
-**Inputs:** Context reference.
-
-**Outputs:** Context `active` flag set to `true`. Associated actions reappear in the action list.
-
----
-
-### UC-22 — Execute by Context
-
-**Summary:** User focuses on one context to see and complete only what is actionable right now.
-
-**Preconditions:** Context is active.
-
-**Inputs:** Context reference.
-
-**Outputs:** A list of all `OPEN` Actions assigned to that context. User can then mark them complete (UC-12).
+**Failure cases:**
+| Condition                                         | Result    |
+|---------------------------------------------------|-----------|
+| `id` does not exist                               | Not found |
+| `title` is empty or whitespace                    | Rejected  |
+| Another Project with the same title already exists | Rejected |
 
 ---
 
-## State Transition Summary
+### UC-P05 — Delete Project
 
-### CapturedItem
-```
-INBOX → CLARIFIED_AS_ACTION  (UC-04, UC-02)
-INBOX → CLARIFIED_AS_PROJECT (UC-05)
-INBOX → REFERENCE            (UC-06)
-INBOX → SOMEDAY              (UC-07)
-INBOX → TRASH                (UC-08)
-[all terminal — no further transitions]
-```
+**Description:** Permanently remove a Project from the system.
 
-### Action
-```
-OPEN → COMPLETED     (UC-12)
-COMPLETED → ARCHIVED (UC-13)
-```
+**Input:**
+| Field | Required | Description       |
+|-------|----------|-------------------|
+| `id`  | Yes      | ID of the Project |
 
-### Project
-```
-ACTIVE → COMPLETED   (UC-16, requires all actions COMPLETED | ARCHIVED)
-COMPLETED → ARCHIVED (UC-17)
-```
+**Preconditions:**
+- The Project identified by `id` must exist.
+- No Task may currently reference this Project.
+
+**Output:** Confirmation of deletion.
+
+**Side effects:** None.
+
+**Failure cases:**
+| Condition                               | Result    |
+|-----------------------------------------|-----------|
+| `id` does not exist                     | Not found |
+| One or more Tasks reference this Project | Rejected |
+
+---
+
+## Use Case Index
+
+| ID      | Name                    | Entity  | Operation |
+|---------|-------------------------|---------|-----------|
+| UC-T01  | Create Task             | Task    | Create    |
+| UC-T02  | Get Task                | Task    | Read      |
+| UC-T03  | List Tasks              | Task    | Read      |
+| UC-T04  | Update Task             | Task    | Update    |
+| UC-T05  | Delete Task             | Task    | Delete    |
+| UC-T06  | Assign Child Task       | Task    | Update    |
+| UC-T07  | Remove Child Task Link  | Task    | Update    |
+| UC-C01  | Create Context          | Context | Create    |
+| UC-C02  | Get Context             | Context | Read      |
+| UC-C03  | List Contexts           | Context | Read      |
+| UC-C04  | Update Context          | Context | Update    |
+| UC-C05  | Delete Context          | Context | Delete    |
+| UC-P01  | Create Project          | Project | Create    |
+| UC-P02  | Get Project             | Project | Read      |
+| UC-P03  | List Projects           | Project | Read      |
+| UC-P04  | Update Project          | Project | Update    |
+| UC-P05  | Delete Project          | Project | Delete    |
