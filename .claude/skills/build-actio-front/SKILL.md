@@ -93,31 +93,59 @@ Minimalist and functional. **Dark theme throughout** — all surfaces are dark n
 
 ---
 
+## TypeScript Rules
+
+- `strict: true` — never disable it.
+- **Prefer type inference** when the type is obvious.
+- **Never use `any`.** Use `unknown` when the type is uncertain; narrow it before use.
+
+---
+
 ## Angular Architecture Rules
 
-1. **Standalone components always.** Never use NgModules. Every component, directive, and pipe is standalone.
+1. **Standalone components always.** Never use NgModules. Every component, directive, and pipe is standalone. Do **not** set `standalone: true` in the decorator — it is the default in Angular v20+ and setting it explicitly is noise.
 
-2. **Signals for state.** Use `signal()`, `computed()`, and `effect()` for all reactive state. Avoid RxJS except for `HttpClient` streams — convert those with `toSignal()`.
+2. **Signals for state.** Use `signal()`, `computed()`, and `effect()` for all reactive state. Avoid RxJS except for `HttpClient` streams — convert those with `toSignal()`. Never call `.mutate()` on a signal; use `.set()` or `.update()`.
 
-3. **Feature-based folder structure:**
-   ```
-   src/app/
-   ├── core/           # App-wide services, guards, interceptors, DI tokens
-   ├── features/       # One folder per route/feature
-   │   └── [feature]/
-   │       ├── [feature].component.ts
-   │       ├── [feature].service.ts
-   │       └── [feature].routes.ts
-   └── shared/         # Reusable components (button, input, modal, etc.)
-   ```
+3. **Component inputs/outputs.** Use the `input()` and `output()` functions — never `@Input()` / `@Output()` decorators.
 
-4. **Route-level lazy loading.** Each feature exports a `Routes` array and is lazy-loaded from `app.routes.ts`.
+4. **Change detection.** Always set `changeDetection: ChangeDetectionStrategy.OnPush` in `@Component`.
 
-5. **Services are injectable at root** (`providedIn: 'root'`) unless feature-scoped.
+5. **Host bindings.** Never use `@HostBinding` or `@HostListener` decorators. Declare host bindings inside the `host` object of `@Component` or `@Directive` instead.
 
-6. **No any.** TypeScript strict mode. Typed inputs, outputs, and API responses.
+6. **Template control flow.** Use native control flow (`@if`, `@for`, `@switch`) — never `*ngIf`, `*ngFor`, or `*ngSwitch`. Do not assume globals like `new Date()` are available in templates.
 
-7. **Smart/dumb component split.** Smart (container) components inject services and own state. Dumb (presentational) components receive data via `@Input()` and emit via `@Output()`.
+7. **No `ngClass` / `ngStyle`.** Use `[class]` and `[style]` bindings directly.
+
+8. **Images.** Use `NgOptimizedImage` for all static images (not for inline base64).
+
+9. **Forms.** Prefer Reactive forms over Template-driven forms.
+
+10. **Feature-based folder structure:**
+    ```
+    src/app/
+    ├── core/           # App-wide services, guards, interceptors, DI tokens
+    ├── features/       # One folder per route/feature
+    │   └── [feature]/
+    │       ├── [feature].component.ts
+    │       ├── [feature].service.ts
+    │       └── [feature].routes.ts
+    └── shared/         # Reusable components (button, input, modal, etc.)
+    ```
+
+11. **Route-level lazy loading.** Each feature exports a `Routes` array and is lazy-loaded from `app.routes.ts`.
+
+12. **Services** are `providedIn: 'root'` (singleton) unless feature-scoped. Single responsibility. Use `inject()` — never constructor injection.
+
+13. **Smart/dumb component split.** Smart (container) components inject services and own state. Dumb (presentational) components receive data via `input()` and emit via `output()`.
+
+---
+
+## Accessibility Rules
+
+- Every component **must pass all AXE checks**.
+- Must meet **WCAG AA** minimums: focus management, color contrast ratios, correct ARIA attributes.
+- Use semantic HTML elements before reaching for ARIA attributes.
 
 ---
 
@@ -125,18 +153,16 @@ Minimalist and functional. **Dark theme throughout** — all surfaces are dark n
 
 ### Standalone Component
 ```typescript
-import { Component, signal, computed, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, ChangeDetectionStrategy, signal } from '@angular/core';
 
 @Component({
   selector: 'app-example',
-  standalone: true,
-  imports: [CommonModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="bg-neutral-900 border border-neutral-700 rounded p-4">
       <h2 class="text-neutral-100 font-medium text-sm">{{ title() }}</h2>
     </div>
-  `
+  `,
 })
 export class ExampleComponent {
   title = signal('Hello');
@@ -189,7 +215,7 @@ When the user asks you to implement `$ARGUMENTS`:
 
 1. **Read existing code first.** Use Glob and Read to understand what already exists. Do not duplicate or overwrite.
 
-2. **Follow Angular conventions.** Use `inject()` instead of constructor injection. Use `input()` signal inputs when on Angular 17+.
+2. **Follow Angular conventions.** Use `inject()` for DI. Use `input()`/`output()` functions — no `@Input()`/`@Output()` decorators. No `standalone: true` in decorators. Always set `ChangeDetectionStrategy.OnPush`.
 
 3. **Keep templates inline** for components under ~40 lines; use `templateUrl` for larger ones.
 
