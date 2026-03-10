@@ -18,8 +18,6 @@ The central entity. Represents a discrete unit of work.
 | `doneAt`       | Timestamp  | No       | Yes     | Set when the task is completed; cleared when reopened     |
 | `contextId`    | Identifier | No       | Yes     | FK → Context. Situational tag for the task                |
 | `projectId`    | Identifier | No       | Yes     | FK → Project. Goal grouping for the task                  |
-| `parentTaskId` | Identifier | No       | Yes     | FK → Task (self). The task that owns this one as a child  |
-| `childTaskId`  | Identifier | No       | Yes     | FK → Task (self). The single child task of this task      |
 | `createdAt`    | Timestamp  | Yes      | No      | Set once at creation                                      |
 | `updatedAt`    | Timestamp  | Yes      | Auto    | Updated automatically on every successful mutation        |
 
@@ -29,10 +27,6 @@ The central entity. Represents a discrete unit of work.
 - `doneAt` is `null` on creation. It is set to the current timestamp when the task is completed and cleared to `null` when the task is reopened. It must always be consistent with `done` (`done: true` ↔ `doneAt` is set).
 - `contextId`, if set, must reference an existing Context.
 - `projectId`, if set, must reference an existing Project.
-- `parentTaskId` and `childTaskId` cannot reference the task's own `id`.
-- A task may have at most one child (`childTaskId` is a single reference, not a list).
-- A task may have at most one parent (`parentTaskId` is unique — a task cannot be the child of two tasks simultaneously).
-- No circular references are allowed in the parent-child chain (cycles are rejected).
 
 ---
 
@@ -102,24 +96,6 @@ Task 0..* ──── 0..1 Project
 
 ---
 
-### Task ↔ Task (self-referential, one-to-one chain, optional)
-
-```
-Task 0..1 ──── 0..1 Task (child)
-```
-
-- A Task may have zero or one child Task (`childTaskId`).
-- A Task may have zero or one parent Task (`parentTaskId`).
-- This forms a **singly-linked chain**, not a tree with multiple branches.
-- The relationship is bidirectional: setting a child updates both sides (`childTaskId` on parent, `parentTaskId` on child).
-
-**Cascade behavior on deletion:**
-- When a Task with a **child** is deleted: the child's `parentTaskId` is cleared. The child remains in the system as a standalone task.
-- When a Task with a **parent** is deleted: the parent's `childTaskId` is cleared. The parent remains in the system.
-- Both cascades apply simultaneously if the deleted task has both a parent and a child (it is a middle node in a chain).
-
----
-
 ## Entity Relationship Diagram (textual)
 
 ```
@@ -131,11 +107,9 @@ Task 0..1 ──── 0..1 Task (child)
 │ createdAt   │       │ done        │──────►│ createdAt   │
 │ updatedAt   │       │ doneAt      │       │ updatedAt   │
 └─────────────┘       │ projectId   │       └─────────────┘
-                      │ parentTaskId│
-                      │ childTaskId │
-                      │ createdAt   │◄──┐
-                      │ updatedAt   │   │ self (0..1)
-                      └─────────────┘───┘
+                      │ createdAt   │
+                      │ updatedAt   │
+                      └─────────────┘
 ```
 
 ---
@@ -150,22 +124,16 @@ Task 0..1 ──── 0..1 Task (child)
 | BR-002c| Task    | `doneAt` is set to the current timestamp when `done` becomes `true`; cleared to `null` when `done` becomes `false` |
 | BR-003 | Task    | `contextId`, if provided, must reference an existing Context             |
 | BR-004 | Task    | `projectId`, if provided, must reference an existing Project             |
-| BR-005 | Task    | A Task may have at most one child at any time                            |
-| BR-006 | Task    | A Task may have at most one parent at any time                           |
-| BR-007 | Task    | A Task cannot reference itself as parent or child                        |
-| BR-008 | Task    | Circular parent-child chains are forbidden                               |
-| BR-009 | Task    | Deleting a Task with a child orphans the child (clears its `parentTaskId`) |
-| BR-010 | Task    | Deleting a Task with a parent clears the parent's `childTaskId`          |
-| BR-011 | Task    | Context and Project associations are independent of each other           |
-| BR-012 | Task    | `contextId` and `projectId` can be explicitly cleared without side effects |
-| BR-013 | Context | `title` is required and non-empty on creation                            |
-| BR-014 | Context | `title` cannot be cleared or set to whitespace on update                 |
-| BR-015 | Context | `title` must be unique (case-insensitive) across all Contexts            |
-| BR-016 | Context | A Context referenced by any Task cannot be deleted                       |
-| BR-017 | Project | `title` is required and non-empty on creation                            |
-| BR-018 | Project | `title` cannot be cleared or set to whitespace on update                 |
-| BR-019 | Project | `title` must be unique (case-insensitive) across all Projects            |
-| BR-020 | Project | A Project referenced by any Task cannot be deleted                       |
-| BR-021 | All     | `id` is immutable after creation                                         |
-| BR-022 | All     | `createdAt` is immutable after creation                                  |
-| BR-023 | All     | `updatedAt` is set automatically; cannot be set manually                 |
+| BR-005 | Task    | Context and Project associations are independent of each other           |
+| BR-006 | Task    | `contextId` and `projectId` can be explicitly cleared without side effects |
+| BR-007 | Context | `title` is required and non-empty on creation                            |
+| BR-008 | Context | `title` cannot be cleared or set to whitespace on update                 |
+| BR-009 | Context | `title` must be unique (case-insensitive) across all Contexts            |
+| BR-010 | Context | A Context referenced by any Task cannot be deleted                       |
+| BR-011 | Project | `title` is required and non-empty on creation                            |
+| BR-012 | Project | `title` cannot be cleared or set to whitespace on update                 |
+| BR-013 | Project | `title` must be unique (case-insensitive) across all Projects            |
+| BR-014 | Project | A Project referenced by any Task cannot be deleted                       |
+| BR-015 | All     | `id` is immutable after creation                                         |
+| BR-016 | All     | `createdAt` is immutable after creation                                  |
+| BR-017 | All     | `updatedAt` is set automatically; cannot be set manually                 |

@@ -16,17 +16,14 @@ This document specifies every use case in the system. Each use case describes it
 | `description`  | Yes      | Non-empty text describing the work to be done      |
 | `contextId`    | No       | ID of an existing Context to associate             |
 | `projectId`    | No       | ID of an existing Project to associate             |
-| `parentTaskId` | No       | ID of an existing Task to set as parent            |
 
 **Preconditions:**
 - If `contextId` is provided, the referenced Context must exist.
 - If `projectId` is provided, the referenced Project must exist.
-- If `parentTaskId` is provided, the referenced Task must exist and must not already have a child.
 
 **Output:** The created Task object with all fields populated, including system-generated `id`, `createdAt`, and `updatedAt`.
 
-**Side effects:**
-- If `parentTaskId` is provided, the parent Task's `childTaskId` is set to the new Task's `id` and its `updatedAt` is refreshed.
+**Side effects:** None beyond the Task itself.
 
 **Failure cases:**
 | Condition                                      | Result                  |
@@ -34,8 +31,6 @@ This document specifies every use case in the system. Each use case describes it
 | `description` is empty or whitespace           | Rejected                |
 | `contextId` does not reference an existing Context | Rejected            |
 | `projectId` does not reference an existing Project | Rejected            |
-| `parentTaskId` does not reference an existing Task | Rejected            |
-| The referenced parent Task already has a child | Rejected                |
 
 ---
 
@@ -124,10 +119,7 @@ This document specifies every use case in the system. Each use case describes it
 
 **Output:** Confirmation of deletion.
 
-**Side effects:**
-- If the deleted Task had a **child**: the child's `parentTaskId` is set to `null` and its `updatedAt` is refreshed. The child remains in the system.
-- If the deleted Task had a **parent**: the parent's `childTaskId` is set to `null` and its `updatedAt` is refreshed. The parent remains in the system.
-- Both side effects apply if the deleted Task was a middle node in a parent-child chain.
+**Side effects:** None.
 
 **Failure cases:**
 | Condition           | Result    |
@@ -136,67 +128,7 @@ This document specifies every use case in the system. Each use case describes it
 
 ---
 
-### UC-T06 — Assign Child Task
-
-**Description:** Link an existing Task as the child of another existing Task.
-
-**Input:**
-| Field         | Required | Description                        |
-|---------------|----------|------------------------------------|
-| `parentId`    | Yes      | ID of the Task that will be parent |
-| `childId`     | Yes      | ID of the Task that will be child  |
-
-**Preconditions:**
-- Both Tasks must exist.
-- `parentId` and `childId` must be different.
-- The parent Task must not already have a child.
-- The child Task must not already have a parent.
-- Assigning this child must not create a cycle in the chain.
-
-**Output:** Both updated Task objects with refreshed `updatedAt`.
-
-**Side effects:**
-- Parent Task's `childTaskId` is set to `childId`.
-- Child Task's `parentTaskId` is set to `parentId`.
-
-**Failure cases:**
-| Condition                                    | Result   |
-|----------------------------------------------|----------|
-| Either Task does not exist                   | Not found|
-| `parentId` equals `childId`                  | Rejected |
-| Parent Task already has a child              | Rejected |
-| Child Task already has a parent              | Rejected |
-| Assignment would create a circular chain     | Rejected |
-
----
-
-### UC-T07 — Remove Child Task Link
-
-**Description:** Unlink the parent-child relationship between two Tasks without deleting either.
-
-**Input:**
-| Field      | Required | Description               |
-|------------|----------|---------------------------|
-| `parentId` | Yes      | ID of the parent Task     |
-
-**Preconditions:**
-- The parent Task must exist and must currently have a child.
-
-**Output:** Both updated Task objects with refreshed `updatedAt`.
-
-**Side effects:**
-- Parent Task's `childTaskId` is set to `null`.
-- Child Task's `parentTaskId` is set to `null`.
-
-**Failure cases:**
-| Condition                            | Result   |
-|--------------------------------------|----------|
-| Parent Task does not exist           | Not found|
-| Parent Task has no child             | Rejected |
-
----
-
-### UC-T08 — Complete Task
+### UC-T06 — Complete Task
 
 **Description:** Mark a Task as done.
 
@@ -221,7 +153,7 @@ This document specifies every use case in the system. Each use case describes it
 
 ---
 
-### UC-T09 — Reopen Task
+### UC-T07 — Reopen Task
 
 **Description:** Mark a previously completed Task as not done.
 
@@ -487,10 +419,8 @@ This document specifies every use case in the system. Each use case describes it
 | UC-T03  | List Tasks              | Task    | Read      |
 | UC-T04  | Update Task             | Task    | Update    |
 | UC-T05  | Delete Task             | Task    | Delete    |
-| UC-T06  | Assign Child Task       | Task    | Update    |
-| UC-T07  | Remove Child Task Link  | Task    | Update    |
-| UC-T08  | Complete Task           | Task    | Update    |
-| UC-T09  | Reopen Task             | Task    | Update    |
+| UC-T06  | Complete Task           | Task    | Update    |
+| UC-T07  | Reopen Task             | Task    | Update    |
 | UC-C01  | Create Context          | Context | Create    |
 | UC-C02  | Get Context             | Context | Read      |
 | UC-C03  | List Contexts           | Context | Read      |

@@ -19,7 +19,6 @@ The foundation. Establishes the data model and business rules for the three core
 **What v1 delivers:**
 - Full CRUD for Tasks, Contexts, and Projects
 - Optional association of a Task to a Context and/or a Project
-- Hierarchical Tasks: a Task may have a single child Task (one level of nesting)
 - Task completion: a Task can be marked as done and reopened
 - Enforcement of all core business rules (validation, referential integrity, cascade behavior)
 

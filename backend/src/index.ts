@@ -1,20 +1,17 @@
-import "reflect-metadata";
 import "dotenv/config";
-import { SqliteDataSource } from "./infrastructure";
-import { createApp } from "./api/app";
+import "reflect-metadata";
+import { injectApi } from "./api/di";
+import { injectApplication } from "./application/di";
+import { DiContainer } from "./di-container/di-container";
+import { injectInfrastructure } from "./infrastructure/di";
 
-const port = parseInt(process.env.PORT!);
-const dataSource = new SqliteDataSource(process.env);
+const container = new DiContainer();
+const env = process.env;
 
-dataSource
-  .initialize()
-  .then(() => {
-    const app = createApp(dataSource);
-    app.listen(port, () => {
-      console.log(`Actio API running on http://localhost:${port}`);
-    });
-  })
-  .catch((err) => {
-    console.error("Failed to initialize database:", err);
+injectInfrastructure(container, env)
+  .then((container) => injectApplication(container, env)
+  .then((container) => injectApi(container, env)))  
+  .catch((err: Error) => {
+    console.error("Failed to start", err);
     process.exit(1);
   });
