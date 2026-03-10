@@ -72,4 +72,18 @@ export class TasksService {
       error: () => this.error.set('Failed to delete task'),
     });
   }
+
+  complete(id: string): void {
+    this.http.post<Task>(`${this.apiUrl}/${id}/complete`, {}).subscribe({
+      next: (task) => this.items.update((items) => items.map((t) => (t.id === id ? task : t))),
+      error: () => this.error.set('Failed to complete task'),
+    });
+  }
+
+  reopen(id: string): void {
+    this.http.post<Task>(`${this.apiUrl}/${id}/reopen`, {}).subscribe({
+      next: (task) => this.items.update((items) => items.map((t) => (t.id === id ? task : t))),
+      error: () => this.error.set('Failed to reopen task'),
+    });
+  }
 }

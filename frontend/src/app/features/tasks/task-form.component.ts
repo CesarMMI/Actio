@@ -30,13 +30,12 @@ import { TaskPayload } from './tasks.service';
           <label for="task-project" class="block text-neutral-500 text-xs mb-1">Project</label>
           <select
             id="task-project"
-            [value]="projectId()"
             (change)="projectId.set($any($event.target).value || null)"
             class="w-full bg-neutral-800 border border-neutral-700 rounded px-3 py-2 text-neutral-100 text-sm focus:outline-none focus:ring-1 focus:ring-neutral-400"
           >
-            <option value="">No project</option>
+            <option value="" [selected]="projectId() === null">No project</option>
             @for (p of projects(); track p.id) {
-              <option [value]="p.id">{{ p.title }}</option>
+              <option [value]="p.id" [selected]="projectId() === p.id">{{ p.title }}</option>
             }
           </select>
         </div>
@@ -45,13 +44,12 @@ import { TaskPayload } from './tasks.service';
           <label for="task-context" class="block text-neutral-500 text-xs mb-1">Context</label>
           <select
             id="task-context"
-            [value]="contextId()"
             (change)="contextId.set($any($event.target).value || null)"
             class="w-full bg-neutral-800 border border-neutral-700 rounded px-3 py-2 text-neutral-100 text-sm focus:outline-none focus:ring-1 focus:ring-neutral-400"
           >
-            <option value="">No context</option>
+            <option value="" [selected]="contextId() === null">No context</option>
             @for (c of contexts(); track c.id) {
-              <option [value]="c.id">{{ c.title }}</option>
+              <option [value]="c.id" [selected]="contextId() === c.id">{{ c.title }}</option>
             }
           </select>
         </div>

@@ -5,6 +5,8 @@ export interface Task {
   projectId: string | null;
   parentTaskId: string | null;
   childTaskId: string | null;
+  done: boolean;
+  doneAt: string | null;
   createdAt: string;
   updatedAt: string;
 }

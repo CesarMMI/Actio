@@ -1,14 +1,14 @@
 import { ChangeDetectionStrategy, Component, computed, inject, OnInit, signal } from '@angular/core';
 import { TasksService, TaskPayload } from './tasks.service';
 import { TaskFormComponent } from './task-form.component';
-import { ListItemComponent } from '../../shared/list-item/list-item.component';
 import { ProjectsService } from '../projects/projects.service';
 import { ContextsService } from '../contexts/contexts.service';
+import { Task } from '../../core/models/task.model';
 
 @Component({
   selector: 'app-tasks',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TaskFormComponent, ListItemComponent],
+  imports: [TaskFormComponent],
   template: `
     <div class="max-w-2xl mx-auto px-6 py-10">
 
@@ -71,12 +71,36 @@ import { ContextsService } from '../contexts/contexts.service';
                 />
               </li>
             } @else {
-              <app-list-item
-                [title]="task.description"
-                [tags]="tagsFor(task.id)"
-                (edit)="editingId.set(task.id)"
-                (delete)="tasks.delete(task.id)"
-              />
+              <li class="py-4 border-b border-neutral-800 last:border-0">
+                <div class="flex items-start gap-3">
+                  <button
+                    (click)="onToggleDone(task)"
+                    [attr.aria-label]="task.done ? 'Reopen task: ' + task.description : 'Complete task: ' + task.description"
+                    class="mt-0.5 w-4 h-4 rounded border flex-shrink-0 flex items-center justify-center transition-colors"
+                    [class]="task.done ? 'bg-neutral-100 border-neutral-100' : 'border-neutral-600 hover:border-neutral-400'"
+                  >
+                    @if (task.done) {
+                      <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 text-neutral-900" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                      </svg>
+                    }
+                  </button>
+                  <div class="flex-1 min-w-0">
+                    <p class="text-sm" [class]="task.done ? 'text-neutral-600 line-through' : 'text-neutral-100'">{{ task.description }}</p>
+                    @if (tagsFor(task.id).length > 0) {
+                      <div class="flex gap-3 flex-wrap mt-2">
+                        @for (tag of tagsFor(task.id); track tag) {
+                          <span class="text-xs text-neutral-600">{{ tag }}</span>
+                        }
+                      </div>
+                    }
+                    <div class="flex gap-4 mt-3" role="group" [attr.aria-label]="'Actions for ' + task.description">
+                      <button (click)="editingId.set(task.id)" class="text-xs text-neutral-400 hover:text-neutral-100 transition-colors">Edit</button>
+                      <button (click)="tasks.delete(task.id)" class="text-xs text-neutral-600 hover:text-red-400 transition-colors">Delete</button>
+                    </div>
+                  </div>
+                </div>
+              </li>
             }
           }
         </ul>
@@ -128,5 +152,13 @@ export class TasksComponent implements OnInit {
 
   onUpdate(id: string, payload: TaskPayload): void {
     this.tasks.update(id, payload, () => this.editingId.set(null));
+  }
+
+  onToggleDone(task: Task): void {
+    if (task.done) {
+      this.tasks.reopen(task.id);
+    } else {
+      this.tasks.complete(task.id);
+    }
   }
 }
