@@ -1,8 +1,8 @@
 import { UpdateContextUseCase } from '../../../../src/application/use-cases/context/update-context.use-case';
-import { ContextNotFoundError } from '../../../../src/domain/errors/context-not-found.error';
-import { ContextTitleAlreadyExistsError } from '../../../../src/domain/errors/context-title-already-exists.error';
-import { InvalidContextTitleError } from '../../../../src/domain/errors/invalid-context-title.error';
-import { Context } from '../../../../src/domain/entities/context.entity';
+import { ContextNotFoundError } from '../../../../src/domain/errors/context/context-not-found.error';
+import { ContextTitleAlreadyExistsError } from '../../../../src/domain/errors/context/context-title-already-exists.error';
+import { InvalidContextTitleError } from '../../../../src/domain/errors/context/invalid-context-title.error';
+import { Context } from '../../../../src/domain/entities/context/context.entity';
 import { InMemoryContextRepository } from '../../mocks/in-memory-context.repository';
 
 describe('UC-C04 — Update Context', () => {

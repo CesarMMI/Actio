@@ -1,5 +1,5 @@
 import { ListProjectsUseCase } from '../../../../src/application/use-cases/project/list-projects.use-case';
-import { Project } from '../../../../src/domain/entities/project.entity';
+import { Project } from '../../../../src/domain/entities/project/project.entity';
 import { InMemoryProjectRepository } from '../../mocks/in-memory-project.repository';
 
 describe('UC-P03 — List Projects', () => {

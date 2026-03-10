@@ -1,6 +1,6 @@
 import { GetProjectUseCase } from '../../../../src/application/use-cases/project/get-project.use-case';
-import { ProjectNotFoundError } from '../../../../src/domain/errors/project-not-found.error';
-import { Project } from '../../../../src/domain/entities/project.entity';
+import { ProjectNotFoundError } from '../../../../src/domain/errors/project/project-not-found.error';
+import { Project } from '../../../../src/domain/entities/project/project.entity';
 import { InMemoryProjectRepository } from '../../mocks/in-memory-project.repository';
 
 describe('UC-P02 — Get Project', () => {

@@ -1,6 +1,6 @@
 import { GetContextUseCase } from '../../../../src/application/use-cases/context/get-context.use-case';
-import { ContextNotFoundError } from '../../../../src/domain/errors/context-not-found.error';
-import { Context } from '../../../../src/domain/entities/context.entity';
+import { ContextNotFoundError } from '../../../../src/domain/errors/context/context-not-found.error';
+import { Context } from '../../../../src/domain/entities/context/context.entity';
 import { InMemoryContextRepository } from '../../mocks/in-memory-context.repository';
 
 describe('UC-C02 — Get Context', () => {

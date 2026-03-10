@@ -1,5 +1,5 @@
-import { Project } from '../../../src/domain/entities/project.entity';
-import { IProjectRepository } from '../../../src/domain/interfaces/IProjectRepository';
+import { Project } from '../../../src/domain/entities/project/project.entity';
+import { IProjectRepository } from '../../../src/domain/interfaces/project-repository.interface';
 
 export class InMemoryProjectRepository implements IProjectRepository {
   private store = new Map<string, Project>();

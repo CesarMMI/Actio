@@ -1,6 +1,6 @@
 import { GetTaskUseCase } from '../../../../src/application/use-cases/task/get-task.use-case';
-import { TaskNotFoundError } from '../../../../src/domain/errors/task-not-found.error';
-import { Task } from '../../../../src/domain/entities/task.entity';
+import { TaskNotFoundError } from '../../../../src/domain/errors/task/task-not-found.error';
+import { Task } from '../../../../src/domain/entities/task/task.entity';
 import { InMemoryTaskRepository } from '../../mocks/in-memory-task.repository';
 
 describe('UC-T02 — Get Task', () => {

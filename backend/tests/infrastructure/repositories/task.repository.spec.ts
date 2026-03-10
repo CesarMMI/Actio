@@ -1,8 +1,8 @@
 import 'reflect-metadata';
 import { DataSource } from 'typeorm';
-import { Task } from '../../../src/domain/entities/task.entity';
-import { TaskOrmEntity } from '../../../src/infrastructure/entities/TaskOrmEntity';
-import { TypeOrmTaskRepository } from '../../../src/infrastructure/repositories/TypeOrmTaskRepository';
+import { Task } from '../../../src/domain/entities/task/task.entity';
+import { TaskOrmEntity } from '../../../src/infrastructure/entities/task.orm-entity';
+import { TypeOrmTaskRepository } from '../../../src/infrastructure/repositories/type-orm-task.repository';
 
 let dataSource: DataSource;
 let repo: TypeOrmTaskRepository;
@@ -57,8 +57,6 @@ describe('TypeOrmTaskRepository', () => {
     const found = await repo.findById(task.id);
     expect(found!.contextId).toBeUndefined();
     expect(found!.projectId).toBeUndefined();
-    expect(found!.parentTaskId).toBeUndefined();
-    expect(found!.childTaskId).toBeUndefined();
   });
 
   it('persists contextId and projectId when set', async () => {
@@ -120,5 +118,33 @@ describe('TypeOrmTaskRepository', () => {
     const result = await repo.save(task);
     expect(result.id).toBe(task.id);
     expect(result.description).toBe('Returned');
+  });
+
+  it('persists done as false by default', async () => {
+    const task = Task.create({ description: 'Not done' });
+    await repo.save(task);
+    const found = await repo.findById(task.id);
+    expect(found!.done).toBe(false);
+    expect(found!.doneAt).toBeUndefined();
+  });
+
+  it('persists done and doneAt when completed', async () => {
+    const task = Task.create({ description: 'Done task' });
+    task.complete();
+    await repo.save(task);
+    const found = await repo.findById(task.id);
+    expect(found!.done).toBe(true);
+    expect(found!.doneAt).toBeInstanceOf(Date);
+  });
+
+  it('persists done false and no doneAt when reopened', async () => {
+    const task = Task.create({ description: 'Reopened task' });
+    task.complete();
+    await repo.save(task);
+    task.reopen();
+    await repo.save(task);
+    const found = await repo.findById(task.id);
+    expect(found!.done).toBe(false);
+    expect(found!.doneAt).toBeUndefined();
   });
 });

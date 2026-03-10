@@ -1,8 +1,8 @@
 import { UpdateProjectUseCase } from '../../../../src/application/use-cases/project/update-project.use-case';
-import { InvalidProjectTitleError } from '../../../../src/domain/errors/invalid-project-title.error';
-import { ProjectNotFoundError } from '../../../../src/domain/errors/project-not-found.error';
-import { ProjectTitleAlreadyExistsError } from '../../../../src/domain/errors/project-title-already-exists.error';
-import { Project } from '../../../../src/domain/entities/project.entity';
+import { InvalidProjectTitleError } from '../../../../src/domain/errors/project/invalid-project-title.error';
+import { ProjectNotFoundError } from '../../../../src/domain/errors/project/project-not-found.error';
+import { ProjectTitleAlreadyExistsError } from '../../../../src/domain/errors/project/project-title-already-exists.error';
+import { Project } from '../../../../src/domain/entities/project/project.entity';
 import { InMemoryProjectRepository } from '../../mocks/in-memory-project.repository';
 
 describe('UC-P04 — Update Project', () => {

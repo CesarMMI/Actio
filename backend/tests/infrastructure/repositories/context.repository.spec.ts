@@ -1,8 +1,8 @@
 import 'reflect-metadata';
 import { DataSource } from 'typeorm';
-import { Context } from '../../../src/domain/entities/context.entity';
-import { ContextOrmEntity } from '../../../src/infrastructure/entities/ContextOrmEntity';
-import { TypeOrmContextRepository } from '../../../src/infrastructure/repositories/TypeOrmContextRepository';
+import { Context } from '../../../src/domain/entities/context/context.entity';
+import { ContextOrmEntity } from '../../../src/infrastructure/entities/context.orm-entity';
+import { TypeOrmContextRepository } from '../../../src/infrastructure/repositories/type-orm-context.repository';
 
 let dataSource: DataSource;
 let repo: TypeOrmContextRepository;

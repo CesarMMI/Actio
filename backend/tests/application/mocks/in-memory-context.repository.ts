@@ -1,5 +1,5 @@
-import { Context } from '../../../src/domain/entities/context.entity';
-import { IContextRepository } from '../../../src/domain/interfaces/IContextRepository';
+import { Context } from '../../../src/domain/entities/context/context.entity';
+import { IContextRepository } from '../../../src/domain/interfaces/context-repository.interface';
 
 export class InMemoryContextRepository implements IContextRepository {
   private store = new Map<string, Context>();

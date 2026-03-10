@@ -1,5 +1,5 @@
-import { Task } from '../../../src/domain/entities/task.entity';
-import { ITaskRepository } from '../../../src/domain/interfaces/ITaskRepository';
+import { Task } from '../../../src/domain/entities/task/task.entity';
+import { ITaskRepository } from '../../../src/domain/interfaces/task-repository.interface';
 
 export class InMemoryTaskRepository implements ITaskRepository {
   private store = new Map<string, Task>();

@@ -1,6 +1,6 @@
 import { CreateProjectUseCase } from '../../../../src/application/use-cases/project/create-project.use-case';
-import { InvalidProjectTitleError } from '../../../../src/domain/errors/invalid-project-title.error';
-import { ProjectTitleAlreadyExistsError } from '../../../../src/domain/errors/project-title-already-exists.error';
+import { InvalidProjectTitleError } from '../../../../src/domain/errors/project/invalid-project-title.error';
+import { ProjectTitleAlreadyExistsError } from '../../../../src/domain/errors/project/project-title-already-exists.error';
 import { InMemoryProjectRepository } from '../../mocks/in-memory-project.repository';
 
 describe('UC-P01 — Create Project', () => {

@@ -1,8 +1,8 @@
 import 'reflect-metadata';
 import { DataSource } from 'typeorm';
-import { Project } from '../../../src/domain/entities/project.entity';
-import { ProjectOrmEntity } from '../../../src/infrastructure/entities/ProjectOrmEntity';
-import { TypeOrmProjectRepository } from '../../../src/infrastructure/repositories/TypeOrmProjectRepository';
+import { Project } from '../../../src/domain/entities/project/project.entity';
+import { ProjectOrmEntity } from '../../../src/infrastructure/entities/project.orm-entity';
+import { TypeOrmProjectRepository } from '../../../src/infrastructure/repositories/type-orm-project.repository';
 
 let dataSource: DataSource;
 let repo: TypeOrmProjectRepository;

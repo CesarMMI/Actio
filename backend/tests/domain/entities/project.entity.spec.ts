@@ -1,5 +1,5 @@
-import { Project } from '../../../src/domain/entities/project.entity';
-import { InvalidProjectTitleError } from '../../../src/domain/errors/invalid-project-title.error';
+import { Project } from '../../../src/domain/entities/project/project.entity';
+import { InvalidProjectTitleError } from '../../../src/domain/errors/project/invalid-project-title.error';
 
 describe('Project entity', () => {
   describe('Project.create', () => {
@@ -26,10 +26,10 @@ describe('Project entity', () => {
     });
   });
 
-  describe('Project.reconstitute', () => {
-    it('reconstitutes a project with all fields', () => {
+  describe('Project.load', () => {
+    it('loads a project with all fields', () => {
       const now = new Date();
-      const proj = Project.reconstitute({ id: 'proj-1', title: 'My project', createdAt: now, updatedAt: now });
+      const proj = Project.load({ id: 'proj-1', title: 'My project', createdAt: now, updatedAt: now });
       expect(proj.id).toBe('proj-1');
       expect(proj.title).toBe('My project');
     });

@@ -1,15 +1,12 @@
 import { CreateTaskUseCase } from '../../../../src/application/use-cases/task/create-task.use-case';
-import { ContextNotFoundError } from '../../../../src/domain/errors/context-not-found.error';
-import { InvalidTaskDescriptionError } from '../../../../src/domain/errors/invalid-task-description.error';
-import { ProjectNotFoundError } from '../../../../src/domain/errors/project-not-found.error';
-import { TaskAlreadyHasChildError } from '../../../../src/domain/errors/task-already-has-child.error';
-import { TaskNotFoundError } from '../../../../src/domain/errors/task-not-found.error';
+import { ContextNotFoundError } from '../../../../src/domain/errors/context/context-not-found.error';
+import { InvalidTaskDescriptionError } from '../../../../src/domain/errors/task/invalid-task-description.error';
+import { ProjectNotFoundError } from '../../../../src/domain/errors/project/project-not-found.error';
 import { InMemoryContextRepository } from '../../mocks/in-memory-context.repository';
 import { InMemoryProjectRepository } from '../../mocks/in-memory-project.repository';
 import { InMemoryTaskRepository } from '../../mocks/in-memory-task.repository';
-import { Context } from '../../../../src/domain/entities/context.entity';
-import { Project } from '../../../../src/domain/entities/project.entity';
-import { Task } from '../../../../src/domain/entities/task.entity';
+import { Context } from '../../../../src/domain/entities/context/context.entity';
+import { Project } from '../../../../src/domain/entities/project/project.entity';
 
 describe('UC-T01 — Create Task', () => {
   let useCase: CreateTaskUseCase;
@@ -32,7 +29,6 @@ describe('UC-T01 — Create Task', () => {
     expect(result.updatedAt).toBeInstanceOf(Date);
     expect(result.contextId).toBeUndefined();
     expect(result.projectId).toBeUndefined();
-    expect(result.parentTaskId).toBeUndefined();
   });
 
   it('rejects empty description', async () => {
@@ -59,22 +55,4 @@ describe('UC-T01 — Create Task', () => {
     await expect(useCase.execute({ description: 'Buy tiles', projectId: 'non-existent' })).rejects.toThrow(ProjectNotFoundError);
   });
 
-  it('creates a child task and updates parent childTaskId', async () => {
-    const parent = await taskRepo.save(Task.create({ description: 'Parent task' }));
-    const child = await useCase.execute({ description: 'Child task', parentTaskId: parent.id });
-
-    expect(child.parentTaskId).toBe(parent.id);
-    const updatedParent = await taskRepo.findById(parent.id);
-    expect(updatedParent?.childTaskId).toBe(child.id);
-  });
-
-  it('rejects when parentTaskId references non-existent task', async () => {
-    await expect(useCase.execute({ description: 'Child task', parentTaskId: 'non-existent' })).rejects.toThrow(TaskNotFoundError);
-  });
-
-  it('rejects when parent already has a child', async () => {
-    const parent = await taskRepo.save(Task.create({ description: 'Parent' }));
-    await useCase.execute({ description: 'First child', parentTaskId: parent.id });
-    await expect(useCase.execute({ description: 'Second child', parentTaskId: parent.id })).rejects.toThrow(TaskAlreadyHasChildError);
-  });
 });

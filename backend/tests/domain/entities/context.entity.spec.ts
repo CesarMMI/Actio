@@ -1,5 +1,5 @@
-import { Context } from '../../../src/domain/entities/context.entity';
-import { InvalidContextTitleError } from '../../../src/domain/errors/invalid-context-title.error';
+import { Context } from '../../../src/domain/entities/context/context.entity';
+import { InvalidContextTitleError } from '../../../src/domain/errors/context/invalid-context-title.error';
 
 describe('Context entity', () => {
   describe('Context.create', () => {
@@ -26,10 +26,10 @@ describe('Context entity', () => {
     });
   });
 
-  describe('Context.reconstitute', () => {
-    it('reconstitutes a context with all fields', () => {
+  describe('Context.load', () => {
+    it('loads a context with all fields', () => {
       const now = new Date();
-      const ctx = Context.reconstitute({ id: 'ctx-1', title: 'At home', createdAt: now, updatedAt: now });
+      const ctx = Context.load({ id: 'ctx-1', title: 'At home', createdAt: now, updatedAt: now });
       expect(ctx.id).toBe('ctx-1');
       expect(ctx.title).toBe('At home');
     });

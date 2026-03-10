@@ -1,8 +1,8 @@
 import { DeleteContextUseCase } from '../../../../src/application/use-cases/context/delete-context.use-case';
-import { ContextHasTasksError } from '../../../../src/domain/errors/context-has-tasks.error';
-import { ContextNotFoundError } from '../../../../src/domain/errors/context-not-found.error';
-import { Context } from '../../../../src/domain/entities/context.entity';
-import { Task } from '../../../../src/domain/entities/task.entity';
+import { ContextHasTasksError } from '../../../../src/domain/errors/context/context-has-tasks.error';
+import { ContextNotFoundError } from '../../../../src/domain/errors/context/context-not-found.error';
+import { Context } from '../../../../src/domain/entities/context/context.entity';
+import { Task } from '../../../../src/domain/entities/task/task.entity';
 import { InMemoryContextRepository } from '../../mocks/in-memory-context.repository';
 import { InMemoryTaskRepository } from '../../mocks/in-memory-task.repository';
 

@@ -1,8 +1,7 @@
-import { Task } from '../../../src/domain/entities/task.entity';
-import { InvalidTaskDescriptionError } from '../../../src/domain/errors/invalid-task-description.error';
-import { TaskAlreadyHasChildError } from '../../../src/domain/errors/task-already-has-child.error';
-import { TaskAlreadyHasParentError } from '../../../src/domain/errors/task-already-has-parent.error';
-import { TaskSelfReferenceError } from '../../../src/domain/errors/task-self-reference.error';
+import { Task } from '../../../src/domain/entities/task/task.entity';
+import { InvalidTaskDescriptionError } from '../../../src/domain/errors/task/invalid-task-description.error';
+import { TaskAlreadyDoneError } from '../../../src/domain/errors/task/task-already-done.error';
+import { TaskNotDoneError } from '../../../src/domain/errors/task/task-not-done.error';
 
 describe('Task entity', () => {
   describe('Task.create', () => {
@@ -12,6 +11,8 @@ describe('Task entity', () => {
       expect(task.id).toBeDefined();
       expect(task.createdAt).toBeInstanceOf(Date);
       expect(task.updatedAt).toBeInstanceOf(Date);
+      expect(task.done).toBe(false);
+      expect(task.doneAt).toBeUndefined();
     });
 
     it('rejects empty description', () => {
@@ -39,25 +40,22 @@ describe('Task entity', () => {
     });
   });
 
-  describe('Task.reconstitute', () => {
-    it('reconstitutes a task with all fields', () => {
+  describe('Task.load', () => {
+    it('loads a task with all fields', () => {
       const now = new Date();
-      const task = Task.reconstitute({
+      const task = Task.load({
         id: 'task-1',
-        description: 'Reconstituted',
+        description: 'Loaded',
+        done: false,
         contextId: 'ctx-1',
         projectId: 'proj-1',
-        parentTaskId: 'parent-1',
-        childTaskId: 'child-1',
         createdAt: now,
         updatedAt: now,
       });
       expect(task.id).toBe('task-1');
-      expect(task.description).toBe('Reconstituted');
+      expect(task.description).toBe('Loaded');
       expect(task.contextId).toBe('ctx-1');
       expect(task.projectId).toBe('proj-1');
-      expect(task.parentTaskId).toBe('parent-1');
-      expect(task.childTaskId).toBe('child-1');
     });
   });
 
@@ -107,6 +105,53 @@ describe('Task entity', () => {
     });
   });
 
+  describe('complete', () => {
+    it('sets done to true and doneAt to current timestamp', () => {
+      const task = Task.create({ description: 'Task' });
+      const before = new Date();
+      task.complete();
+      expect(task.done).toBe(true);
+      expect(task.doneAt).toBeInstanceOf(Date);
+      expect(task.doneAt!.getTime()).toBeGreaterThanOrEqual(before.getTime());
+    });
+
+    it('refreshes updatedAt', () => {
+      const task = Task.create({ description: 'Task' });
+      const before = task.updatedAt;
+      task.complete();
+      expect(task.updatedAt >= before).toBe(true);
+    });
+
+    it('throws TaskAlreadyDoneError if already done', () => {
+      const task = Task.create({ description: 'Task' });
+      task.complete();
+      expect(() => task.complete()).toThrow(TaskAlreadyDoneError);
+    });
+  });
+
+  describe('reopen', () => {
+    it('sets done to false and clears doneAt', () => {
+      const task = Task.create({ description: 'Task' });
+      task.complete();
+      task.reopen();
+      expect(task.done).toBe(false);
+      expect(task.doneAt).toBeUndefined();
+    });
+
+    it('refreshes updatedAt', () => {
+      const task = Task.create({ description: 'Task' });
+      task.complete();
+      const before = task.updatedAt;
+      task.reopen();
+      expect(task.updatedAt >= before).toBe(true);
+    });
+
+    it('throws TaskNotDoneError if not done', () => {
+      const task = Task.create({ description: 'Task' });
+      expect(() => task.reopen()).toThrow(TaskNotDoneError);
+    });
+  });
+
   describe('assignProject', () => {
     it('assigns a project', () => {
       const task = Task.create({ description: 'Task' });
@@ -124,92 +169,6 @@ describe('Task entity', () => {
       const task = Task.create({ description: 'Task' });
       const before = task.updatedAt;
       task.assignProject('proj-1');
-      expect(task.updatedAt >= before).toBe(true);
-    });
-  });
-
-  describe('assignChild', () => {
-    it('assigns a child task id', () => {
-      const task = Task.create({ description: 'Parent' });
-      task.assignChild('child-id');
-      expect(task.childTaskId).toBe('child-id');
-    });
-
-    it('refreshes updatedAt on assign child', () => {
-      const task = Task.create({ description: 'Parent' });
-      const before = task.updatedAt;
-      task.assignChild('child-id');
-      expect(task.updatedAt >= before).toBe(true);
-    });
-
-    it('throws TaskAlreadyHasChildError if child already assigned', () => {
-      const task = Task.create({ description: 'Parent' });
-      task.assignChild('child-1');
-      expect(() => task.assignChild('child-2')).toThrow(TaskAlreadyHasChildError);
-    });
-
-    it('throws TaskSelfReferenceError if child is the task itself', () => {
-      const task = Task.create({ description: 'Parent' });
-      expect(() => task.assignChild(task.id)).toThrow(TaskSelfReferenceError);
-    });
-  });
-
-  describe('assignParent', () => {
-    it('assigns a parent task id', () => {
-      const task = Task.create({ description: 'Child' });
-      task.assignParent('parent-id');
-      expect(task.parentTaskId).toBe('parent-id');
-    });
-
-    it('refreshes updatedAt on assign parent', () => {
-      const task = Task.create({ description: 'Child' });
-      const before = task.updatedAt;
-      task.assignParent('parent-id');
-      expect(task.updatedAt >= before).toBe(true);
-    });
-
-    it('throws TaskAlreadyHasParentError if parent already assigned', () => {
-      const task = Task.create({ description: 'Child' });
-      task.assignParent('parent-1');
-      expect(() => task.assignParent('parent-2')).toThrow(TaskAlreadyHasParentError);
-    });
-
-    it('throws TaskSelfReferenceError if parent is the task itself', () => {
-      const task = Task.create({ description: 'Child' });
-      expect(() => task.assignParent(task.id)).toThrow(TaskSelfReferenceError);
-    });
-  });
-
-  describe('removeChild', () => {
-    it('removes child task id', () => {
-      const task = Task.create({ description: 'Parent' });
-      task.assignChild('child-id');
-      task.removeChild();
-      expect(task.childTaskId).toBeUndefined();
-    });
-
-    it('refreshes updatedAt on remove child', () => {
-      const task = Task.create({ description: 'Parent' });
-      task.assignChild('child-id');
-      const before = task.updatedAt;
-      task.removeChild();
-      expect(task.updatedAt >= before).toBe(true);
-    });
-  });
-
-  describe('removeParent', () => {
-    it('removes parent task id', () => {
-      const task = Task.create({ description: 'Child' });
-      task.assignParent('parent-id');
-      task.removeParent();
-      expect(task.parentTaskId).toBeUndefined();
-    });
-
-    it('refreshes updatedAt on remove parent', () => {
-      const task = Task.create({ description: 'Child' });
-      task.assignParent('parent-id');
-      const before = task.updatedAt;
-      task.removeParent();
       expect(task.updatedAt >= before).toBe(true);
     });
   });

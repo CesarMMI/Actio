@@ -1,6 +1,6 @@
 import { CreateContextUseCase } from '../../../../src/application/use-cases/context/create-context.use-case';
-import { ContextTitleAlreadyExistsError } from '../../../../src/domain/errors/context-title-already-exists.error';
-import { InvalidContextTitleError } from '../../../../src/domain/errors/invalid-context-title.error';
+import { ContextTitleAlreadyExistsError } from '../../../../src/domain/errors/context/context-title-already-exists.error';
+import { InvalidContextTitleError } from '../../../../src/domain/errors/context/invalid-context-title.error';
 import { InMemoryContextRepository } from '../../mocks/in-memory-context.repository';
 
 describe('UC-C01 — Create Context', () => {

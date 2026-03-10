@@ -1,8 +1,8 @@
 import { DeleteProjectUseCase } from '../../../../src/application/use-cases/project/delete-project.use-case';
-import { ProjectHasTasksError } from '../../../../src/domain/errors/project-has-tasks.error';
-import { ProjectNotFoundError } from '../../../../src/domain/errors/project-not-found.error';
-import { Project } from '../../../../src/domain/entities/project.entity';
-import { Task } from '../../../../src/domain/entities/task.entity';
+import { ProjectHasTasksError } from '../../../../src/domain/errors/project/project-has-tasks.error';
+import { ProjectNotFoundError } from '../../../../src/domain/errors/project/project-not-found.error';
+import { Project } from '../../../../src/domain/entities/project/project.entity';
+import { Task } from '../../../../src/domain/entities/task/task.entity';
 import { InMemoryProjectRepository } from '../../mocks/in-memory-project.repository';
 import { InMemoryTaskRepository } from '../../mocks/in-memory-task.repository';
 

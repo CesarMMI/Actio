@@ -1,5 +1,5 @@
 import { ListTasksUseCase } from '../../../../src/application/use-cases/task/list-tasks.use-case';
-import { Task } from '../../../../src/domain/entities/task.entity';
+import { Task } from '../../../../src/domain/entities/task/task.entity';
 import { InMemoryTaskRepository } from '../../mocks/in-memory-task.repository';
 
 describe('UC-T03 — List Tasks', () => {

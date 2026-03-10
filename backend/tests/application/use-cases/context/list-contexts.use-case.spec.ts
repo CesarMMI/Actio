@@ -1,5 +1,5 @@
 import { ListContextsUseCase } from '../../../../src/application/use-cases/context/list-contexts.use-case';
-import { Context } from '../../../../src/domain/entities/context.entity';
+import { Context } from '../../../../src/domain/entities/context/context.entity';
 import { InMemoryContextRepository } from '../../mocks/in-memory-context.repository';
 
 describe('UC-C03 — List Contexts', () => {
