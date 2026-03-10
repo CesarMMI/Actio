@@ -1,0 +1,3 @@
+import type { Task } from '../../../../domain/entities/task/task.entity';
+
+export type CompleteTaskOutput = Task;

@@ -1,10 +1,11 @@
-import { Project } from '../../../domain/entities/project.entity';
-import { IProjectRepository } from '../../../domain/interfaces/IProjectRepository';
+import { IProjectRepository } from '../../../domain/interfaces/project-repository.interface';
+import { IListProjectsUseCase } from '../../interfaces/project/list-projects.use-case.interface';
+import type { ListProjectsOutput } from '../../types/outputs/project/list-projects.output';
 
-export class ListProjectsUseCase {
+export class ListProjectsUseCase implements IListProjectsUseCase {
   constructor(private readonly projects: IProjectRepository) {}
 
-  async execute(): Promise<Project[]> {
+  async execute(): Promise<ListProjectsOutput> {
     return this.projects.findAll();
   }
 }

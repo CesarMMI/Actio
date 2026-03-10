@@ -1,12 +1,13 @@
-import { Project } from '../../../domain/entities/project.entity';
-import { ProjectNotFoundError } from '../../../domain/errors/project-not-found.error';
-import { IProjectRepository } from '../../../domain/interfaces/IProjectRepository';
-import type { GetProjectInput } from '../../interfaces/project/get-project.input';
+import { ProjectNotFoundError } from '../../../domain/errors/project/project-not-found.error';
+import { IProjectRepository } from '../../../domain/interfaces/project-repository.interface';
+import { IGetProjectUseCase } from '../../interfaces/project/get-project.use-case.interface';
+import type { GetProjectInput } from '../../types/inputs/project/get-project.input';
+import type { GetProjectOutput } from '../../types/outputs/project/get-project.output';
 
-export class GetProjectUseCase {
+export class GetProjectUseCase implements IGetProjectUseCase {
   constructor(private readonly projects: IProjectRepository) {}
 
-  async execute(input: GetProjectInput): Promise<Project> {
+  async execute(input: GetProjectInput): Promise<GetProjectOutput> {
     const project = await this.projects.findById(input.id);
     if (!project) throw new ProjectNotFoundError(input.id);
     return project;

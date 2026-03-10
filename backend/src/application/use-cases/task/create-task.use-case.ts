@@ -1,45 +1,32 @@
-import { Task } from '../../../domain/entities/task.entity';
-import { ContextNotFoundError } from '../../../domain/errors/context-not-found.error';
-import { ProjectNotFoundError } from '../../../domain/errors/project-not-found.error';
-import { TaskAlreadyHasChildError } from '../../../domain/errors/task-already-has-child.error';
-import { TaskNotFoundError } from '../../../domain/errors/task-not-found.error';
-import { IContextRepository } from '../../../domain/interfaces/IContextRepository';
-import { IProjectRepository } from '../../../domain/interfaces/IProjectRepository';
-import { ITaskRepository } from '../../../domain/interfaces/ITaskRepository';
-import type { CreateTaskInput } from '../../interfaces/task/create-task.input';
+import { Task } from "../../../domain/entities/task/task.entity";
+import { ContextNotFoundError } from "../../../domain/errors/context/context-not-found.error";
+import { ProjectNotFoundError } from "../../../domain/errors/project/project-not-found.error";
+import { IContextRepository } from "../../../domain/interfaces/context-repository.interface";
+import { IProjectRepository } from "../../../domain/interfaces/project-repository.interface";
+import { ITaskRepository } from "../../../domain/interfaces/task-repository.interface";
+import { ICreateTaskUseCase } from "../../interfaces/task/create-task.use-case.interface";
+import type { CreateTaskInput } from "../../types/inputs/task/create-task.input";
+import type { CreateTaskOutput } from "../../types/outputs/task/create-task.output";
 
-export class CreateTaskUseCase {
+export class CreateTaskUseCase implements ICreateTaskUseCase {
   constructor(
     private readonly tasks: ITaskRepository,
     private readonly contexts: IContextRepository,
     private readonly projects: IProjectRepository,
   ) {}
 
-  async execute(input: CreateTaskInput): Promise<Task> {
-    if (input.contextId !== undefined) {
+  async execute(input: CreateTaskInput): Promise<CreateTaskOutput> {
+    if (input.contextId != null) {
       const context = await this.contexts.findById(input.contextId);
       if (!context) throw new ContextNotFoundError(input.contextId);
     }
 
-    if (input.projectId !== undefined) {
+    if (input.projectId != null) {
       const project = await this.projects.findById(input.projectId);
       if (!project) throw new ProjectNotFoundError(input.projectId);
     }
 
-    let parent: Task | null = null;
-    if (input.parentTaskId !== undefined) {
-      parent = await this.tasks.findById(input.parentTaskId);
-      if (!parent) throw new TaskNotFoundError(input.parentTaskId);
-      if (parent.childTaskId !== undefined) throw new TaskAlreadyHasChildError(parent.id);
-    }
-
     const task = Task.create(input);
-
-    if (parent) {
-      parent.assignChild(task.id);
-      await this.tasks.save(parent);
-    }
-
     return this.tasks.save(task);
   }
 }
