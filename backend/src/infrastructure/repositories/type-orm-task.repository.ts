@@ -1,7 +1,7 @@
-import { DataSource, Repository } from 'typeorm';
-import { Task } from '../../domain/entities/task.entity';
-import { ITaskRepository } from '../../domain/interfaces/ITaskRepository';
-import { TaskOrmEntity } from '../entities/TaskOrmEntity';
+import { DataSource, Repository } from "typeorm";
+import { Task } from "../../domain/entities/task/task.entity";
+import { ITaskRepository } from "../../domain/interfaces/task-repository.interface";
+import { TaskOrmEntity } from "../entities/task.orm-entity";
 
 export class TypeOrmTaskRepository implements ITaskRepository {
   private readonly repo: Repository<TaskOrmEntity>;
@@ -21,24 +21,24 @@ export class TypeOrmTaskRepository implements ITaskRepository {
   }
 
   async findAll(): Promise<Task[]> {
-    const entities = await this.repo.find({ order: { createdAt: 'ASC' } });
-    return entities.map(e => this.toDomain(e));
+    const entities = await this.repo.find({ order: { createdAt: "ASC" } });
+    return entities.map((e) => this.toDomain(e));
   }
 
   async findByProjectId(projectId: string): Promise<Task[]> {
     const entities = await this.repo.find({
       where: { projectId },
-      order: { createdAt: 'ASC' },
+      order: { createdAt: "ASC" },
     });
-    return entities.map(e => this.toDomain(e));
+    return entities.map((e) => this.toDomain(e));
   }
 
   async findByContextId(contextId: string): Promise<Task[]> {
     const entities = await this.repo.find({
       where: { contextId },
-      order: { createdAt: 'ASC' },
+      order: { createdAt: "ASC" },
     });
-    return entities.map(e => this.toDomain(e));
+    return entities.map((e) => this.toDomain(e));
   }
 
   async delete(id: string): Promise<void> {
@@ -46,13 +46,13 @@ export class TypeOrmTaskRepository implements ITaskRepository {
   }
 
   private toDomain(entity: TaskOrmEntity): Task {
-    return Task.reconstitute({
+    return Task.load({
       id: entity.id,
       description: entity.description,
+      done: entity.done,
+      doneAt: entity.doneAt ?? undefined,
       contextId: entity.contextId ?? undefined,
       projectId: entity.projectId ?? undefined,
-      parentTaskId: entity.parentTaskId ?? undefined,
-      childTaskId: entity.childTaskId ?? undefined,
       createdAt: entity.createdAt,
       updatedAt: entity.updatedAt,
     });
@@ -62,10 +62,10 @@ export class TypeOrmTaskRepository implements ITaskRepository {
     const entity = new TaskOrmEntity();
     entity.id = task.id;
     entity.description = task.description;
+    entity.done = task.done;
+    entity.doneAt = task.doneAt ?? null;
     entity.contextId = task.contextId ?? null;
     entity.projectId = task.projectId ?? null;
-    entity.parentTaskId = task.parentTaskId ?? null;
-    entity.childTaskId = task.childTaskId ?? null;
     entity.createdAt = task.createdAt;
     entity.updatedAt = task.updatedAt;
     return entity;

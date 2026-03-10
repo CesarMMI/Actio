@@ -1,7 +1,7 @@
-import { DataSource, Repository } from 'typeorm';
-import { Context } from '../../domain/entities/context.entity';
-import { IContextRepository } from '../../domain/interfaces/IContextRepository';
-import { ContextOrmEntity } from '../entities/ContextOrmEntity';
+import { DataSource, Repository } from "typeorm";
+import { Context } from "../../domain/entities/context/context.entity";
+import { IContextRepository } from "../../domain/interfaces/context-repository.interface";
+import { ContextOrmEntity } from "../entities/context.orm-entity";
 
 export class TypeOrmContextRepository implements IContextRepository {
   private readonly repo: Repository<ContextOrmEntity>;
@@ -21,14 +21,14 @@ export class TypeOrmContextRepository implements IContextRepository {
   }
 
   async findAll(): Promise<Context[]> {
-    const entities = await this.repo.find({ order: { createdAt: 'ASC' } });
-    return entities.map(e => this.toDomain(e));
+    const entities = await this.repo.find({ order: { createdAt: "ASC" } });
+    return entities.map((e) => this.toDomain(e));
   }
 
   async findByTitle(title: string): Promise<Context | null> {
     const entity = await this.repo
-      .createQueryBuilder('ctx')
-      .where('LOWER(ctx.title) = LOWER(:title)', { title })
+      .createQueryBuilder("ctx")
+      .where("LOWER(ctx.title) = LOWER(:title)", { title })
       .getOne();
     return entity ? this.toDomain(entity) : null;
   }
@@ -38,7 +38,7 @@ export class TypeOrmContextRepository implements IContextRepository {
   }
 
   private toDomain(entity: ContextOrmEntity): Context {
-    return Context.reconstitute({
+    return Context.load({
       id: entity.id,
       title: entity.title,
       createdAt: entity.createdAt,

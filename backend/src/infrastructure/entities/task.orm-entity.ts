@@ -8,17 +8,17 @@ export class TaskOrmEntity {
   @Column('text')
   description!: string;
 
+  @Column('boolean')
+  done!: boolean;
+
+  @Column({ type: 'datetime', nullable: true })
+  doneAt!: Date | null;
+
   @Column({ type: 'text', nullable: true })
   contextId!: string | null;
 
   @Column({ type: 'text', nullable: true })
   projectId!: string | null;
-
-  @Column({ type: 'text', nullable: true })
-  parentTaskId!: string | null;
-
-  @Column({ type: 'text', nullable: true })
-  childTaskId!: string | null;
 
   @Column('datetime')
   createdAt!: Date;

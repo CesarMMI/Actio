@@ -1,7 +1,7 @@
-import { DataSource, Repository } from 'typeorm';
-import { Project } from '../../domain/entities/project.entity';
-import { IProjectRepository } from '../../domain/interfaces/IProjectRepository';
-import { ProjectOrmEntity } from '../entities/ProjectOrmEntity';
+import { DataSource, Repository } from "typeorm";
+import { Project } from "../../domain/entities/project/project.entity";
+import { IProjectRepository } from "../../domain/interfaces/project-repository.interface";
+import { ProjectOrmEntity } from "../entities/project.orm-entity";
 
 export class TypeOrmProjectRepository implements IProjectRepository {
   private readonly repo: Repository<ProjectOrmEntity>;
@@ -21,14 +21,14 @@ export class TypeOrmProjectRepository implements IProjectRepository {
   }
 
   async findAll(): Promise<Project[]> {
-    const entities = await this.repo.find({ order: { createdAt: 'ASC' } });
-    return entities.map(e => this.toDomain(e));
+    const entities = await this.repo.find({ order: { createdAt: "ASC" } });
+    return entities.map((e) => this.toDomain(e));
   }
 
   async findByTitle(title: string): Promise<Project | null> {
     const entity = await this.repo
-      .createQueryBuilder('proj')
-      .where('LOWER(proj.title) = LOWER(:title)', { title })
+      .createQueryBuilder("proj")
+      .where("LOWER(proj.title) = LOWER(:title)", { title })
       .getOne();
     return entity ? this.toDomain(entity) : null;
   }
@@ -38,7 +38,7 @@ export class TypeOrmProjectRepository implements IProjectRepository {
   }
 
   private toDomain(entity: ProjectOrmEntity): Project {
-    return Project.reconstitute({
+    return Project.load({
       id: entity.id,
       title: entity.title,
       createdAt: entity.createdAt,

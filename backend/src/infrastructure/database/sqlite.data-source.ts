@@ -1,8 +1,8 @@
 import "reflect-metadata";
 import { DataSource } from "typeorm";
-import { ContextOrmEntity } from "../entities/ContextOrmEntity";
-import { ProjectOrmEntity } from "../entities/ProjectOrmEntity";
-import { TaskOrmEntity } from "../entities/TaskOrmEntity";
+import { ContextOrmEntity } from "../entities/context.orm-entity";
+import { ProjectOrmEntity } from "../entities/project.orm-entity";
+import { TaskOrmEntity } from "../entities/task.orm-entity";
 
 export class SqliteDataSource extends DataSource {
   constructor(env: NodeJS.ProcessEnv) {
