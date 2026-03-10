@@ -1,5 +1,7 @@
 import { DataSource, Repository } from "typeorm";
 import { Task } from "../../domain/entities/task/task.entity";
+import { PaginatedResult } from "../../domain/interfaces/paginated-result";
+import { TaskListQuery } from "../../domain/interfaces/task-list-query";
 import { ITaskRepository } from "../../domain/interfaces/task-repository.interface";
 import { TaskOrmEntity } from "../entities/task.orm-entity";
 
@@ -39,6 +41,31 @@ export class TypeOrmTaskRepository implements ITaskRepository {
       order: { createdAt: "ASC" },
     });
     return entities.map((e) => this.toDomain(e));
+  }
+
+  async findWithQuery(query: TaskListQuery): Promise<PaginatedResult<Task>> {
+    const page = query.page ?? 1;
+    const limit = query.limit ?? 20;
+    const sortBy = query.sortBy ?? 'createdAt';
+    const order = (query.order?.toUpperCase() ?? 'ASC') as 'ASC' | 'DESC';
+
+    const qb = this.repo.createQueryBuilder('task');
+
+    if (query.done !== undefined) {
+      qb.andWhere('task.done = :done', { done: query.done });
+    }
+    if (query.contextId !== undefined) {
+      qb.andWhere('task.contextId = :contextId', { contextId: query.contextId });
+    }
+    if (query.projectId !== undefined) {
+      qb.andWhere('task.projectId = :projectId', { projectId: query.projectId });
+    }
+
+    qb.orderBy(`task.${sortBy}`, order);
+    qb.skip((page - 1) * limit).take(limit);
+
+    const [entities, total] = await qb.getManyAndCount();
+    return { items: entities.map((e) => this.toDomain(e)), total, page, limit };
   }
 
   async delete(id: string): Promise<void> {

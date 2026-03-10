@@ -1,5 +1,7 @@
 import { DataSource, Repository } from "typeorm";
 import { Context } from "../../domain/entities/context/context.entity";
+import { ContextListQuery } from "../../domain/interfaces/context-list-query";
+import { PaginatedResult } from "../../domain/interfaces/paginated-result";
 import { IContextRepository } from "../../domain/interfaces/context-repository.interface";
 import { ContextOrmEntity } from "../entities/context.orm-entity";
 
@@ -31,6 +33,20 @@ export class TypeOrmContextRepository implements IContextRepository {
       .where("LOWER(ctx.title) = LOWER(:title)", { title })
       .getOne();
     return entity ? this.toDomain(entity) : null;
+  }
+
+  async findWithQuery(query: ContextListQuery): Promise<PaginatedResult<Context>> {
+    const page = query.page ?? 1;
+    const limit = query.limit ?? 20;
+    const sortBy = query.sortBy ?? 'createdAt';
+    const order = (query.order?.toUpperCase() ?? 'ASC') as 'ASC' | 'DESC';
+
+    const qb = this.repo.createQueryBuilder('ctx');
+    qb.orderBy(`ctx.${sortBy}`, order);
+    qb.skip((page - 1) * limit).take(limit);
+
+    const [entities, total] = await qb.getManyAndCount();
+    return { items: entities.map((e) => this.toDomain(e)), total, page, limit };
   }
 
   async delete(id: string): Promise<void> {

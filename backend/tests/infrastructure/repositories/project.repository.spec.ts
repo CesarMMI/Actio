@@ -88,4 +88,47 @@ describe('TypeOrmProjectRepository', () => {
     expect(result.id).toBe(project.id);
     expect(result.title).toBe('Returned');
   });
+
+  describe('findWithQuery', () => {
+    it('returns all projects with default pagination', async () => {
+      await repo.save(Project.create({ title: 'Alpha' }));
+      await repo.save(Project.create({ title: 'Beta' }));
+
+      const result = await repo.findWithQuery({});
+      expect(result.items).toHaveLength(2);
+      expect(result.total).toBe(2);
+      expect(result.page).toBe(1);
+      expect(result.limit).toBe(20);
+    });
+
+    it('paginates results', async () => {
+      for (let i = 1; i <= 5; i++) {
+        await repo.save(Project.create({ title: `Project ${i}` }));
+      }
+
+      const page1 = await repo.findWithQuery({ page: 1, limit: 2 });
+      expect(page1.items).toHaveLength(2);
+      expect(page1.total).toBe(5);
+
+      const page3 = await repo.findWithQuery({ page: 3, limit: 2 });
+      expect(page3.items).toHaveLength(1);
+    });
+
+    it('sorts by title asc', async () => {
+      await repo.save(Project.create({ title: 'Zeta' }));
+      await repo.save(Project.create({ title: 'Alpha' }));
+
+      const result = await repo.findWithQuery({ sortBy: 'title', order: 'asc' });
+      expect(result.items[0].title).toBe('Alpha');
+      expect(result.items[1].title).toBe('Zeta');
+    });
+
+    it('sorts by title desc', async () => {
+      await repo.save(Project.create({ title: 'Alpha' }));
+      await repo.save(Project.create({ title: 'Zeta' }));
+
+      const result = await repo.findWithQuery({ sortBy: 'title', order: 'desc' });
+      expect(result.items[0].title).toBe('Zeta');
+    });
+  });
 });
