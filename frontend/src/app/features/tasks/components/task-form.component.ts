@@ -9,11 +9,14 @@ import {
 } from '@angular/core';
 import { Context } from '../../../core/models/context.model';
 import { Project } from '../../../core/models/project.model';
+import { SelectComponent } from '../../../shared/select/components/select.component';
+import { SelectOption } from '../../../shared/select/types/select-option';
 import { TaskPayload } from '../services/tasks.service';
 
 @Component({
   selector: 'app-task-form',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [SelectComponent],
   template: `
     <form (submit)="submit($event)" class="flex flex-col gap-3">
       <div>
@@ -34,31 +37,37 @@ import { TaskPayload } from '../services/tasks.service';
 
       <div class="flex gap-3">
         <div class="flex-1">
-          <label for="task-project" class="block text-neutral-500 text-xs mb-1">Project</label>
-          <select
-            id="task-project"
-            (change)="projectId.set($any($event.target).value || null)"
-            class="w-full bg-neutral-800 border border-neutral-700 rounded px-3 py-2 text-neutral-100 text-sm focus:outline-none focus:ring-1 focus:ring-neutral-400"
-          >
-            <option value="" [selected]="projectId() === null">No project</option>
-            @for (p of projects(); track p.id) {
-              <option [value]="p.id" [selected]="projectId() === p.id">{{ p.title }}</option>
-            }
-          </select>
+          <p class="block text-neutral-500 text-xs mb-1">Project</p>
+          @if (lockProject()) {
+            <div class="w-full bg-neutral-800 border border-neutral-700 rounded px-3 py-2 text-neutral-400 text-sm">
+              {{ lockedProjectName() ?? 'No project' }}
+            </div>
+          } @else {
+            <app-select
+              placeholder="No project"
+              [options]="projectOptions()"
+              [value]="projectId() ?? ''"
+              ariaLabel="Project"
+              (valueChange)="projectId.set($event || null)"
+            />
+          }
         </div>
 
         <div class="flex-1">
-          <label for="task-context" class="block text-neutral-500 text-xs mb-1">Context</label>
-          <select
-            id="task-context"
-            (change)="contextId.set($any($event.target).value || null)"
-            class="w-full bg-neutral-800 border border-neutral-700 rounded px-3 py-2 text-neutral-100 text-sm focus:outline-none focus:ring-1 focus:ring-neutral-400"
-          >
-            <option value="" [selected]="contextId() === null">No context</option>
-            @for (c of contexts(); track c.id) {
-              <option [value]="c.id" [selected]="contextId() === c.id">{{ c.title }}</option>
-            }
-          </select>
+          <p class="block text-neutral-500 text-xs mb-1">Context</p>
+          @if (lockContext()) {
+            <div class="w-full bg-neutral-800 border border-neutral-700 rounded px-3 py-2 text-neutral-400 text-sm">
+              {{ lockedContextName() ?? 'No context' }}
+            </div>
+          } @else {
+            <app-select
+              placeholder="No context"
+              [options]="contextOptions()"
+              [value]="contextId() ?? ''"
+              ariaLabel="Context"
+              (valueChange)="contextId.set($event || null)"
+            />
+          }
         </div>
       </div>
 
@@ -88,6 +97,8 @@ export class TaskFormComponent implements OnInit {
   initialProjectId = input<string | null>(null);
   contexts = input<Context[]>([]);
   projects = input<Project[]>([]);
+  lockContext = input(false);
+  lockProject = input(false);
   saving = input(false);
   submitLabel = input('Save');
 
@@ -99,6 +110,22 @@ export class TaskFormComponent implements OnInit {
   projectId = signal<string | null>(null);
   touched = signal(false);
   showError = computed(() => this.touched() && this.description().trim().length === 0);
+
+  projectOptions = computed<SelectOption[]>(() =>
+    this.projects().map((p) => ({ value: p.id, label: p.title })),
+  );
+
+  contextOptions = computed<SelectOption[]>(() =>
+    this.contexts().map((c) => ({ value: c.id, label: c.title })),
+  );
+
+  lockedProjectName = computed(() =>
+    this.projects().find((p) => p.id === this.projectId())?.title ?? null,
+  );
+
+  lockedContextName = computed(() =>
+    this.contexts().find((c) => c.id === this.contextId())?.title ?? null,
+  );
 
   ngOnInit(): void {
     this.description.set(this.initialDescription());
