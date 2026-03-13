@@ -6,3 +6,4 @@ backend/database
 backend/.env
 
 frontend/.angular.claude/worktrees/
+.claude/settings.local.json
