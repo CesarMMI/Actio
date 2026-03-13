@@ -1,5 +1,5 @@
 ---
-name: build-actio-front
+name: build-frontend
 description: Build, scaffold, or implement Angular 21+ frontend components, pages, services, or features. Use when the user asks to create or modify frontend UI, components, routes, or services in an Angular app.
 argument-hint: "[what to build, e.g. 'login page', 'data table component', 'auth service', 'dashboard layout']"
 allowed-tools: Read, Grep, Glob, Bash, Write, Edit, Agent

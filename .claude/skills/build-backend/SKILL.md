@@ -1,5 +1,5 @@
 ---
-name: build-actio-backend
+name: build-backend
 description: Build, scaffold, or implement TypeScript + Express.js + TypeORM backend features, use cases, or modules following DDD and TDD. Use when the user asks to create or modify backend routes, use cases, domain entities, repositories, or error handling.
 argument-hint: "[what to build, e.g. 'create task use case', 'project routes', 'context repository']"
 allowed-tools: Read, Grep, Glob, Bash, Write, Edit, Agent
