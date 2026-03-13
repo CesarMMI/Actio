@@ -2,8 +2,10 @@
 **/dist
 **/.vscode
 
+.claude/worktrees/
+.claude/settings.local.json
+
 backend/database
 backend/.env
 
-frontend/.angular.claude/worktrees/
-.claude/settings.local.json
+frontend/.angular
