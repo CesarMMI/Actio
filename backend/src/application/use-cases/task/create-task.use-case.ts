@@ -27,6 +27,8 @@ export class CreateTaskUseCase implements ICreateTaskUseCase {
     }
 
     const task = Task.create(input);
-    return this.tasks.save(task);
+    await this.tasks.save(task);
+
+    return task;
   }
 }

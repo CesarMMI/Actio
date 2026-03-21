@@ -11,6 +11,7 @@ export class ReopenTaskUseCase implements IReopenTaskUseCase {
     const task = await this.tasks.findById(input.id);
     if (!task) throw new TaskNotFoundError(input.id);
     task.reopen();
-    return this.tasks.save(task);
+    await this.tasks.save(task);
+    return task;
   }
 }
