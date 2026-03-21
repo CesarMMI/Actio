@@ -7,6 +7,15 @@ export class DiContainer {
     this.bindings.set(injectable.token, instance);
   }
 
+  bindMany<T>(injectable: Injectable<T[]>, instance: T): void {
+    const existing = this.bindings.get(injectable.token) as T[] | undefined;
+    if (existing) {
+      existing.push(instance);
+    } else {
+      this.bindings.set(injectable.token, [instance]);
+    }
+  }
+
   resolve<T>(injectable: Injectable<T>): T {
     const instance = this.bindings.get(injectable.token);
     if (!instance)

@@ -163,9 +163,9 @@ import { TASK_SORT_MAP, TaskSortOption } from '../types/task-sort';
               [isEditing]="editingId() === task.id"
               [contexts]="contexts.items()"
               [projects]="projects.items()"
-              (toggleDone)="service.toggleDone(task)"
+              (toggleTask)="service.toggleDone($event)"
               (edit)="editingId.set(task.id)"
-              (delete)="service.delete(task.id)"
+              (deleteTask)="service.delete($event)"
               (saveEdit)="onUpdate(task.id, $event)"
               (cancelEdit)="editingId.set(null)"
             />

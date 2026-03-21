@@ -12,7 +12,7 @@ describe('UC-T05 — Delete Task', () => {
     useCase = new DeleteTaskUseCase(taskRepo);
   });
 
-  it('deletes an existing standalone task', async () => {
+  it('deletes an existing task', async () => {
     const task = await taskRepo.save(Task.create({ description: 'Task' }));
     await useCase.execute({ id: task.id });
     expect(await taskRepo.findById(task.id)).toBeNull();
@@ -21,5 +21,4 @@ describe('UC-T05 — Delete Task', () => {
   it('throws TaskNotFoundError for unknown id', async () => {
     await expect(useCase.execute({ id: 'non-existent' })).rejects.toThrow(TaskNotFoundError);
   });
-
 });

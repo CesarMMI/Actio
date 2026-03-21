@@ -21,7 +21,7 @@ describe('UC-T01 — Create Task', () => {
     useCase = new CreateTaskUseCase(taskRepo, contextRepo, projectRepo);
   });
 
-  it('creates a standalone task with valid description', async () => {
+  it('creates a task with valid description', async () => {
     const result = await useCase.execute({ description: 'Buy milk' });
     expect(result.description).toBe('Buy milk');
     expect(result.id).toBeDefined();
@@ -54,5 +54,4 @@ describe('UC-T01 — Create Task', () => {
   it('rejects when projectId references non-existent project', async () => {
     await expect(useCase.execute({ description: 'Buy tiles', projectId: 'non-existent' })).rejects.toThrow(ProjectNotFoundError);
   });
-
 });

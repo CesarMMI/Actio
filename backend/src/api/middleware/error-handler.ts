@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from "express";
+import { NextFunction, Request, Response } from "express";
 import { ContextHasTasksError } from "../../domain/errors/context/context-has-tasks.error";
 import { ContextNotFoundError } from "../../domain/errors/context/context-not-found.error";
 import { ContextTitleAlreadyExistsError } from "../../domain/errors/context/context-title-already-exists.error";
@@ -22,15 +22,13 @@ function problem(
   title: string,
   detail: string,
 ): void {
-  res
-    .status(status)
-    .json({
-      type: `${BASE}/${slug}`,
-      title,
-      status,
-      detail,
-      instance: req.path,
-    });
+  res.status(status).json({
+    type: `${BASE}/${slug}`,
+    title,
+    status,
+    detail,
+    instance: req.path,
+  });
 }
 
 export function errorHandler(
@@ -40,7 +38,14 @@ export function errorHandler(
   _next: NextFunction,
 ): void {
   if (err instanceof TaskAlreadyDoneError) {
-    problem(res, req, 422, "task-already-done", "Task Already Done", err.message);
+    problem(
+      res,
+      req,
+      422,
+      "task-already-done",
+      "Task Already Done",
+      err.message,
+    );
   } else if (err instanceof TaskNotDoneError) {
     problem(res, req, 422, "task-not-done", "Task Not Done", err.message);
   } else if (err instanceof TaskNotFoundError) {

@@ -11,5 +11,6 @@ export class DeleteTaskUseCase implements IDeleteTaskUseCase {
     const task = await this.tasks.findById(input.id);
     if (!task) throw new TaskNotFoundError(input.id);
     await this.tasks.delete(input.id);
+    return;
   }
 }

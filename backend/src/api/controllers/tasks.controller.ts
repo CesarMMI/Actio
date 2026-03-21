@@ -7,22 +7,36 @@ import { IListTasksUseCase } from '../../application/interfaces/task/list-tasks.
 import { IReopenTaskUseCase } from '../../application/interfaces/task/reopen-task.use-case.interface';
 import { IUpdateTaskUseCase } from '../../application/interfaces/task/update-task.use-case.interface';
 import type { TaskListQuery } from '../../domain/interfaces/task-list-query';
+import { IController } from '../interfaces/controller.interface';
 
-export function tasksRouter(useCases: {
-  createTask: ICreateTaskUseCase;
-  getTask: IGetTaskUseCase;
-  listTasks: IListTasksUseCase;
-  updateTask: IUpdateTaskUseCase;
-  deleteTask: IDeleteTaskUseCase;
-  completeTask: ICompleteTaskUseCase;
-  reopenTask: IReopenTaskUseCase;
-}): Router {
-  const router = Router();
+export class TasksController implements IController {
+  readonly basePath = '/tasks';
+
+  constructor(
+    private readonly createTask: ICreateTaskUseCase,
+    private readonly getTask: IGetTaskUseCase,
+    private readonly listTasks: IListTasksUseCase,
+    private readonly updateTask: IUpdateTaskUseCase,
+    private readonly deleteTask: IDeleteTaskUseCase,
+    private readonly completeTask: ICompleteTaskUseCase,
+    private readonly reopenTask: IReopenTaskUseCase,
+  ) {}
+
+  registerRoutes(router: Router): void {
+    router.post('/', this.create.bind(this));
+    router.get('/', this.list.bind(this));
+    router.get('/:id', this.get.bind(this));
+    router.patch('/:id', this.update.bind(this));
+    router.delete('/:id', this.delete.bind(this));
+    router.post('/:id/complete', this.complete.bind(this));
+    router.post('/:id/reopen', this.reopen.bind(this));
+  }
+
   // UC-T01: Create Task
-  router.post('/', async (req: Request, res: Response, next: NextFunction) => {
+  private async create(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const { description, contextId, projectId } = req.body;
-      res.status(201).json(await useCases.createTask.execute({
+      res.status(201).json(await this.createTask.execute({
         description,
         contextId: contextId ?? undefined,
         projectId: projectId ?? undefined,
@@ -30,9 +44,10 @@ export function tasksRouter(useCases: {
     } catch (err) {
       next(err);
     }
-  });
+  }
+
   // UC-T03: List Tasks
-  router.get('/', async (req: Request, res: Response, next: NextFunction) => {
+  private async list(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const { done, contextId, projectId, page, limit, sortBy, order } = req.query;
       const query: TaskListQuery = {};
@@ -43,24 +58,26 @@ export function tasksRouter(useCases: {
       if (limit !== undefined) query.limit = parseInt(String(limit), 10);
       if (sortBy !== undefined) query.sortBy = String(sortBy) as TaskListQuery['sortBy'];
       if (order !== undefined) query.order = String(order) as 'asc' | 'desc';
-      res.json(await useCases.listTasks.execute(query));
+      res.json(await this.listTasks.execute(query));
     } catch (err) {
       next(err);
     }
-  });
+  }
+
   // UC-T02: Get Task
-  router.get('/:id', async (req: Request, res: Response, next: NextFunction) => {
+  private async get(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      res.json(await useCases.getTask.execute({ id: req.params.id }));
+      res.json(await this.getTask.execute({ id: req.params.id }));
     } catch (err) {
       next(err);
     }
-  });
+  }
+
   // UC-T04: Update Task
-  router.patch('/:id', async (req: Request, res: Response, next: NextFunction) => {
+  private async update(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const { description, contextId, projectId } = req.body;
-      res.json(await useCases.updateTask.execute({
+      res.json(await this.updateTask.execute({
         id: req.params.id,
         ...(description !== undefined && { description }),
         ...(contextId !== undefined && { contextId: contextId ?? null }),
@@ -69,31 +86,33 @@ export function tasksRouter(useCases: {
     } catch (err) {
       next(err);
     }
-  });
+  }
+
   // UC-T05: Delete Task
-  router.delete('/:id', async (req: Request, res: Response, next: NextFunction) => {
+  private async delete(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      await useCases.deleteTask.execute({ id: req.params.id });
+      await this.deleteTask.execute({ id: req.params.id });
       res.status(204).send();
     } catch (err) {
       next(err);
     }
-  });
+  }
+
   // UC-T06: Complete Task
-  router.post('/:id/complete', async (req: Request, res: Response, next: NextFunction) => {
+  private async complete(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      res.json(await useCases.completeTask.execute({ id: req.params.id }));
+      res.json(await this.completeTask.execute({ id: req.params.id }));
     } catch (err) {
       next(err);
     }
-  });
+  }
+
   // UC-T07: Reopen Task
-  router.post('/:id/reopen', async (req: Request, res: Response, next: NextFunction) => {
+  private async reopen(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      res.json(await useCases.reopenTask.execute({ id: req.params.id }));
+      res.json(await this.reopenTask.execute({ id: req.params.id }));
     } catch (err) {
       next(err);
     }
-  });
-  return router;
+  }
 }

@@ -20,7 +20,8 @@ The foundation. Establishes the data model and business rules for the three core
 - Full CRUD for Tasks, Contexts, and Projects
 - Optional association of a Task to a Context and/or a Project
 - Task completion: a Task can be marked as done and reopened
-- Enforcement of all core business rules (validation, referential integrity, cascade behavior)
+- Enforcement of all core business rules (validation, referential integrity)
+- Paginated, filtered, and sorted task listing
 
 **What v1 explicitly excludes:**
 - Authentication and authorization
@@ -30,7 +31,6 @@ The foundation. Establishes the data model and business rules for the three core
 - Recurring tasks
 - Attachments or comments
 - Audit logs and activity history
-- Search and filtering (deferred to presentation layer)
 - Infrastructure, persistence engine, or deployment concerns
 
 > See [`data-modeling.md`](./data-modeling.md) for entity definitions and [`use-cases.md`](./use-cases.md) for detailed use case specifications.

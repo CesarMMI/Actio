@@ -119,9 +119,9 @@ import { ContextsService } from '../services/contexts.service';
                   [lockContext]="true"
                   [contexts]="contexts.current() ? [contexts.current()!] : []"
                   [projects]="projects.items()"
-                  (toggleDone)="tasks.toggleDone(task)"
+                  (toggleTask)="tasks.toggleDone($event)"
                   (edit)="editingTaskId.set(task.id)"
-                  (delete)="tasks.delete(task.id)"
+                  (deleteTask)="tasks.delete($event)"
                   (saveEdit)="onTaskUpdate(task.id, $event)"
                   (cancelEdit)="editingTaskId.set(null)"
                 />

@@ -119,9 +119,9 @@ import { ProjectsService } from '../services/projects.service';
                   [lockProject]="true"
                   [contexts]="contexts.items()"
                   [projects]="projects.current() ? [projects.current()!] : []"
-                  (toggleDone)="tasks.toggleDone(task)"
+                  (toggleTask)="tasks.toggleDone($event)"
                   (edit)="editingTaskId.set(task.id)"
-                  (delete)="tasks.delete(task.id)"
+                  (deleteTask)="tasks.delete($event)"
                   (saveEdit)="onTaskUpdate(task.id, $event)"
                   (cancelEdit)="editingTaskId.set(null)"
                 />
