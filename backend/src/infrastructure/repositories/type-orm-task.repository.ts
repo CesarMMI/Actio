@@ -60,7 +60,6 @@ export class TypeOrmTaskRepository implements ITaskRepository {
     if (query.projectId !== undefined) {
       qb.andWhere('task.projectId = :projectId', { projectId: query.projectId });
     }
-
     qb.orderBy(`task.${sortBy}`, order);
     qb.skip((page - 1) * limit).take(limit);
 

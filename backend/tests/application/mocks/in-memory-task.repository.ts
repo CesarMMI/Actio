@@ -44,7 +44,6 @@ export class InMemoryTaskRepository implements ITaskRepository {
     if (query.projectId !== undefined) {
       items = items.filter(t => t.projectId === query.projectId);
     }
-
     items.sort((a, b) => {
       const aVal = a[sortBy as keyof Task];
       const bVal = b[sortBy as keyof Task];
