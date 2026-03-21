@@ -1,5 +1,5 @@
 import cors from "cors";
-import express from "express";
+import express, { Router } from "express";
 import { CREATE_CONTEXT_USE_CASE } from "../application/interfaces/context/create-context.use-case.interface";
 import { DELETE_CONTEXT_USE_CASE } from "../application/interfaces/context/delete-context.use-case.interface";
 import { GET_CONTEXT_USE_CASE } from "../application/interfaces/context/get-context.use-case.interface";
@@ -18,41 +18,48 @@ import { LIST_TASKS_USE_CASE } from "../application/interfaces/task/list-tasks.u
 import { REOPEN_TASK_USE_CASE } from "../application/interfaces/task/reopen-task.use-case.interface";
 import { UPDATE_TASK_USE_CASE } from "../application/interfaces/task/update-task.use-case.interface";
 import { Injector } from "../di-container/di-container-injector";
+import { ContextsController } from "./controllers/contexts.controller";
+import { ProjectsController } from "./controllers/projects.controller";
+import { TasksController } from "./controllers/tasks.controller";
+import { CONTROLLERS } from "./interfaces/controller.interface";
 import { errorHandler } from "./middleware/error-handler";
-import { contextsRouter } from "./routes/contexts.routes";
-import { projectsRouter } from "./routes/projects.routes";
-import { tasksRouter } from "./routes/tasks.routes";
 
 export const injectApi: Injector = async (container, env) => {
   const app = express();
   const port = env.PORT ? parseInt(env.PORT) : 3000;
-  
+
   app.use(cors());
   app.use(express.json());
 
-  app.use("/tasks", tasksRouter({
-    createTask: container.resolve(CREATE_TASK_USE_CASE),
-    getTask: container.resolve(GET_TASK_USE_CASE),
-    listTasks: container.resolve(LIST_TASKS_USE_CASE),
-    updateTask: container.resolve(UPDATE_TASK_USE_CASE),
-    deleteTask: container.resolve(DELETE_TASK_USE_CASE),
-    completeTask: container.resolve(COMPLETE_TASK_USE_CASE),
-    reopenTask: container.resolve(REOPEN_TASK_USE_CASE),
-  }));
-  app.use("/projects", projectsRouter({
-    createProject: container.resolve(CREATE_PROJECT_USE_CASE),
-    getProject: container.resolve(GET_PROJECT_USE_CASE),
-    listProjects: container.resolve(LIST_PROJECTS_USE_CASE),
-    updateProject: container.resolve(UPDATE_PROJECT_USE_CASE),
-    deleteProject: container.resolve(DELETE_PROJECT_USE_CASE),
-  }));
-  app.use("/contexts", contextsRouter({
-    createContext: container.resolve(CREATE_CONTEXT_USE_CASE),
-    getContext: container.resolve(GET_CONTEXT_USE_CASE),
-    listContexts: container.resolve(LIST_CONTEXTS_USE_CASE),
-    updateContext: container.resolve(UPDATE_CONTEXT_USE_CASE),
-    deleteContext: container.resolve(DELETE_CONTEXT_USE_CASE),
-  }));
+  container.bindMany(CONTROLLERS, new TasksController(
+    container.resolve(CREATE_TASK_USE_CASE),
+    container.resolve(GET_TASK_USE_CASE),
+    container.resolve(LIST_TASKS_USE_CASE),
+    container.resolve(UPDATE_TASK_USE_CASE),
+    container.resolve(DELETE_TASK_USE_CASE),
+    container.resolve(COMPLETE_TASK_USE_CASE),
+    container.resolve(REOPEN_TASK_USE_CASE),
+  ));
+  container.bindMany(CONTROLLERS, new ContextsController(
+    container.resolve(CREATE_CONTEXT_USE_CASE),
+    container.resolve(GET_CONTEXT_USE_CASE),
+    container.resolve(LIST_CONTEXTS_USE_CASE),
+    container.resolve(UPDATE_CONTEXT_USE_CASE),
+    container.resolve(DELETE_CONTEXT_USE_CASE),
+  ));
+  container.bindMany(CONTROLLERS, new ProjectsController(
+    container.resolve(CREATE_PROJECT_USE_CASE),
+    container.resolve(GET_PROJECT_USE_CASE),
+    container.resolve(LIST_PROJECTS_USE_CASE),
+    container.resolve(UPDATE_PROJECT_USE_CASE),
+    container.resolve(DELETE_PROJECT_USE_CASE),
+  ));
+
+  for (const controller of container.resolve(CONTROLLERS)) {
+    const router = Router();
+    controller.registerRoutes(router);
+    app.use(controller.basePath, router);
+  }
 
   app.use(errorHandler);
 
