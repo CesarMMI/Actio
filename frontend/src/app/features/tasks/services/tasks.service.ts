@@ -51,7 +51,7 @@ export class TasksService extends PaginationService<Task, TasksRequest> {
   }
 
   delete(id: string): void {
-    this.http.delete<void>(`${this.apiUrl}/${id}`).subscribe({
+    this.http.delete(`${this.apiUrl}/${id}`).subscribe({
       next: () => {
         this.items.update((items) => items.filter((t) => t.id !== id));
         this.total.update((t) => Math.max(0, t - 1));
@@ -62,14 +62,18 @@ export class TasksService extends PaginationService<Task, TasksRequest> {
 
   complete(id: string): void {
     this.http.post<Task>(`${this.apiUrl}/${id}/complete`, {}).subscribe({
-      next: (task) => this.items.update((items) => items.map((t) => (t.id === id ? task : t))),
+      next: (task) => {
+        this.items.update((items) => items.map((t) => (t.id === id ? task : t)));
+      },
       error: () => this.error.set('Failed to complete task'),
     });
   }
 
   reopen(id: string): void {
     this.http.post<Task>(`${this.apiUrl}/${id}/reopen`, {}).subscribe({
-      next: (task) => this.items.update((items) => items.map((t) => (t.id === id ? task : t))),
+      next: (task) => {
+        this.items.update((items) => items.map((t) => (t.id === id ? task : t)));
+      },
       error: () => this.error.set('Failed to reopen task'),
     });
   }

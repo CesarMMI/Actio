@@ -32,7 +32,7 @@ import { TaskPayload } from '../services/tasks.service';
     } @else {
       <div class="flex items-start gap-3">
         <button
-          (click)="toggleDone.emit()"
+          (click)="toggleTask.emit(task())"
           [attr.aria-label]="
             task().done
               ? 'Reopen task: ' + task().description
@@ -87,7 +87,7 @@ import { TaskPayload } from '../services/tasks.service';
               Edit
             </button>
             <button
-              (click)="delete.emit()"
+              (click)="deleteTask.emit(task().id)"
               class="text-xs text-neutral-600 hover:text-red-400 transition-colors"
             >
               Delete
@@ -108,9 +108,9 @@ export class TaskListItemComponent {
   lockProject = input(false);
   isEditing = input(false);
 
-  toggleDone = output<void>();
+  toggleTask = output<Task>();
   edit = output<void>();
-  delete = output<void>();
+  deleteTask = output<string>();
   saveEdit = output<TaskPayload>();
   cancelEdit = output<void>();
 }
