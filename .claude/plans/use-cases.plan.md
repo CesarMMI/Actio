@@ -8,29 +8,30 @@ This document specifies every use case in the system. Each use case describes it
 
 ### UC-T01 — Create Task
 
-**Description:** Create a new standalone or associated task.
+**Description:** Create a new task.
 
 **Input:**
-| Field          | Required | Description                                        |
-|----------------|----------|----------------------------------------------------|
-| `description`  | Yes      | Non-empty text describing the work to be done      |
-| `contextId`    | No       | ID of an existing Context to associate             |
-| `projectId`    | No       | ID of an existing Project to associate             |
+| Field         | Required | Description                                    |
+|---------------|----------|------------------------------------------------|
+| `description` | Yes      | Non-empty text describing the work to be done  |
+| `contextId`   | No       | ID of an existing Context to associate         |
+| `projectId`   | No       | ID of an existing Project to associate         |
 
 **Preconditions:**
 - If `contextId` is provided, the referenced Context must exist.
 - If `projectId` is provided, the referenced Project must exist.
 
-**Output:** The created Task object with all fields populated, including system-generated `id`, `createdAt`, and `updatedAt`.
+**Output:**
+- The created Task object with all fields populated, including system-generated `id`, `createdAt`, and `updatedAt`.
 
-**Side effects:** None beyond the Task itself.
+**Side effects:** None.
 
 **Failure cases:**
-| Condition                                      | Result                  |
-|------------------------------------------------|-------------------------|
-| `description` is empty or whitespace           | Rejected                |
-| `contextId` does not reference an existing Context | Rejected            |
-| `projectId` does not reference an existing Project | Rejected            |
+| Condition                                          | Result   |
+|----------------------------------------------------|----------|
+| `description` is empty or whitespace               | Rejected |
+| `contextId` does not reference an existing Context | Rejected |
+| `projectId` does not reference an existing Project | Rejected |
 
 ---
 
@@ -39,9 +40,9 @@ This document specifies every use case in the system. Each use case describes it
 **Description:** Retrieve a single Task by its identifier.
 
 **Input:**
-| Field | Required | Description          |
-|-------|----------|----------------------|
-| `id`  | Yes      | ID of the Task       |
+| Field | Required | Description    |
+|-------|----------|----------------|
+| `id`  | Yes      | ID of the Task |
 
 **Preconditions:** None.
 
@@ -50,21 +51,32 @@ This document specifies every use case in the system. Each use case describes it
 **Side effects:** None.
 
 **Failure cases:**
-| Condition               | Result    |
-|-------------------------|-----------|
-| `id` does not exist     | Not found |
+| Condition           | Result    |
+|---------------------|-----------|
+| `id` does not exist | Not found |
 
 ---
 
 ### UC-T03 — List Tasks
 
-**Description:** Retrieve all Tasks in the system.
+**Description:** Retrieve tasks as a paginated, filtered, sorted flat list.
 
-**Input:** None (filtering is a presentation-layer concern in v1).
+**Input:**
+| Field       | Required | Description                                           |
+|-------------|----------|-------------------------------------------------------|
+| `page`      | No       | Page number for pagination (default: 1)               |
+| `limit`     | No       | Items per page (default: system-defined)              |
+| `sortBy`    | No       | Field to sort by (e.g., `createdAt`, `description`)   |
+| `sortOrder` | No       | `asc` or `desc`                                       |
+| `done`      | No       | Filter by completion status (`true` / `false`)        |
+| `contextId` | No       | Filter by Context association                         |
+| `projectId` | No       | Filter by Project association                         |
 
 **Preconditions:** None.
 
-**Output:** An ordered collection of all Task objects.
+**Output:**
+- Paginated flat list of Task objects matching the filters.
+- Pagination metadata: `page`, `limit`, `total`, `totalPages`.
 
 **Side effects:** None.
 
@@ -110,9 +122,9 @@ This document specifies every use case in the system. Each use case describes it
 **Description:** Permanently remove a Task from the system.
 
 **Input:**
-| Field | Required | Description          |
-|-------|----------|----------------------|
-| `id`  | Yes      | ID of the Task       |
+| Field | Required | Description    |
+|-------|----------|----------------|
+| `id`  | Yes      | ID of the Task |
 
 **Preconditions:**
 - The Task identified by `id` must exist.
@@ -133,23 +145,24 @@ This document specifies every use case in the system. Each use case describes it
 **Description:** Mark a Task as done.
 
 **Input:**
-| Field | Required | Description        |
+| Field | Required | Description    |
 |-------|----------|--------------------|
-| `id`  | Yes      | ID of the Task     |
+| `id`  | Yes      | ID of the Task |
 
 **Preconditions:**
 - The Task identified by `id` must exist.
 - The Task must not already be done.
 
-**Output:** The updated Task object with `done` set to `true`, `doneAt` set to the current timestamp, and refreshed `updatedAt`.
+**Output:**
+- The updated Task object with `done` set to `true`, `doneAt` set to the current timestamp, and refreshed `updatedAt`.
 
 **Side effects:** None.
 
 **Failure cases:**
-| Condition                  | Result    |
-|----------------------------|-----------|
-| `id` does not exist        | Not found |
-| Task is already done       | Rejected  |
+| Condition            | Result    |
+|----------------------|-----------|
+| `id` does not exist  | Not found |
+| Task is already done | Rejected  |
 
 ---
 
@@ -158,23 +171,24 @@ This document specifies every use case in the system. Each use case describes it
 **Description:** Mark a previously completed Task as not done.
 
 **Input:**
-| Field | Required | Description        |
+| Field | Required | Description    |
 |-------|----------|--------------------|
-| `id`  | Yes      | ID of the Task     |
+| `id`  | Yes      | ID of the Task |
 
 **Preconditions:**
 - The Task identified by `id` must exist.
 - The Task must currently be done.
 
-**Output:** The updated Task object with `done` set to `false`, `doneAt` cleared to `null`, and refreshed `updatedAt`.
+**Output:**
+- The updated Task object with `done` set to `false`, `doneAt` cleared to `null`, and refreshed `updatedAt`.
 
 **Side effects:** None.
 
 **Failure cases:**
-| Condition                  | Result    |
-|----------------------------|-----------|
-| `id` does not exist        | Not found |
-| Task is not done           | Rejected  |
+| Condition           | Result    |
+|---------------------|-----------|
+| `id` does not exist | Not found |
+| Task is not done    | Rejected  |
 
 ---
 
@@ -197,10 +211,10 @@ This document specifies every use case in the system. Each use case describes it
 **Side effects:** None.
 
 **Failure cases:**
-| Condition                                         | Result   |
-|---------------------------------------------------|----------|
-| `title` is empty or whitespace                    | Rejected |
-| A Context with the same title already exists      | Rejected |
+| Condition                                    | Result   |
+|----------------------------------------------|----------|
+| `title` is empty or whitespace               | Rejected |
+| A Context with the same title already exists | Rejected |
 
 ---
 
@@ -261,11 +275,11 @@ This document specifies every use case in the system. Each use case describes it
 **Side effects:** None. Tasks referencing this Context automatically reflect the updated title via the association.
 
 **Failure cases:**
-| Condition                                        | Result    |
-|--------------------------------------------------|-----------|
-| `id` does not exist                              | Not found |
-| `title` is empty or whitespace                   | Rejected  |
-| Another Context with the same title already exists | Rejected|
+| Condition                                          | Result    |
+|----------------------------------------------------|-----------|
+| `id` does not exist                                | Not found |
+| `title` is empty or whitespace                     | Rejected  |
+| Another Context with the same title already exists | Rejected  |
 
 ---
 
@@ -287,10 +301,10 @@ This document specifies every use case in the system. Each use case describes it
 **Side effects:** None.
 
 **Failure cases:**
-| Condition                              | Result    |
-|----------------------------------------|-----------|
-| `id` does not exist                    | Not found |
-| One or more Tasks reference this Context | Rejected |
+| Condition                                | Result    |
+|------------------------------------------|-----------|
+| `id` does not exist                      | Not found |
+| One or more Tasks reference this Context | Rejected  |
 
 ---
 
@@ -313,10 +327,10 @@ This document specifies every use case in the system. Each use case describes it
 **Side effects:** None.
 
 **Failure cases:**
-| Condition                                        | Result   |
-|--------------------------------------------------|----------|
-| `title` is empty or whitespace                   | Rejected |
-| A Project with the same title already exists     | Rejected |
+| Condition                                       | Result   |
+|-------------------------------------------------|----------|
+| `title` is empty or whitespace                  | Rejected |
+| A Project with the same title already exists    | Rejected |
 
 ---
 
@@ -377,11 +391,11 @@ This document specifies every use case in the system. Each use case describes it
 **Side effects:** None. Tasks referencing this Project automatically reflect the updated title via the association.
 
 **Failure cases:**
-| Condition                                         | Result    |
-|---------------------------------------------------|-----------|
-| `id` does not exist                               | Not found |
-| `title` is empty or whitespace                    | Rejected  |
-| Another Project with the same title already exists | Rejected |
+| Condition                                          | Result    |
+|----------------------------------------------------|-----------|
+| `id` does not exist                                | Not found |
+| `title` is empty or whitespace                     | Rejected  |
+| Another Project with the same title already exists | Rejected  |
 
 ---
 
@@ -403,31 +417,31 @@ This document specifies every use case in the system. Each use case describes it
 **Side effects:** None.
 
 **Failure cases:**
-| Condition                               | Result    |
-|-----------------------------------------|-----------|
-| `id` does not exist                     | Not found |
-| One or more Tasks reference this Project | Rejected |
+| Condition                                | Result    |
+|------------------------------------------|-----------|
+| `id` does not exist                      | Not found |
+| One or more Tasks reference this Project | Rejected  |
 
 ---
 
 ## Use Case Index
 
-| ID      | Name                    | Entity  | Operation |
-|---------|-------------------------|---------|-----------|
-| UC-T01  | Create Task             | Task    | Create    |
-| UC-T02  | Get Task                | Task    | Read      |
-| UC-T03  | List Tasks              | Task    | Read      |
-| UC-T04  | Update Task             | Task    | Update    |
-| UC-T05  | Delete Task             | Task    | Delete    |
-| UC-T06  | Complete Task           | Task    | Update    |
-| UC-T07  | Reopen Task             | Task    | Update    |
-| UC-C01  | Create Context          | Context | Create    |
-| UC-C02  | Get Context             | Context | Read      |
-| UC-C03  | List Contexts           | Context | Read      |
-| UC-C04  | Update Context          | Context | Update    |
-| UC-C05  | Delete Context          | Context | Delete    |
-| UC-P01  | Create Project          | Project | Create    |
-| UC-P02  | Get Project             | Project | Read      |
-| UC-P03  | List Projects           | Project | Read      |
-| UC-P04  | Update Project          | Project | Update    |
-| UC-P05  | Delete Project          | Project | Delete    |
+| ID     | Name           | Entity  | Operation |
+|--------|----------------|---------|-----------|
+| UC-T01 | Create Task    | Task    | Create    |
+| UC-T02 | Get Task       | Task    | Read      |
+| UC-T03 | List Tasks     | Task    | Read      |
+| UC-T04 | Update Task    | Task    | Update    |
+| UC-T05 | Delete Task    | Task    | Delete    |
+| UC-T06 | Complete Task  | Task    | Update    |
+| UC-T07 | Reopen Task    | Task    | Update    |
+| UC-C01 | Create Context | Context | Create    |
+| UC-C02 | Get Context    | Context | Read      |
+| UC-C03 | List Contexts  | Context | Read      |
+| UC-C04 | Update Context | Context | Update    |
+| UC-C05 | Delete Context | Context | Delete    |
+| UC-P01 | Create Project | Project | Create    |
+| UC-P02 | Get Project    | Project | Read      |
+| UC-P03 | List Projects  | Project | Read      |
+| UC-P04 | Update Project | Project | Update    |
+| UC-P05 | Delete Project | Project | Delete    |

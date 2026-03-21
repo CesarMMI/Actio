@@ -2,7 +2,6 @@
 name: build-frontend
 description: Build, scaffold, or implement Angular 21+ frontend components, pages, services, or features. Use when the user asks to create or modify frontend UI, components, routes, or services in an Angular app.
 argument-hint: "[what to build, e.g. 'login page', 'data table component', 'auth service', 'dashboard layout']"
-allowed-tools: Read, Grep, Glob, Bash, Write, Edit, Agent
 ---
 
 # Angular Frontend — Build Skill
@@ -95,9 +94,78 @@ Minimalist and functional. **Dark theme throughout** — all surfaces are dark n
 
 ## TypeScript Rules
 
-- `strict: true` — never disable it.
-- **Prefer type inference** when the type is obvious.
-- **Never use `any`.** Use `unknown` when the type is uncertain; narrow it before use.
+### Core Rules
+
+- **No `any`.** Use `unknown` when the type is uncertain; narrow it before use.
+- **Prefer inference.** Only annotate when the type is not obvious or the inference is wrong.
+- **`readonly` by default** on properties that must not change after construction.
+- **Never widen a type to silence an error.** Fix the root cause instead.
+
+### `type` vs `interface`
+
+| Use `interface` when… | Use `type` when… |
+|-----------------------|-----------------|
+| Defining an extendable object contract | Creating a union, intersection, or alias |
+| Describing a class shape | The type is not an object (e.g., `type Id = string`) |
+
+### Type Narrowing
+
+```typescript
+// typeof
+if (typeof value === 'string') { /* string here */ }
+
+// instanceof
+if (err instanceof HttpErrorResponse) { /* HttpErrorResponse here */ }
+
+// in operator
+if ('message' in value) { /* value has 'message' */ }
+
+// Custom type predicate
+function isTask(value: unknown): value is Task {
+  return typeof value === 'object' && value !== null && 'id' in value;
+}
+```
+
+### Utility Types
+
+| Utility | Effect |
+|---------|--------|
+| `Partial<T>` | All properties optional |
+| `Required<T>` | All properties required |
+| `Readonly<T>` | All properties `readonly` (shallow) |
+| `Pick<T, K>` | Keep only properties `K` |
+| `Omit<T, K>` | Remove properties `K` |
+| `NonNullable<T>` | Remove `null` and `undefined` |
+| `Record<K, V>` | Object with keys `K` and values `V` |
+| `ReturnType<F>` | Extract return type of `F` |
+| `Awaited<T>` | Unwrap `Promise<T>` to `T` |
+
+```typescript
+type UpdateInput = Partial<Omit<User, 'id' | 'createdAt'>>;
+```
+
+### Discriminated Unions
+
+Use a literal field as discriminant — ideal for async UI state:
+
+```typescript
+type LoadState<T> =
+  | { status: 'idle' }
+  | { status: 'loading' }
+  | { status: 'success'; data: T }
+  | { status: 'error';   error: string };
+```
+
+### Readonly & Immutability
+
+```typescript
+// as const — narrows literal types, great for select option arrays
+const SORT_OPTIONS = ['title', 'createdAt', 'updatedAt'] as const;
+type SortOption = typeof SORT_OPTIONS[number];
+
+// ReadonlyArray<T> — for component inputs that should not be mutated
+function renderList(items: ReadonlyArray<Task>): void { /* ... */ }
+```
 
 ---
 
