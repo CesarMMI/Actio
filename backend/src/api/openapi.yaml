@@ -72,6 +72,51 @@ components:
           type: string
           format: date-time
 
+    TaskPage:
+      type: object
+      required: [items, total, page, limit]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Task'
+        total:
+          type: integer
+        page:
+          type: integer
+        limit:
+          type: integer
+
+    ContextPage:
+      type: object
+      required: [items, total, page, limit]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Context'
+        total:
+          type: integer
+        page:
+          type: integer
+        limit:
+          type: integer
+
+    ProjectPage:
+      type: object
+      required: [items, total, page, limit]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Project'
+        total:
+          type: integer
+        page:
+          type: integer
+        limit:
+          type: integer
+
     Problem:
       type: object
       required: [type, title, status, detail, instance]
@@ -93,6 +138,29 @@ components:
           type: string
           example: /tasks/abc-123
 
+  parameters:
+    page:
+      name: page
+      in: query
+      schema:
+        type: integer
+        minimum: 1
+        default: 1
+    limit:
+      name: limit
+      in: query
+      schema:
+        type: integer
+        minimum: 1
+        default: 20
+    order:
+      name: order
+      in: query
+      schema:
+        type: string
+        enum: [asc, desc]
+        default: asc
+
   responses:
     NotFound:
       description: Resource not found.
@@ -110,6 +178,13 @@ components:
 
     UnprocessableEntity:
       description: Validation or domain rule violation.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Problem'
+
+    InternalServerError:
+      description: Unexpected server error.
       content:
         application/json:
           schema:
@@ -154,20 +229,45 @@ paths:
           $ref: '#/components/responses/NotFound'
         '422':
           $ref: '#/components/responses/UnprocessableEntity'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
 
     get:
       summary: UC-T03 — List Tasks
       operationId: listTasks
       tags: [Tasks]
+      parameters:
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/order'
+        - name: sortBy
+          in: query
+          schema:
+            type: string
+            enum: [createdAt, updatedAt, description]
+        - name: done
+          in: query
+          schema:
+            type: boolean
+        - name: contextId
+          in: query
+          schema:
+            type: string
+            format: uuid
+        - name: projectId
+          in: query
+          schema:
+            type: string
+            format: uuid
       responses:
         '200':
-          description: Array of all tasks.
+          description: Paginated list of tasks.
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Task'
+                $ref: '#/components/schemas/TaskPage'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
 
   /tasks/{id}:
     parameters:
@@ -191,6 +291,8 @@ paths:
                 $ref: '#/components/schemas/Task'
         '404':
           $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
 
     patch:
       summary: UC-T04 — Update Task
@@ -225,6 +327,8 @@ paths:
           $ref: '#/components/responses/NotFound'
         '422':
           $ref: '#/components/responses/UnprocessableEntity'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
 
     delete:
       summary: UC-T05 — Delete Task
@@ -235,6 +339,8 @@ paths:
           description: Task deleted.
         '404':
           $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
 
   /tasks/{id}/complete:
     parameters:
@@ -260,6 +366,8 @@ paths:
           $ref: '#/components/responses/NotFound'
         '422':
           $ref: '#/components/responses/UnprocessableEntity'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
 
   /tasks/{id}/reopen:
     parameters:
@@ -285,6 +393,8 @@ paths:
           $ref: '#/components/responses/NotFound'
         '422':
           $ref: '#/components/responses/UnprocessableEntity'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
 
   # ──────────────────────────────────────────
   # Contexts
@@ -317,20 +427,31 @@ paths:
           $ref: '#/components/responses/Conflict'
         '422':
           $ref: '#/components/responses/UnprocessableEntity'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
 
     get:
       summary: UC-C03 — List Contexts
       operationId: listContexts
       tags: [Contexts]
+      parameters:
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/order'
+        - name: sortBy
+          in: query
+          schema:
+            type: string
+            enum: [createdAt, updatedAt, title]
       responses:
         '200':
-          description: Array of all contexts.
+          description: Paginated list of contexts.
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Context'
+                $ref: '#/components/schemas/ContextPage'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
 
   /contexts/{id}:
     parameters:
@@ -354,6 +475,8 @@ paths:
                 $ref: '#/components/schemas/Context'
         '404':
           $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
 
     patch:
       summary: UC-C04 — Update Context
@@ -383,6 +506,8 @@ paths:
           $ref: '#/components/responses/Conflict'
         '422':
           $ref: '#/components/responses/UnprocessableEntity'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
 
     delete:
       summary: UC-C05 — Delete Context
@@ -395,6 +520,8 @@ paths:
           $ref: '#/components/responses/NotFound'
         '422':
           $ref: '#/components/responses/UnprocessableEntity'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
 
   # ──────────────────────────────────────────
   # Projects
@@ -427,20 +554,31 @@ paths:
           $ref: '#/components/responses/Conflict'
         '422':
           $ref: '#/components/responses/UnprocessableEntity'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
 
     get:
       summary: UC-P03 — List Projects
       operationId: listProjects
       tags: [Projects]
+      parameters:
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/order'
+        - name: sortBy
+          in: query
+          schema:
+            type: string
+            enum: [createdAt, updatedAt, title]
       responses:
         '200':
-          description: Array of all projects.
+          description: Paginated list of projects.
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Project'
+                $ref: '#/components/schemas/ProjectPage'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
 
   /projects/{id}:
     parameters:
@@ -464,6 +602,8 @@ paths:
                 $ref: '#/components/schemas/Project'
         '404':
           $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
 
     patch:
       summary: UC-P04 — Update Project
@@ -493,6 +633,8 @@ paths:
           $ref: '#/components/responses/Conflict'
         '422':
           $ref: '#/components/responses/UnprocessableEntity'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
 
     delete:
       summary: UC-P05 — Delete Project
@@ -505,3 +647,5 @@ paths:
           $ref: '#/components/responses/NotFound'
         '422':
           $ref: '#/components/responses/UnprocessableEntity'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
