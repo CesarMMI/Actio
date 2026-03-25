@@ -1,3 +1,3 @@
-import type { TaskListQuery } from '../../../../domain/interfaces/task-list-query';
+import type { TaskListQuery } from '../../../../domain/queries/task/task-list-query';
 
 export type ListTasksInput = TaskListQuery;

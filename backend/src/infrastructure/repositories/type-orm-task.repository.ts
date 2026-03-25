@@ -1,7 +1,7 @@
 import { DataSource, Repository } from "typeorm";
 import { Task } from "../../domain/entities/task/task.entity";
-import { PaginatedResult } from "../../domain/interfaces/paginated-result";
-import { TaskListQuery } from "../../domain/interfaces/task-list-query";
+import { PaginatedResult } from "../../domain/queries/paginated-result";
+import { TaskListQuery } from "../../domain/queries/task/task-list-query";
 import { ITaskRepository } from "../../domain/interfaces/task-repository.interface";
 import { TaskOrmEntity } from "../entities/task.orm-entity";
 

@@ -4,7 +4,7 @@ import { IDeleteContextUseCase } from '../../application/interfaces/context/dele
 import { IGetContextUseCase } from '../../application/interfaces/context/get-context.use-case.interface';
 import { IListContextsUseCase } from '../../application/interfaces/context/list-contexts.use-case.interface';
 import { IUpdateContextUseCase } from '../../application/interfaces/context/update-context.use-case.interface';
-import type { ContextListQuery } from '../../domain/interfaces/context-list-query';
+import type { ContextListQuery } from '../../domain/queries/context/context-list-query';
 import { IController } from '../interfaces/controller.interface';
 
 export class ContextsController implements IController {

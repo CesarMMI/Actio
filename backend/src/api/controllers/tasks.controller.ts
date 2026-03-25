@@ -6,7 +6,7 @@ import { IGetTaskUseCase } from '../../application/interfaces/task/get-task.use-
 import { IListTasksUseCase } from '../../application/interfaces/task/list-tasks.use-case.interface';
 import { IReopenTaskUseCase } from '../../application/interfaces/task/reopen-task.use-case.interface';
 import { IUpdateTaskUseCase } from '../../application/interfaces/task/update-task.use-case.interface';
-import type { TaskListQuery } from '../../domain/interfaces/task-list-query';
+import type { TaskListQuery } from '../../domain/queries/task/task-list-query';
 import { IController } from '../interfaces/controller.interface';
 
 export class TasksController implements IController {

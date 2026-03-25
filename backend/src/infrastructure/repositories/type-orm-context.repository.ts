@@ -1,7 +1,7 @@
 import { DataSource, Repository } from "typeorm";
 import { Context } from "../../domain/entities/context/context.entity";
-import { ContextListQuery } from "../../domain/interfaces/context-list-query";
-import { PaginatedResult } from "../../domain/interfaces/paginated-result";
+import { ContextListQuery } from "../../domain/queries/context/context-list-query";
+import { PaginatedResult } from "../../domain/queries/paginated-result";
 import { IContextRepository } from "../../domain/interfaces/context-repository.interface";
 import { ContextOrmEntity } from "../entities/context.orm-entity";
 

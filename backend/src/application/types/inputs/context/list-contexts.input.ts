@@ -1,3 +1,3 @@
-import type { ContextListQuery } from '../../../../domain/interfaces/context-list-query';
+import type { ContextListQuery } from '../../../../domain/queries/context/context-list-query';
 
 export type ListContextsInput = ContextListQuery;

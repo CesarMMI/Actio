@@ -1,6 +1,6 @@
 import { Context } from '../../../src/domain/entities/context/context.entity';
-import { ContextListQuery } from '../../../src/domain/interfaces/context-list-query';
-import { PaginatedResult } from '../../../src/domain/interfaces/paginated-result';
+import { ContextListQuery } from '../../../src/domain/queries/context/context-list-query';
+import { PaginatedResult } from '../../../src/domain/queries/paginated-result';
 import { IContextRepository } from '../../../src/domain/interfaces/context-repository.interface';
 
 export class InMemoryContextRepository implements IContextRepository {

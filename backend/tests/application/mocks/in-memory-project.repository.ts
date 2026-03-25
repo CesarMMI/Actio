@@ -1,6 +1,6 @@
 import { Project } from '../../../src/domain/entities/project/project.entity';
-import { PaginatedResult } from '../../../src/domain/interfaces/paginated-result';
-import { ProjectListQuery } from '../../../src/domain/interfaces/project-list-query';
+import { PaginatedResult } from '../../../src/domain/queries/paginated-result';
+import { ProjectListQuery } from '../../../src/domain/queries/project/project-list-query';
 import { IProjectRepository } from '../../../src/domain/interfaces/project-repository.interface';
 
 export class InMemoryProjectRepository implements IProjectRepository {

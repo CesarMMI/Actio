@@ -4,7 +4,7 @@ import { IDeleteProjectUseCase } from '../../application/interfaces/project/dele
 import { IGetProjectUseCase } from '../../application/interfaces/project/get-project.use-case.interface';
 import { IListProjectsUseCase } from '../../application/interfaces/project/list-projects.use-case.interface';
 import { IUpdateProjectUseCase } from '../../application/interfaces/project/update-project.use-case.interface';
-import type { ProjectListQuery } from '../../domain/interfaces/project-list-query';
+import type { ProjectListQuery } from '../../domain/queries/project/project-list-query';
 import { IController } from '../interfaces/controller.interface';
 
 export class ProjectsController implements IController {

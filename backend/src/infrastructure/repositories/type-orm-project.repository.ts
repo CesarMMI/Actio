@@ -1,7 +1,7 @@
 import { DataSource, Repository } from "typeorm";
 import { Project } from "../../domain/entities/project/project.entity";
-import { PaginatedResult } from "../../domain/interfaces/paginated-result";
-import { ProjectListQuery } from "../../domain/interfaces/project-list-query";
+import { PaginatedResult } from "../../domain/queries/paginated-result";
+import { ProjectListQuery } from "../../domain/queries/project/project-list-query";
 import { IProjectRepository } from "../../domain/interfaces/project-repository.interface";
 import { ProjectOrmEntity } from "../entities/project.orm-entity";
 

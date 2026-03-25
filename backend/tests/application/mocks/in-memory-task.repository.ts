@@ -1,6 +1,6 @@
 import { Task } from '../../../src/domain/entities/task/task.entity';
-import { PaginatedResult } from '../../../src/domain/interfaces/paginated-result';
-import { TaskListQuery } from '../../../src/domain/interfaces/task-list-query';
+import { PaginatedResult } from '../../../src/domain/queries/paginated-result';
+import { TaskListQuery } from '../../../src/domain/queries/task/task-list-query';
 import { ITaskRepository } from '../../../src/domain/interfaces/task-repository.interface';
 
 export class InMemoryTaskRepository implements ITaskRepository {

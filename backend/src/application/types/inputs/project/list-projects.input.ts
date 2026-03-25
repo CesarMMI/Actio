@@ -1,3 +1,3 @@
-import type { ProjectListQuery } from '../../../../domain/interfaces/project-list-query';
+import type { ProjectListQuery } from '../../../../domain/queries/project/project-list-query';
 
 export type ListProjectsInput = ProjectListQuery;
