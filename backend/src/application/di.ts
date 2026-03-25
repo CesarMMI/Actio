@@ -1,7 +1,21 @@
 import { Injector } from "../di-container/di-container-injector";
+import { PASSWORD_SERVICE } from "./interfaces/password-service.interface";
+import { TOKEN_SERVICE } from "./interfaces/token-service.interface";
+import { LOGIN_USE_CASE } from "./interfaces/auth/login.use-case.interface";
+import { LOGOUT_USE_CASE } from "./interfaces/auth/logout.use-case.interface";
+import { ME_USE_CASE } from "./interfaces/auth/me.use-case.interface";
+import { REFRESH_USE_CASE } from "./interfaces/auth/refresh.use-case.interface";
+import { REGISTER_USE_CASE } from "./interfaces/auth/register.use-case.interface";
 import { CONTEXT_REPOSITORY } from "../domain/interfaces/context-repository.interface";
 import { PROJECT_REPOSITORY } from "../domain/interfaces/project-repository.interface";
+import { REFRESH_TOKEN_REPOSITORY } from "../domain/interfaces/refresh-token-repository.interface";
 import { TASK_REPOSITORY } from "../domain/interfaces/task-repository.interface";
+import { USER_REPOSITORY } from "../domain/interfaces/user-repository.interface";
+import { LoginUseCase } from "./use-cases/auth/login.use-case";
+import { LogoutUseCase } from "./use-cases/auth/logout.use-case";
+import { MeUseCase } from "./use-cases/auth/me.use-case";
+import { RefreshUseCase } from "./use-cases/auth/refresh.use-case";
+import { RegisterUseCase } from "./use-cases/auth/register.use-case";
 import { CREATE_CONTEXT_USE_CASE } from "./interfaces/context/create-context.use-case.interface";
 import { CREATE_PROJECT_USE_CASE } from "./interfaces/project/create-project.use-case.interface";
 import { COMPLETE_TASK_USE_CASE } from "./interfaces/task/complete-task.use-case.interface";
@@ -37,10 +51,20 @@ import { UpdateProjectUseCase } from "./use-cases/project/update-project.use-cas
 import { ReopenTaskUseCase } from "./use-cases/task/reopen-task.use-case";
 import { UpdateTaskUseCase } from "./use-cases/task/update-task.use-case";
 
-export const injectApplication: Injector = async (container) => {
+export const injectApplication: Injector = async (container, env) => {
   const tasks = container.resolve(TASK_REPOSITORY);
   const contexts = container.resolve(CONTEXT_REPOSITORY);
   const projects = container.resolve(PROJECT_REPOSITORY);
+  const users = container.resolve(USER_REPOSITORY);
+  const refreshTokenRepo = container.resolve(REFRESH_TOKEN_REPOSITORY);
+  const tokenService = container.resolve(TOKEN_SERVICE);
+  const passwordService = container.resolve(PASSWORD_SERVICE);
+  // Auth
+  container.bind(REGISTER_USE_CASE, new RegisterUseCase(users, passwordService, tokenService, refreshTokenRepo));
+  container.bind(LOGIN_USE_CASE, new LoginUseCase(users, passwordService, tokenService, refreshTokenRepo));
+  container.bind(REFRESH_USE_CASE, new RefreshUseCase(users, tokenService, refreshTokenRepo));
+  container.bind(ME_USE_CASE, new MeUseCase(users));
+  container.bind(LOGOUT_USE_CASE, new LogoutUseCase(refreshTokenRepo, tokenService));
   // Task
   container.bind(CREATE_TASK_USE_CASE, new CreateTaskUseCase(tasks, contexts, projects));
   container.bind(GET_TASK_USE_CASE, new GetTaskUseCase(tasks));

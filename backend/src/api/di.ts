@@ -1,5 +1,11 @@
 import cors from "cors";
 import express, { Router } from "express";
+import { LOGIN_USE_CASE } from "../application/interfaces/auth/login.use-case.interface";
+import { LOGOUT_USE_CASE } from "../application/interfaces/auth/logout.use-case.interface";
+import { ME_USE_CASE } from "../application/interfaces/auth/me.use-case.interface";
+import { REFRESH_USE_CASE } from "../application/interfaces/auth/refresh.use-case.interface";
+import { REGISTER_USE_CASE } from "../application/interfaces/auth/register.use-case.interface";
+import { TOKEN_SERVICE } from "../application/interfaces/token-service.interface";
 import { CREATE_CONTEXT_USE_CASE } from "../application/interfaces/context/create-context.use-case.interface";
 import { DELETE_CONTEXT_USE_CASE } from "../application/interfaces/context/delete-context.use-case.interface";
 import { GET_CONTEXT_USE_CASE } from "../application/interfaces/context/get-context.use-case.interface";
@@ -18,6 +24,7 @@ import { LIST_TASKS_USE_CASE } from "../application/interfaces/task/list-tasks.u
 import { REOPEN_TASK_USE_CASE } from "../application/interfaces/task/reopen-task.use-case.interface";
 import { UPDATE_TASK_USE_CASE } from "../application/interfaces/task/update-task.use-case.interface";
 import { Injector } from "../di-container/di-container-injector";
+import { AuthController } from "./controllers/auth.controller";
 import { ContextsController } from "./controllers/contexts.controller";
 import { ProjectsController } from "./controllers/projects.controller";
 import { TasksController } from "./controllers/tasks.controller";
@@ -53,6 +60,14 @@ export const injectApi: Injector = async (container, env) => {
     container.resolve(LIST_PROJECTS_USE_CASE),
     container.resolve(UPDATE_PROJECT_USE_CASE),
     container.resolve(DELETE_PROJECT_USE_CASE),
+  ));
+  container.bindMany(CONTROLLERS, new AuthController(
+    container.resolve(REGISTER_USE_CASE),
+    container.resolve(LOGIN_USE_CASE),
+    container.resolve(REFRESH_USE_CASE),
+    container.resolve(ME_USE_CASE),
+    container.resolve(LOGOUT_USE_CASE),
+    container.resolve(TOKEN_SERVICE),
   ));
 
   for (const controller of container.resolve(CONTROLLERS)) {
