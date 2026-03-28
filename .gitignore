@@ -1,11 +1,16 @@
-**/node_modules
-**/dist
+node_modules
+dist
+
 **/.vscode
 
 .claude/worktrees/
 .claude/settings.local.json
 
-backend/database
-backend/.env
+# Electron Forge / Vite
+.vite/
+out/
 
-frontend/.angular
+# Misc
+*.log
+.env
+coverage/
