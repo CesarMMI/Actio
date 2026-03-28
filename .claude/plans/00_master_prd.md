@@ -1,6 +1,6 @@
-# NoteGraph
+**NoteGraph**
 
-**Master PRD — Product Requirements Document**
+Master PRD — Product Requirements Document
 
 *App desktop de notas interconectadas para desenvolvedores*
 
@@ -71,7 +71,7 @@ O produto é diretamente inspirado no Obsidian, com as seguintes diferenças de 
 
 - Implementar referências cruzadas entre notas via sintaxe \[\[Título\]\]
 
-- Criar sistema de categorias vinculadas às notas
+- Criar sistema de categoria vinculada às notas — uma categoria por nota, com cor opcional e identificação por UUID
 
 - Exibir grafo interativo de relacionamentos entre notas e categorias
 
@@ -93,15 +93,15 @@ O produto é diretamente inspirado no Obsidian, com as seguintes diferenças de 
 
 ### 4.1 Funcionalidades Incluídas
 
-| **Funcionalidade**      | **Descrição**                                            | **Prioridade**   |
-|-------------------------|----------------------------------------------------------|------------------|
-| Criação de notas        | Título + corpo em Markdown, salvo como arquivo .md       | P0 — Must have   |
-| Edição e exclusão       | CRUD completo de notas via interface desktop             | P0 — Must have   |
-| Persistência local      | Notas salvas como .md em pasta escolhida pelo usuário    | P0 — Must have   |
-| Referências entre notas | Sintaxe \[\[Título\]\] com autocomplete por busca        | P0 — Must have   |
-| Categorias              | Múltiplas categorias por nota, referenciáveis no texto   | P1 — Should have |
-| Visualização em grafo   | Grafo interativo de notas e categorias com suas conexões | P1 — Should have |
-| Busca global            | Busca em títulos e textos de todas as notas              | P1 — Should have |
+| **Funcionalidade**      | **Descrição**                                                                | **Prioridade**   |
+|-------------------------|------------------------------------------------------------------------------|------------------|
+| Criação de notas        | Título + corpo em Markdown, salvo como arquivo .md                           | P0 — Must have   |
+| Edição e exclusão       | CRUD completo de notas via interface desktop                                 | P0 — Must have   |
+| Persistência local      | Notas salvas como .md em pasta escolhida pelo usuário                        | P0 — Must have   |
+| Referências entre notas | Sintaxe \[\[Título\]\] com autocomplete por busca                            | P0 — Must have   |
+| Categorias              | Uma categoria por nota, com cor opcional e referenciável no texto via \#nome | P1 — Should have |
+| Visualização em grafo   | Grafo interativo de notas e categorias com suas conexões                     | P1 — Should have |
+| Busca global            | Busca em títulos e textos de todas as notas                                  | P1 — Should have |
 
 ### 4.2 Fora do Escopo (MVP)
 
@@ -127,19 +127,20 @@ O produto é diretamente inspirado no Obsidian, com as seguintes diferenças de 
 
 ### 5.1 Decisões Técnicas Fundamentais
 
-| **Decisão**         | **Escolha**           | **Justificativa**                                                       |
-|---------------------|-----------------------|-------------------------------------------------------------------------|
-| Plataforma          | Desktop (Electron)    | Acesso direto ao sistema de arquivos, sem servidor, sem login           |
-| Armazenamento       | Arquivos .md no disco | Dados 100% locais, sem risco de vazamento, legíveis por qualquer editor |
-| Autenticação        | Nenhuma               | App single-user; acesso controlado pelo próprio SO do usuário           |
-| Modelo de negócio   | Open source           | Público de devs valoriza transparência e controle do código             |
-| Frontend (Renderer) | A definir             | Ver documento satélite Stack & Frameworks                               |
+| **Decisão**         | **Escolha**                                             | **Justificativa**                                                                                                                                                   |
+|---------------------|---------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Plataforma          | Desktop (Electron)                                      | Acesso direto ao sistema de arquivos, sem servidor, sem login                                                                                                       |
+| Armazenamento       | Arquivos .md no disco                                   | Dados 100% locais, sem risco de vazamento, legíveis por qualquer editor                                                                                             |
+| Autenticação        | Nenhuma                                                 | App single-user; acesso controlado pelo próprio SO do usuário                                                                                                       |
+| Categorias          | Uma por nota, identificada por UUID, cor opcional (hex) | Simplifica modelo de dados (1:N) e interface de seleção                                                                                                             |
+| Modelo de negócio   | Open source                                             | Público de devs valoriza transparência e controle do código                                                                                                         |
+| Frontend (Renderer) | React 18 + TypeScript 5 + CodeMirror 6 + Cytoscape.js   | Ecossistema React + TypeScript para tipagem dos contratos IPC; CodeMirror 6 para editor com autocomplete \[\[...\]\]; Cytoscape.js para grafo com layout automático |
 
 ### 5.2 Fluxo de Dados
 
-Todos os dados do usuário trafegam apenas entre o app e o disco local — nenhuma informação é enviada para servidores externos:
+Os dados do usuário ficam distribuídos entre o vault (no disco local) e a pasta de configuração do sistema. Nenhuma informação é enviada para servidores externos:
 
-> Usuário → Interface (Renderer) → Main Process (Electron) → Arquivos .md no disco
+> Usuário → Interface (Renderer) → Main Process (Electron) → vault/ (.md + auxiliares) \| ~/.config/ (config.json)
 
 ## 6. Documentos Satélites
 
@@ -147,10 +148,10 @@ Este PRD é o documento central. Os temas abaixo são detalhados em documentos e
 
 | **Documento**       | **Conteúdo**                                      | **Status** |
 |---------------------|---------------------------------------------------|------------|
-| Regras de Negócio   | Lógicas, restrições, casos de borda do sistema    | Draft      |
-| Arquitetura Técnica | Componentes Electron (Main/Renderer), IPC, fluxos | Draft      |
-| Stack & Frameworks  | Tecnologias escolhidas e justificativas           | Draft      |
-| Modelo de Dados     | Estrutura dos arquivos .md e metadados            | Draft      |
+| Regras de Negócio   | Lógicas, restrições, casos de borda do sistema    | Concluído  |
+| Arquitetura Técnica | Componentes Electron (Main/Renderer), IPC, fluxos | Concluído  |
+| Stack & Frameworks  | Tecnologias escolhidas e justificativas           | Concluído  |
+| Modelo de Dados     | Estrutura dos arquivos .md e metadados            | Concluído  |
 
 ## 7. Premissas e Restrições
 
@@ -164,13 +165,13 @@ Este PRD é o documento central. Os temas abaixo são detalhados em documentos e
 
 - O usuário escolhe e gerencia a pasta onde suas notas serão salvas
 
-- Arquivos .md criados pelo NoteGraph são compatíveis com outros editores (Obsidian, VS Code, etc.)
+- Arquivos .md criados pelo NoteGraph são compatíveis com outros editores (Obsidian, VS Code, etc.) — metadados armazenados em frontmatter YAML padrão
 
 - O projeto será desenvolvido por uma única pessoa em menos de 1 mês
 
 ### 7.2 Restrições
 
-- Sem servidor — toda a lógica roda localmente via Electron (Main Process + Renderer)
+- Sem servidor — toda a lógica roda localmente via Electron. Dados distribuídos entre o vault (notas + auxiliares) e a pasta de configuração do SO (config.json)
 
 - Sem autenticação — controle de acesso é responsabilidade do sistema operacional do usuário
 
@@ -180,22 +181,23 @@ Este PRD é o documento central. Os temas abaixo são detalhados em documentos e
 
 - Prazo de menos de 1 mês impõe escopo fechado; nenhuma feature fora do P0/P1 entra no MVP
 
-- Stack do frontend ainda a ser definida — decisão deve ser tomada na primeira semana de desenvolvimento
+- Stack do frontend definida: React 18 + TypeScript 5 + CodeMirror 6 + Cytoscape.js + Electron Forge com Vite
 
 ## 8. Riscos
 
 | **Risco**                                                                | **Probabilidade** | **Mitigação**                                                                                   |
 |--------------------------------------------------------------------------|-------------------|-------------------------------------------------------------------------------------------------|
 | Prazo de 1 mês insuficiente para todas as features P0 + P1               | Alta              | Priorizar P0 absolutamente; grafo e categorias (P1) podem ser cortados se necessário            |
-| Complexidade do grafo interativo subestimada                             | Média             | Usar biblioteca pronta (Cytoscape.js ou React Flow); não construir do zero                      |
+| Complexidade do grafo interativo subestimada                             | Média             | Usar Cytoscape.js (escolhido) com layout cose automático; não construir do zero                 |
 | Perda de dados por bug na escrita de arquivos .md                        | Baixa             | Escrever arquivo novo antes de sobrescrever o anterior; testes de integração nos fluxos de save |
 | Diferencial de 'interface mais simples' difícil de comunicar vs Obsidian | Média             | Capturar screenshots comparativos; focar em onboarding zero-config no README                    |
 | Falta de adoção por ser mais um app de notas                             | Média             | Lançar cedo, colher feedback de devs reais, iterar rápido no pós-MVP                            |
 
 ## 9. Histórico de Revisões
 
-| **Versão** | **Data**   | **Descrição**                                                                     | **Autor**    |
-|------------|------------|-----------------------------------------------------------------------------------|--------------|
-| 1.0        | 28/03/2026 | Criação do documento (template)                                                   | Solo founder |
-| 2.0        | 28/03/2026 | Preenchimento com decisões do produto: Electron, .md local, sem auth, open source | Solo founder |
-| ✏          | ✏          | ✏                                                                                 | ✏            |
+| **Versão** | **Data**   | **Descrição**                                                                                                                   | **Autor**    |
+|------------|------------|---------------------------------------------------------------------------------------------------------------------------------|--------------|
+| 1.0        | 28/03/2026 | Criação do documento (template)                                                                                                 | Solo founder |
+| 2.0        | 28/03/2026 | Preenchimento com decisões do produto: Electron, .md local, sem auth, open source                                               | Solo founder |
+| 3.0        | 28/03/2026 | Revisão geral: stack definida (React + TS + CodeMirror 6 + Cytoscape.js), satélites concluídos, restrições e riscos atualizados | Solo founder |
+| ✏          | ✏          | ✏                                                                                                                               | ✏            |
