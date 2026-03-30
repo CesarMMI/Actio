@@ -1,8 +1,9 @@
 // Rules: RN-050, RN-052, RN-054, RN-086 | ADR-003 (in-memory cache), ADR-004
-import { readFile, writeFile, rename } from 'node:fs/promises';
+import { readFile, rename, writeFile } from 'node:fs/promises';
 import path from 'node:path';
-import type { SearchEntry, SearchIndex } from '../../types';
-import { AppError } from '../../types';
+import { AppError } from '../../types/errors/app-error';
+import type { SearchEntry } from '../../types/search/search-entry';
+import type { SearchIndex } from '../../types/search/search-index';
 
 const FILENAME = 'search-index.json';
 

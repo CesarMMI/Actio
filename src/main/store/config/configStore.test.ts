@@ -1,7 +1,7 @@
 // Rules covered: RN-081, RN-083, RN-087 | ADR-004
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { readConfig, writeConfig, getVaultPath } from './configStore';
-import type { Config } from '../../types';
+import type { Config } from '../../types/config/config';
 
 vi.mock('node:fs/promises');
 
@@ -41,7 +41,7 @@ describe('readConfig', () => {
     // Assert
     expect(mockReadFile).toHaveBeenCalledWith(CONFIG_PATH, 'utf-8');
     expect(config).toEqual(SAMPLE_CONFIG);
-    expect(config!.vault_path).toBe('/home/user/Documents/notegraph-vault');
+    expect((config as Config).vault_path).toBe('/home/user/Documents/notegraph-vault');
   });
 
   it('should return null when config.json does not exist (first run)', async () => {
@@ -73,7 +73,7 @@ describe('readConfig', () => {
     const config = await readConfig(APP_DATA);
 
     // Assert
-    expect(config!.last_opened_at).toBeUndefined();
+    expect((config as Config).last_opened_at).toBeUndefined();
   });
 });
 

@@ -1,8 +1,8 @@
 // Rules: RN-011, RN-012, RN-020, RN-023, RN-073 | ADR-004
-import { readFile, writeFile, rename } from 'node:fs/promises';
+import { readFile, rename, writeFile } from 'node:fs/promises';
 import path from 'node:path';
-import type { Reference } from '../../types';
-import { AppError } from '../../types';
+import { AppError } from '../../types/errors/app-error';
+import type { Reference } from '../../types/references/reference';
 
 const FILENAME = 'references.json';
 

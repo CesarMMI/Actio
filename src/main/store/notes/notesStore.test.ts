@@ -1,7 +1,7 @@
 // Rules covered: RN-001, RN-002, RN-004, RN-005, RN-006, RN-007 | ADR-004
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { readNote, writeNote, deleteNote, listNotes } from './notesStore';
-import type { Note } from '../../types';
+import type { Note } from '../../types/notes/note';
 
 vi.mock('node:fs/promises');
 

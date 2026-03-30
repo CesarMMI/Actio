@@ -1,8 +1,8 @@
 // Rules: RN-030, RN-035, RN-036, RN-040 | ADR-004
-import { readFile, writeFile, rename } from 'node:fs/promises';
+import { readFile, rename, writeFile } from 'node:fs/promises';
 import path from 'node:path';
-import type { Category } from '../../types';
-import { AppError } from '../../types';
+import { AppError } from '../../types/errors/app-error';
+import type { Category } from '../../types/categories/category';
 
 const FILENAME = 'categories.json';
 

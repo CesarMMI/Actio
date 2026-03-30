@@ -1,7 +1,7 @@
 // Rules covered: RN-030, RN-035, RN-036, RN-040 | ADR-004
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { readCategories, writeCategories, addCategory, removeCategory } from './categoriesStore';
-import type { Category } from '../../types';
+import type { Category } from '../../types/categories/category';
 
 vi.mock('node:fs/promises');
 

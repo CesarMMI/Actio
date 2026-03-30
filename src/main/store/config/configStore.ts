@@ -1,8 +1,8 @@
 // Rules: RN-081, RN-083, RN-087 | ADR-004
-import { readFile, writeFile, rename } from 'node:fs/promises';
+import { readFile, rename, writeFile } from 'node:fs/promises';
 import path from 'node:path';
-import type { Config } from '../../types';
-import { AppError } from '../../types';
+import { AppError } from '../../types/errors/app-error';
+import type { Config } from '../../types/config/config';
 
 const FILENAME = 'config.json';
 

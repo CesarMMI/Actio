@@ -1,8 +1,9 @@
 // Rules: RN-001, RN-002, RN-004, RN-005, RN-006, RN-007 | ADR-004
-import { readFile, writeFile, rename, unlink, readdir } from 'node:fs/promises';
+import { readdir, readFile, rename, unlink, writeFile } from 'node:fs/promises';
 import path from 'node:path';
-import type { Note, NoteIndex } from '../../types';
-import { AppError } from '../../types';
+import { AppError } from '../../types/errors/app-error';
+import type { Note } from '../../types/notes/note';
+import type { NoteIndex } from '../../types/notes/note-index';
 
 function parseFrontmatter(content: string): Note {
   // Strip leading ---\n
@@ -84,7 +85,8 @@ export async function listNotes(vaultPath: string): Promise<NoteIndex[]> {
     mdFiles.map(async (file) => {
       const id = file.slice(0, -3); // strip .md
       const note = await readNote(vaultPath, id);
-      const { body: _body, ...index } = note;
+      const { body, ...index } = note;
+      void body;
       return index as NoteIndex;
     }),
   );

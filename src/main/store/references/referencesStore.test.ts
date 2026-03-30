@@ -8,7 +8,7 @@ import {
   markBroken,
   reconnect,
 } from './referencesStore';
-import type { Reference } from '../../types';
+import type { Reference } from '../../types/references/reference';
 
 vi.mock('node:fs/promises');
 

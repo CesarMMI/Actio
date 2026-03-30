@@ -8,7 +8,8 @@ import {
   rebuildIndex,
   clearCache,
 } from './searchIndexStore';
-import type { SearchEntry, SearchIndex } from '../../types';
+import type { SearchEntry } from '../../types/search/search-entry';
+import type { SearchIndex } from '../../types/search/search-index';
 
 vi.mock('node:fs/promises');
 
